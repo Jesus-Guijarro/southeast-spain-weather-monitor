@@ -1,0 +1,22 @@
+[ {
+  "fecha" : "2024-06-11",
+  "indicativo" : "8036Y",
+  "nombre" : "BENIDORM",
+  "provincia" : "ALICANTE",
+  "altitud" : "36",
+  "tmed" : "22,2",
+  "prec" : "3,4",
+  "tmin" : "17,6",
+  "horatmin" : "01:54",
+  "tmax" : "26,7",
+  "horatmax" : "13:26",
+  "dir" : "02",
+  "velmedia" : "1,1",
+  "racha" : "8,9",
+  "horaracha" : "14:10",
+  "hrMedia" : "74",
+  "hrMax" : "95",
+  "horaHrMax" : "21:20",
+  "hrMin" : "54",
+  "horaHrMin" : "10:50"
+} ]

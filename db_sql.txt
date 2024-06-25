@@ -1,4 +1,4 @@
--- Crear la base de datos
+-- CREATE CITY_STATION TABLE
 
 CREATE TABLE CITY_STATION (
     id SERIAL PRIMARY KEY,
@@ -8,7 +8,7 @@ CREATE TABLE CITY_STATION (
     station_name VARCHAR(100) NOT NULL
 );
 
--- Insertar datos en la tabla LOCATION
+-- INSERT DATA IN TABLE CITY_STATION
 
 -- Comunidad Valenciana
 INSERT INTO CITY_STATION (city_code, station_code, city_name, station_name)
@@ -18,17 +18,14 @@ VALUES
 ('03065', '8018X', 'Elche/Elx', 'ELX/ELCHE'),
 ('12040', '8500A', 'Castellón de la Plana/Castelló de la Plana', 'CASTELLÓ - ALMASSORA'),
 ('03099', '7244X', 'Orihuela', 'ORIHUELA'),
-('03501', '8036Y', 'Benidorm', 'BENIDORM'),
 
 -- Región de Murcia
 ('30030', '7178I', 'Murcia', 'MURCIA'),
 ('30016', '7012C', 'Cartagena', 'CARTAGENA'),
-('30800', '7209', 'Lorca', 'LORCA'),
 
 -- Andalucía
 ('04013', '6325O', 'Almería', 'ALMERÍA AEROPUERTO'),
 ('29001', '6172X', 'Málaga', 'MÁLAGA'),
-('18600', '6268Y', 'Motril', 'MOTRIL, PUERTO'),
 ('14001', '5402', 'Córdoba', 'CÓRDOBA AEROPUERTO'),
 ('41001', '5783', 'Sevilla', 'SEVILLA AEROPUERTO'),
 ('18001', '5530E', 'Granada', 'GRANADA AEROPUERTO'),

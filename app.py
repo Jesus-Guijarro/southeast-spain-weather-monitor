@@ -1,65 +1,36 @@
 import requests
-import configparser
-import psycopg2
 from datetime import datetime, timedelta
 import os
+import time
+import database as db
 
-# Read the configuration file
-config = configparser.ConfigParser()
-config.read('config.ini')
+def get_path_folder():
+    base_directory = "/home/jfgs/Projects/weather-spain"
 
-# Get the configuration values
-db_config = config['database']
-DB_NAME = db_config['dbname']
-DB_USER = db_config['user']
-DB_PASSWORD = db_config['password']
-DB_HOST = db_config['host']
-DB_PORT = db_config['port']
-
-# Conexión a la base de datos
-conn = psycopg2.connect(
-        dbname=DB_NAME,
-        user=DB_USER,
-        password=DB_PASSWORD,
-        host=DB_HOST,
-        port=DB_PORT
-    )
-cursor = conn.cursor()
-
-query = "SELECT city_code, station_code FROM CITY_STATION;"
-
-# Ejecutar la consulta
-cursor.execute(query)
-
-# Obtener todos los resultados
-rows = cursor.fetchall()
-
-# Cerrar cursor y conexión
-cursor.close()
-conn.close()
-
-url_prediccion = "https://opendata.aemet.es/opendata/api/prediccion/especifica/municipio/horaria/{city_code}"
-url_climatologicos = "https://opendata.aemet.es/opendata/api/valores/climatologicos/diarios/datos/fechaini/{fecha_inicio}/fechafin/{fecha_fin}/estacion/{station_code}"
-
-with open('api.txt', 'r') as file:
-    api_key = file.read()
-
-querystring = {"api_key":api_key}
-
-headers = {
-    'cache-control': "no-cache",
-    'accept': "application/json"
-    }
-
-def create_folder():
     current_date = datetime.now()
     date_folder_name = current_date.strftime("%d-%m-%Y")
-    folder_path = f"./{date_folder_name}"
+    folder_path = os.path.join(base_directory, "data", date_folder_name)
+
+    # Create folder
     os.makedirs(folder_path, exist_ok=True)
 
     return folder_path
 
-# Función para hacer la solicitud y obtener la URL de los datos reales
+def get_city_stations():
+    conn, cursor = db.get_connection()
+
+    query = "SELECT city_code, station_code, city_name, station_name FROM CITY_STATION;"
+
+    cursor.execute(query)
+
+    city_stations = cursor.fetchall()
+
+    cursor.close()
+    conn.close()
+
+    return city_stations
+
+# Function to make the request and get the URL of the real data
 def get_data_url(url):
     response = requests.get(url, headers=headers, params=querystring)
     if response.status_code == 200:
@@ -67,12 +38,13 @@ def get_data_url(url):
         if 'datos' in data:
             return data['datos']
         else:
-            print(f"Error: 'datos' no encontrado en la respuesta")
+            print(f"Error: 'datos' not found in the response")
             return None
     else:
         print(f"Error {response.status_code}")
         return None
-    
+
+# Function that obtains the data and saves it in a json file.
 def fetch_and_save(url, filename):
     data_url = get_data_url(url)
     if data_url:
@@ -81,37 +53,59 @@ def fetch_and_save(url, filename):
             with open(filename, 'w', encoding='utf-8') as file:
                 file.write(response.text)
         else:
-            print(f"Error {response.status_code} al solicitar {data_url}")
+            print(f"Error {response.status_code} when requesting {data_url}")
 
-folder_path = create_folder()
-for row in rows:
-    city_code, station_code = row
+def create_api_url_meteo(url_meteo, station_code):
+    current_date = datetime.now()
+    date = current_date - timedelta(days=5)
+        
+    start_date_str = date.strftime("%Y-%m-%dT00:00:00UTC")
+    end_date_str = date.strftime("%Y-%m-%dT23:59:59UTC")
 
-    print(city_code, station_code)
-    
-    # Construir URL para la API de predicción horaria
-    api_url_prediccion = url_prediccion.format(city_code=city_code)
+    api_url_meteo = url_meteo.format(start_date=start_date_str, end_date=end_date_str, station_code=station_code)
 
-    prediccion_file_name = f"{folder_path}/predic-{datetime.now().strftime('%d-%m-%Y')}-{city_code}.txt"
+    return api_url_meteo
 
-    fetch_and_save(api_url_prediccion, prediccion_file_name)
+if __name__ == "__main__":
 
+    # API key, querystring and headers
+    with open('keys/api.txt', 'r') as file:
+        api_key = file.read()
 
+    querystring = {"api_key":api_key}
 
-    # Generar la fecha 4 días antes del día actual en el formato requerido
-    fecha_actual = datetime.now()
-    fecha = fecha_actual - timedelta(days=4)
-    
-    # Formatear las fechas en el formato necesario por la API de climatológicos
-    fecha_inicio_str = fecha.strftime("%Y-%m-%dT00:00:00UTC")
-    fecha_fin_str = fecha.strftime("%Y-%m-%dT23:59:59UTC")
-    
-    # Construir URL para la API de valores climatológicos diarios
-    api_url_climatologicos = url_climatologicos.format(fecha_inicio=fecha_inicio_str, fecha_fin=fecha_fin_str, station_code=station_code)
-    
-    # Realizar la solicitud GET a la API de valores climatológicos diarios
+    headers = {
+        'cache-control': "no-cache",
+        'accept': "application/json"
+        }
 
-    meteo_file_name = f"{folder_path}/meteo-{datetime.now().strftime('%d-%m-%Y')}-{station_code}.txt"
+    # URLs API requests
+    url_prediction = "https://opendata.aemet.es/opendata/api/prediccion/especifica/municipio/horaria/{city_code}"
+    url_meteo= "https://opendata.aemet.es/opendata/api/valores/climatologicos/diarios/datos/fechaini/{start_date}/fechafin/{end_date}/estacion/{station_code}"
 
-    fetch_and_save(api_url_climatologicos, meteo_file_name)
+    folder_path = get_path_folder()
+
+    city_stations=get_city_stations()
+
+    for cs in city_stations:
+        city_code, station_code, city_name, station_name = cs
+
+        print(city_name)
+        
+        api_url_prediction = url_prediction.format(city_code=city_code)
+
+        prediction_file_name = f"{folder_path}/predic-{datetime.now().strftime('%d-%m-%Y')}-{city_code}.json"
+
+        fetch_and_save(api_url_prediction, prediction_file_name)
+
+        print(station_name)
+
+        api_url_meteo = create_api_url_meteo(url_meteo, station_code)
+
+        meteo_file_name = f"{folder_path}/meteo-{datetime.now().strftime('%d-%m-%Y')}-{city_code}.json"
+
+        fetch_and_save(api_url_meteo, meteo_file_name)
+
+        time.sleep(5)
+
 

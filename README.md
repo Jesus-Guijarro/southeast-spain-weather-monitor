@@ -31,7 +31,7 @@ crontab -e
 ```
 
 ```
-0 20 * * * /usr/bin/python3 /home/jfgs/Projects/weather-spain/app.py
+0 20 * * * cd /home/jfgs/Projects/weather-spain && /usr/bin/python3 app.py
 ```
 
 ```sh

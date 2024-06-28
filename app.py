@@ -2,14 +2,15 @@ import requests
 from datetime import datetime, timedelta
 import os
 import time
+import logging
+
 import database as db
 
 def get_path_folder():
-    base_directory = "/home/jfgs/Projects/weather-spain"
 
     current_date = datetime.now()
     date_folder_name = current_date.strftime("%d-%m-%Y")
-    folder_path = os.path.join(base_directory, "data", date_folder_name)
+    folder_path = os.path.join("data", date_folder_name)
 
     # Create folder
     os.makedirs(folder_path, exist_ok=True)
@@ -31,29 +32,29 @@ def get_city_stations():
     return city_stations
 
 # Function to make the request and get the URL of the real data
-def get_data_url(url):
+def get_data_url(url, station_name):
     response = requests.get(url, headers=headers, params=querystring)
     if response.status_code == 200:
         data = response.json()
         if 'datos' in data:
             return data['datos']
         else:
-            print(f"Error: 'datos' not found in the response")
+            logging.error(f"Station {station_name}. Error: 'datos' not found in the response")
             return None
     else:
-        print(f"Error {response.status_code}")
+        logging.error(f"Station {station_name} Error: {response.status_code}")
         return None
 
 # Function that obtains the data and saves it in a json file.
-def fetch_and_save(url, filename):
-    data_url = get_data_url(url)
+def fetch_and_save(url, filename, station_name):
+    data_url = get_data_url(url, station_name)
     if data_url:
         response = requests.get(data_url)
         if response.status_code == 200:
             with open(filename, 'w', encoding='utf-8') as file:
                 file.write(response.text)
         else:
-            print(f"Error {response.status_code} when requesting {data_url}")
+            logging.error(f'Station {station_name}. Error {response.status_code} when requesting {data_url}')
 
 def create_api_url_meteo(url_meteo, station_code):
     current_date = datetime.now()
@@ -67,6 +68,9 @@ def create_api_url_meteo(url_meteo, station_code):
     return api_url_meteo
 
 if __name__ == "__main__":
+
+    logging.basicConfig(filename='logs/stations_logs.log', level=logging.INFO, 
+                        format='%(asctime)s - %(levelname)s - %(message)s')
 
     # API key, querystring and headers
     with open('keys/api.txt', 'r') as file:
@@ -89,22 +93,18 @@ if __name__ == "__main__":
 
     for cs in city_stations:
         city_code, station_code, city_name, station_name = cs
-
-        print(city_name)
         
         api_url_prediction = url_prediction.format(city_code=city_code)
 
-        prediction_file_name = f"{folder_path}/predic-{datetime.now().strftime('%d-%m-%Y')}-{city_code}.json"
+        prediction_file_name = f"{folder_path}/prediction-{datetime.now().strftime('%d-%m-%Y')}-{city_code}.json"
 
-        fetch_and_save(api_url_prediction, prediction_file_name)
-
-        print(station_name)
+        fetch_and_save(api_url_prediction, prediction_file_name, station_name)
 
         api_url_meteo = create_api_url_meteo(url_meteo, station_code)
 
         meteo_file_name = f"{folder_path}/meteo-{datetime.now().strftime('%d-%m-%Y')}-{city_code}.json"
 
-        fetch_and_save(api_url_meteo, meteo_file_name)
+        fetch_and_save(api_url_meteo, meteo_file_name, station_name)
 
         time.sleep(5)
 

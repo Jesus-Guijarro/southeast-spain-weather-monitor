@@ -95,7 +95,7 @@ if __name__ == "__main__":
     for cs in city_stations:
         city_code, station_code, city_name, station_name = cs
 
-        #PREDICTION
+        # PREDICTION (prediction data of tomorrow)
         
         api_url_prediction = url_prediction.format(city_code=city_code)
 
@@ -105,7 +105,7 @@ if __name__ == "__main__":
 
         fetch_and_save(api_url_prediction, prediction_file_name, station_name)
 
-        # METEO
+        # METEO (measured data of 5 days ago)
 
         api_url_meteo = create_api_url_meteo(url_meteo, station_code)
 

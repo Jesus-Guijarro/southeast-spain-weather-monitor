@@ -18,7 +18,6 @@ INSERT INTO CITY_STATION (city_code, station_code, city_name, station_name)
 VALUES
 ('46250', '8416', 'Valencia', 'VALÈNCIA'),
 ('03014', '8025', 'Alicante/Alacant', 'ALACANT/ALICANTE'),
-('03065', '8018X', 'Elche/Elx', 'ELX/ELCHE'),
 ('12040', '8500A', 'Castellón de la Plana/Castelló de la Plana', 'CASTELLÓ - ALMASSORA'),
 ('03099', '7244X', 'Orihuela', 'ORIHUELA'),
 

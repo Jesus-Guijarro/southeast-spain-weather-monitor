@@ -50,7 +50,7 @@ Citar a AEMET como fuente de la información
 
 ## PREDICTION
 Predicción horaria para el municipio que se pasa como parámetro (municipio). Presenta la información de hora en hora hasta 48 horas.
-Consultas realizadas a partir de las 12 de la noche, para obtener los valores de las 24 horas del día actual
+Consultas realizadas a partir de las 8 de la tardenoche, para obtener los valores de las 24 horas del día siguiente
 Ejemplo: consulta a las 00:30 día 03/07/2024 -> json con datos de las últimas horas de 02/07/2024, 24 horas 03/07/2024 y unas cuantas horas de 04/07/2024
 /api/prediccion/especifica/municipio/horaria/{municipio}
 

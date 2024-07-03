@@ -1,6 +1,8 @@
 import json
 from datetime import datetime, timedelta
 
+import psycopg2
+
 # Función para leer el archivo JSON
 def read_json_file(file_path):
     with open(file_path, 'r', encoding='utf-8') as file:

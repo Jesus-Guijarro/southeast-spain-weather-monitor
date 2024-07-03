@@ -6,10 +6,13 @@ import logging
 
 import database as db
 
-def get_path_folder():
+def get_path_folder(query):
 
-    current_date = datetime.now()
-    date_folder_name = current_date.strftime("%d-%m-%Y")
+    if query=="meteo":
+        date = datetime.now() - timedelta(days=5)
+    else:
+        date = datetime.now()
+    date_folder_name = date.strftime("%d-%m-%Y")
     folder_path = os.path.join("data", date_folder_name)
 
     # Create folder
@@ -87,25 +90,31 @@ if __name__ == "__main__":
     url_prediction = "https://opendata.aemet.es/opendata/api/prediccion/especifica/municipio/horaria/{city_code}"
     url_meteo= "https://opendata.aemet.es/opendata/api/valores/climatologicos/diarios/datos/fechaini/{start_date}/fechafin/{end_date}/estacion/{station_code}"
 
-    folder_path = get_path_folder()
-
     city_stations=get_city_stations()
 
     for cs in city_stations:
         city_code, station_code, city_name, station_name = cs
+
+        #PREDICTION
         
         api_url_prediction = url_prediction.format(city_code=city_code)
 
-        prediction_file_name = f"{folder_path}/prediction-{datetime.now().strftime('%d-%m-%Y')}-{city_code}.json"
+        folder_path = get_path_folder("prediction")
+
+        prediction_file_name = f"{folder_path}/{city_code}-prediction-{datetime.now().strftime('%d-%m-%Y')}.json"
 
         fetch_and_save(api_url_prediction, prediction_file_name, station_name)
 
+        # METEO
+
         api_url_meteo = create_api_url_meteo(url_meteo, station_code)
 
-        meteo_file_name = f"{folder_path}/meteo-{datetime.now().strftime('%d-%m-%Y')}-{city_code}.json"
+        folder_path = get_path_folder("meteo")
+
+        date_5_days_ago_str = (datetime.now() - timedelta(days=5)).strftime('%d-%m-%Y')
+
+        meteo_file_name = f"{folder_path}/{city_code}-meteo-{date_5_days_ago_str}.json"
 
         fetch_and_save(api_url_meteo, meteo_file_name, station_name)
 
         time.sleep(5)
-
-

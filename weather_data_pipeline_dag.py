@@ -12,7 +12,7 @@ default_args = {
     'retry_delay': timedelta(minutes=5),
 }
 # Define the folder path where the scripts are located
-folder_path = '/home/jfgs/Projects/weather-spain'
+folder_path = '/home/jfgs/Projects/weather-spain-pipeline'
 
 # Create the DAG
 with DAG(

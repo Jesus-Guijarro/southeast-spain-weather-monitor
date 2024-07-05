@@ -8,7 +8,6 @@ This project is dedicated to monitoring meteorological data in regions of the Ib
 - **Analysis**: perform calculations and analysis on gathered data to assess climatic trends and risks.
 - **Database Integration**: store processed data in the weather_data database for further utilization and reporting.
 
-
 ## Queries
 
 ### PREDICTION

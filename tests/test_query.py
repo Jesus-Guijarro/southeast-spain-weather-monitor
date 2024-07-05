@@ -1,8 +1,13 @@
 
 from datetime import datetime, timedelta
 import requests
-import database as db
 
+import sys
+import os
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+import database.database as db
 
 def get_city_stations():
     conn, cursor = db.get_connection()
@@ -36,7 +41,7 @@ def fetch(url):
     if data_url:
         response = requests.get(data_url)
         if response.status_code == 200:
-            print("DATA")
+            print(response.text)
         else:
             print(f"Error {response.status_code} when requesting {data_url}")
 
@@ -55,10 +60,10 @@ city_stations=get_city_stations()
 
 if __name__ == "__main__":
 
-    url_prediction = "https://opendata.aemet.es/opendata/api/prediccion/especifica/municipio/horaria/{city_code}"
+    url_prediction= "https://opendata.aemet.es/opendata/api/prediccion/especifica/municipio/horaria/{city_code}"
     url_meteo= "https://opendata.aemet.es/opendata/api/valores/climatologicos/diarios/datos/fechaini/{start_date}/fechafin/{end_date}/estacion/{station_code}"
 
-    with open('keys/api.txt', 'r') as file:
+    with open('../keys/api.txt', 'r') as file:
         api_key = file.read()
 
     querystring = {"api_key":api_key}
@@ -68,8 +73,8 @@ if __name__ == "__main__":
         'accept': "application/json"
         }
 
-    #station to test
-    station_code = "8500A"
+    #station chosen to test
+    station_code = "8025"
 
     api_url_meteo=create_api_url_meteo(url_meteo,station_code)
     fetch(api_url_meteo)

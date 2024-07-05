@@ -1,6 +1,5 @@
 import json
 
-# Cargar los datos JSON desde el archivo
 file_path = 'data/28-06-2024/29001-prediction-28-06-2024.json'
 
 with open(file_path, 'r') as file:

@@ -19,7 +19,7 @@ with DAG(
     'weather_data_pipeline',
     default_args=default_args,
     description='A DAG to run weather data scripts',
-    schedule_interval='10 20 * * *',  # This sets the DAG to run daily at 20:00
+    schedule_interval='25 23 * * *',  # This sets the DAG to run daily at 20:10
     start_date=datetime(2024, 1, 1),
     catchup=False,
 ) as dag:
@@ -28,15 +28,13 @@ with DAG(
     run_weather_data = BashOperator(
         task_id='run_weather_data',
         bash_command=f'cd {folder_path} && python weather_data.py',
-        execution_timeout=timedelta(minutes=5),  # This task has a maximum execution time of 10 minutes
-        dag=dag,
+        execution_timeout=timedelta(minutes=5),  # This task has a maximum execution time of 5 minutes
     )
 
     # Task to run weather_etl_job.py at 20:15
     run_weather_etl = BashOperator(
         task_id='run_weather_etl',
         bash_command=f'cd {folder_path} && python weather_etl_job.py',
-        dag=dag,
     )
 
     # Set task dependencies

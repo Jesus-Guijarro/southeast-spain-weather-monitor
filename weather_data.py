@@ -30,7 +30,7 @@ def get_city_stations():
 
     conn, cursor = db.get_connection()
 
-    query = "SELECT city_code, station_code, city_name, station_name FROM CITY_STATION;"
+    query = "SELECT city_code, station_code, city_name FROM CITY_STATION;"
 
     cursor.execute(query)
 
@@ -41,7 +41,7 @@ def get_city_stations():
 
     return city_stations
 
-def get_data_url(url, station_name):
+def get_data_url(url, station_code):
     """
     Make a request to the given URL and retrieve JSON data.
     """
@@ -51,24 +51,24 @@ def get_data_url(url, station_name):
         if 'datos' in data:
             return data['datos']
         else:
-            logging.error(f"Station {station_name}. Error: 'datos' not found in the response")
+            logging.error(f"Station {station_code}. Error: 'datos' not found in the response")
             return None
     else:
-        logging.error(f"Station {station_name} Error: {response.status_code}")
+        logging.error(f"Station {station_code} Error: {response.status_code}")
         return None
 
-def fetch_and_save(url, filename, station_name):
+def fetch_and_save(url, filename, station_code):
     """
     Fetch data from the URL and save it as a JSON file.
     """
-    data_url = get_data_url(url, station_name)
+    data_url = get_data_url(url, station_code)
     if data_url:
         response = requests.get(data_url)
         if response.status_code == 200:
             with open(filename, 'w', encoding='utf-8') as file:
                 file.write(response.text)
         else:
-            logging.error(f'Station {station_name}. Error {response.status_code} when requesting {data_url}')
+            logging.error(f'Station {station_code}. Error {response.status_code} when requesting {data_url}')
 
 def create_api_url_meteo(url_meteo, station_code):
     """
@@ -106,7 +106,7 @@ if __name__ == "__main__":
     city_stations=get_city_stations()
 
     for cs in city_stations:
-        city_code, station_code, city_name, station_name = cs
+        city_code, station_code, city_name = cs
 
         # PREDICTION (prediction data of tomorrow)
         api_url_prediction = url_prediction.format(city_code=city_code)
@@ -117,7 +117,7 @@ if __name__ == "__main__":
 
         prediction_file_name = f"{folder_path}/{city_code}-prediction-{next_day}.json"
 
-        fetch_and_save(api_url_prediction, prediction_file_name, station_name)
+        fetch_and_save(api_url_prediction, prediction_file_name, station_code)
 
         # METEO (measured data of 5 days ago)
         api_url_meteo = create_api_url_meteo(url_meteo, station_code)
@@ -128,6 +128,6 @@ if __name__ == "__main__":
 
         meteo_file_name = f"{folder_path}/{city_code}-meteo-{date_5_days_ago_str}.json"
 
-        fetch_and_save(api_url_meteo, meteo_file_name, station_name)
+        fetch_and_save(api_url_meteo, meteo_file_name, station_code)
 
         time.sleep(5)   # Wait for 5 seconds between requests

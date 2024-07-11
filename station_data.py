@@ -1,8 +1,8 @@
 import requests
 from datetime import datetime, timedelta
 import os
-import time
 import logging
+import sys
 
 import database.database as db
 
@@ -22,22 +22,22 @@ def get_path_folder(query):
 
     return folder_path
 
-def get_city_stations():
+def get_city_station(city_code):
     """
-    Retrieve city stations information from the database.
+    Retrieve city station information from the database.
     """
 
     conn, cursor = db.get_connection()
 
-    query = "SELECT city_code, station_code, city_name FROM CITY_STATION;"
-    cursor.execute(query)
+    query = "SELECT station_code, city_name FROM CITY_STATION WHERE city_code = %s;"
+    cursor.execute(query, (city_code,))
 
-    city_stations = cursor.fetchall()
+    city_station = cursor.fetchone()
 
     cursor.close()
     conn.close()
 
-    return city_stations
+    return city_station
 
 def get_data_url(url, city_code):
     """
@@ -52,7 +52,7 @@ def get_data_url(url, city_code):
             logging.error(f"City code: {city_code}. Error: 'datos' not found in the response")
             return None
     else:
-        logging.error(f"City code: {city_code} Error: {response.status_code}")
+        logging.error(f"city_code: {city_code} Error: {response.status_code}")
         return None
 
 def fetch_and_save(url, filename, city_code):
@@ -83,6 +83,13 @@ def create_api_url_meteo(url_meteo, station_code):
     return api_url_meteo
 
 if __name__ == "__main__":
+    if len(sys.argv) != 2:
+        print("Usage: python station_data.py <station_code>")
+        sys.exit(1)
+    city_code = sys.argv[1]
+
+    print(city_code)
+
     logging.basicConfig(filename='logs/stations_logs.log', level=logging.INFO, 
                         format='%(asctime)s - %(levelname)s - %(message)s')
 
@@ -101,23 +108,21 @@ if __name__ == "__main__":
     url_prediction = "https://opendata.aemet.es/opendata/api/prediccion/especifica/municipio/horaria/{city_code}"
     url_meteo= "https://opendata.aemet.es/opendata/api/valores/climatologicos/diarios/datos/fechaini/{start_date}/fechafin/{end_date}/estacion/{station_code}"
 
-    city_stations=get_city_stations()
+    city_station=get_city_station(city_code)
 
-    for cs in city_stations:
-        city_code, station_code, city_name = cs
+    
+    station_code, city_name = city_station
 
-        # PREDICTION (prediction data of tomorrow)
-        api_url_prediction = url_prediction.format(city_code=city_code)
-        folder_path = get_path_folder("prediction")
-        next_day = (datetime.now() + timedelta(days=1)).strftime('%d-%m-%Y')
-        prediction_file_name = f"{folder_path}/{city_code}-prediction-{next_day}.json"
-        fetch_and_save(api_url_prediction, prediction_file_name, city_code)
+    # PREDICTION (prediction data of tomorrow)
+    api_url_prediction = url_prediction.format(city_code=city_code)
+    folder_path = get_path_folder("prediction")
+    next_day = (datetime.now() + timedelta(days=1)).strftime('%d-%m-%Y')
+    prediction_file_name = f"{folder_path}/{city_code}-prediction-{next_day}.json"
+    fetch_and_save(api_url_prediction, prediction_file_name, city_code)
 
-        # METEO (measured data of 5 days ago)
-        api_url_meteo = create_api_url_meteo(url_meteo, station_code)
-        folder_path = get_path_folder("meteo")
-        date_5_days_ago_str = (datetime.now() - timedelta(days=5)).strftime('%d-%m-%Y')
-        meteo_file_name = f"{folder_path}/{city_code}-meteo-{date_5_days_ago_str}.json"
-        fetch_and_save(api_url_meteo, meteo_file_name, city_code)
-
-        time.sleep(5)   # Wait for 5 seconds between requests
+    # METEO (measured data of 5 days ago)
+    api_url_meteo = create_api_url_meteo(url_meteo, station_code)
+    folder_path = get_path_folder("meteo")
+    date_5_days_ago_str = (datetime.now() - timedelta(days=5)).strftime('%d-%m-%Y')
+    meteo_file_name = f"{folder_path}/{city_code}-meteo-{date_5_days_ago_str}.json"
+    fetch_and_save(api_url_meteo, meteo_file_name, city_code)

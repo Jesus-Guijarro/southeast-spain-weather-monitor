@@ -88,9 +88,7 @@ if __name__ == "__main__":
         sys.exit(1)
     city_code = sys.argv[1]
 
-    print(city_code)
-
-    logging.basicConfig(filename='logs/stations_logs.log', level=logging.INFO, 
+    logging.basicConfig(filename='logs/city_logs.log', level=logging.INFO, 
                         format='%(asctime)s - %(levelname)s - %(message)s')
 
     # Read API key from file

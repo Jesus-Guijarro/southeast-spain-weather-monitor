@@ -83,7 +83,7 @@ def create_api_url_meteo(url_meteo, station_code):
     return api_url_meteo
 
 if __name__ == "__main__":
-    logging.basicConfig(filename='logs/stations_logs.log', level=logging.INFO, 
+    logging.basicConfig(filename='logs/city_logs.log', level=logging.INFO, 
                         format='%(asctime)s - %(levelname)s - %(message)s')
 
     # Read API key from file

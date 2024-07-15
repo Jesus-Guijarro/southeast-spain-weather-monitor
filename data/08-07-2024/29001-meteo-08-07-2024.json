@@ -1,0 +1,22 @@
+[ {
+  "fecha" : "2024-07-08",
+  "indicativo" : "6172X",
+  "nombre" : "MÁLAGA",
+  "provincia" : "MALAGA",
+  "altitud" : "25",
+  "tmed" : "23,2",
+  "prec" : "0,0",
+  "tmin" : "20,9",
+  "horatmin" : "00:17",
+  "tmax" : "25,6",
+  "horatmax" : "16:45",
+  "dir" : "22",
+  "velmedia" : "1,7",
+  "racha" : "3,9",
+  "horaracha" : "12:40",
+  "hrMedia" : "71",
+  "hrMax" : "83",
+  "horaHrMax" : "01:00",
+  "hrMin" : "58",
+  "horaHrMin" : "04:40"
+} ]

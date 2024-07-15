@@ -97,3 +97,8 @@ airflow scheduler
 ```
 
 Go to http://localhost:8080/ .
+
+
+## API AEMET
+Information about the API:
+https://opendata.aemet.es/dist/index.html

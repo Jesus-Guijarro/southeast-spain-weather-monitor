@@ -1,0 +1,19 @@
+[ {
+  "fecha" : "2024-07-10",
+  "indicativo" : "5530E",
+  "nombre" : "GRANADA AEROPUERTO",
+  "provincia" : "GRANADA",
+  "altitud" : "567",
+  "tmed" : "27,4",
+  "tmin" : "15,4",
+  "horatmin" : "05:10",
+  "tmax" : "39,3",
+  "horatmax" : "16:10",
+  "velmedia" : "3,6",
+  "sol" : "13,3",
+  "presMax" : "954,4",
+  "horaPresMax" : "Varias",
+  "presMin" : "950,5",
+  "horaPresMin" : "17",
+  "hrMedia" : "26"
+} ]

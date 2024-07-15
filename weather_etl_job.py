@@ -10,6 +10,7 @@ today = datetime.now().date()
 days_before = today - timedelta(days=5)
 
 base_path = f"data/{days_before.strftime('%d-%m-%Y')}"
+#base_path = f"data/10-07-2024"
 
 try:
     # Establish database connection
@@ -17,6 +18,7 @@ try:
 
      # Walk through the directory to find all files
     for root, dirs, files in os.walk(base_path):
+        files.sort()
         for filename in files:
             file_path = os.path.join(root, filename)
 
@@ -38,9 +40,9 @@ try:
                 data= data[0]
                 
                 # Get min, max and avg temperature values
-                min_temperature = float(data["tmin"].replace(",", "."))
-                max_temperature = float(data["tmax"].replace(",", "."))
-                avg_temperature = float(data["tmed"].replace(",", "."))
+                min_temperature = round(float(data["tmin"].replace(",", ".")))
+                max_temperature = round(float(data["tmax"].replace(",", ".")))
+                avg_temperature = round(float(data["tmed"].replace(",", ".")))
 
                 # Insert data into WEATHER_DATA table
                 insert_query = """
@@ -66,7 +68,7 @@ try:
                 # Calculate max, min, and average temperatures
                 max_temperature = max(values)
                 min_temperature = min(values)
-                avg_temperature = (sum(values)/len(values))
+                avg_temperature = round(float(sum(values)/len(values)))
 
                 # Update data in WEATHER_DATA table
                 update_query = """

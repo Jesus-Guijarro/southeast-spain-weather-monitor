@@ -14,7 +14,7 @@ CREATE TABLE CITY_STATION (
 -- Comunidad Valenciana
 INSERT INTO CITY_STATION (city_code, station_code, city_name, station_name)
 VALUES
-('46250', '8416', 'Valencia', 'VALÈNCIA'),
+('46250', '8416X', 'Valencia', 'VALENCIA, UPV'),
 ('03014', '8025', 'Alicante/Alacant', 'ALACANT/ALICANTE'),
 ('12040', '8500A', 'Castellón de la Plana/Castelló de la Plana', 'CASTELLÓ - ALMASSORA'),
 ('03099', '7244X', 'Orihuela', 'ORIHUELA'),
@@ -23,22 +23,32 @@ VALUES
 ('30030', '7178I', 'Murcia', 'MURCIA'),
 ('30016', '7012C', 'Cartagena', 'CARTAGENA'),
 
+-- Comunidad de Madrid
+('28079', '3195', 'Madrid', 'MADRID, RETIRO'),
+
+-- Cataluña
+('43148', '0042Y', 'Tarragona', 'TARRAGONA'),
+('08019', '0201D', 'Barcelona', 'BARCELONA'),
+
+-- Región de Murcia
+('38038', 'C449C', 'Santa Cruz de Tenerife', 'STA. CRUZ DE TENERIFE'),
+('35016', 'C658X', 'Las Palmas', 'LAS PALMAS DE GRAN CANARIA, TAFIRA'),
+
 -- Andalucía
 ('04013', '6325O', 'Almería', 'ALMERÍA AEROPUERTO'),
-('29001', '6172X', 'Málaga', 'MÁLAGA'),
-('14001', '5402', 'Córdoba', 'CÓRDOBA AEROPUERTO'),
-('41001', '5783', 'Sevilla', 'SEVILLA AEROPUERTO'),
-('18001', '5530E', 'Granada', 'GRANADA AEROPUERTO'),
-
+('29067', '6172X', 'Málaga', 'MÁLAGA'),
+('14021', '5402', 'Córdoba', 'CÓRDOBA AEROPUERTO'),
+('41091', '5783', 'Sevilla', 'SEVILLA AEROPUERTO'),
+('18087', '5530E', 'Granada', 'GRANADA AEROPUERTO'),
 
 -- Castilla-La Mancha
 ('02003', '8178D', 'Albacete', 'ALBACETE'),
-('16001', '8096', 'Cuenca', 'CUENCA'),
+('16078', '8096', 'Cuenca', 'CUENCA'),
 
 -- Aragón
-('44216', '8368U', 'Teruel', 'TERUEL'),
+('22125', '8368U', 'Teruel', 'TERUEL'),
 ('22001', '9898', 'Huesca', 'HUESCA, AEROPUERTO'),
-('50001', '9434', 'Zaragoza', 'ZARAGOZA, AEROPUERTO');
+('50297', '9434', 'Zaragoza', 'ZARAGOZA, AEROPUERTO');
 
 
 CREATE TABLE WEATHER_DATA (

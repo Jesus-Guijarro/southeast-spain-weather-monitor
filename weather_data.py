@@ -6,13 +6,16 @@ import logging
 
 import database.database as db
 
+# Meteo results from 5 days ago
+DAYS_METEO=5
+
 def get_path_folder(query):
     """
     Generate and return the folder path based on the query type ('prediction' or 'meteo') and current date.
     """
 
     if query=="meteo":
-        date = datetime.now() - timedelta(days=5)
+        date = datetime.now() - timedelta(days=DAYS_METEO)
     else:
         date = datetime.now() + timedelta(days=1)
 
@@ -73,7 +76,7 @@ def create_api_url_meteo(url_meteo, station_code):
     Create and return the API URL for meteorological data based on current date and station code.
     """
     current_date = datetime.now()
-    date = current_date - timedelta(days=5)
+    date = current_date - timedelta(days=DAYS_METEO)
         
     start_date_str = date.strftime("%Y-%m-%dT00:00:00UTC")
     end_date_str = date.strftime("%Y-%m-%dT23:59:59UTC")

@@ -1,0 +1,21 @@
+[ {
+  "fecha" : "2024-07-22",
+  "indicativo" : "3195",
+  "nombre" : "MADRID, RETIRO",
+  "provincia" : "MADRID",
+  "altitud" : "667",
+  "tmed" : "26,7",
+  "prec" : "0,0",
+  "tmin" : "18,5",
+  "horatmin" : "06:00",
+  "tmax" : "34,9",
+  "horatmax" : "14:30",
+  "dir" : "06",
+  "velmedia" : "1,7",
+  "racha" : "9,4",
+  "horaracha" : "01:10",
+  "presMax" : "943,7",
+  "horaPresMax" : "08",
+  "presMin" : "941,0",
+  "horaPresMin" : "17"
+} ]

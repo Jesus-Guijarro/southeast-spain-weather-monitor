@@ -1,0 +1,22 @@
+[ {
+  "fecha" : "2024-07-23",
+  "indicativo" : "0201D",
+  "nombre" : "BARCELONA",
+  "provincia" : "BARCELONA",
+  "altitud" : "26",
+  "tmed" : "25,8",
+  "prec" : "0,0",
+  "tmin" : "22,6",
+  "horatmin" : "04:00",
+  "tmax" : "29,1",
+  "horatmax" : "17:40",
+  "dir" : "20",
+  "velmedia" : "4,2",
+  "racha" : "9,2",
+  "horaracha" : "14:00",
+  "hrMedia" : "76",
+  "hrMax" : "92",
+  "horaHrMax" : "22:50",
+  "hrMin" : "57",
+  "horaHrMin" : "17:30"
+} ]

@@ -1,0 +1,22 @@
+[ {
+  "fecha" : "2024-07-31",
+  "indicativo" : "7244X",
+  "nombre" : "ORIHUELA",
+  "provincia" : "ALICANTE",
+  "altitud" : "26",
+  "tmed" : "29,7",
+  "prec" : "0,0",
+  "tmin" : "21,3",
+  "horatmin" : "05:38",
+  "tmax" : "38,1",
+  "horatmax" : "12:19",
+  "dir" : "07",
+  "velmedia" : "2,8",
+  "racha" : "7,5",
+  "horaracha" : "13:50",
+  "hrMedia" : "46",
+  "hrMax" : "73",
+  "horaHrMax" : "23:20",
+  "hrMin" : "27",
+  "horaHrMin" : "10:50"
+} ]

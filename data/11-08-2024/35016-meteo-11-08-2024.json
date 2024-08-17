@@ -1,0 +1,22 @@
+[ {
+  "fecha" : "2024-08-11",
+  "indicativo" : "C658X",
+  "nombre" : "LAS PALMAS DE GRAN CANARIA, TAFIRA",
+  "provincia" : "LAS PALMAS",
+  "altitud" : "269",
+  "tmed" : "22,5",
+  "prec" : "0,0",
+  "tmin" : "19,9",
+  "horatmin" : "05:05",
+  "tmax" : "25,1",
+  "horatmax" : "13:41",
+  "dir" : "33",
+  "velmedia" : "4,7",
+  "racha" : "9,7",
+  "horaracha" : "19:00",
+  "hrMedia" : "79",
+  "hrMax" : "88",
+  "horaHrMax" : "Varias",
+  "hrMin" : "68",
+  "horaHrMin" : "Varias"
+} ]

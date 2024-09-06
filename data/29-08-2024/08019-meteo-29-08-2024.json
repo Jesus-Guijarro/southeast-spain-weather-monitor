@@ -1,0 +1,22 @@
+[ {
+  "fecha" : "2024-08-29",
+  "indicativo" : "0201D",
+  "nombre" : "BARCELONA, PORT OLÍMPIC",
+  "provincia" : "BARCELONA",
+  "altitud" : "26",
+  "tmed" : "26,2",
+  "prec" : "0,0",
+  "tmin" : "24,0",
+  "horatmin" : "Varias",
+  "tmax" : "28,3",
+  "horatmax" : "13:00",
+  "dir" : "09",
+  "velmedia" : "3,9",
+  "racha" : "7,8",
+  "horaracha" : "06:10",
+  "hrMedia" : "84",
+  "hrMax" : "94",
+  "horaHrMax" : "Varias",
+  "hrMin" : "75",
+  "horaHrMin" : "13:10"
+} ]

@@ -1,0 +1,22 @@
+[ {
+  "fecha" : "2024-08-31",
+  "indicativo" : "7012C",
+  "nombre" : "CARTAGENA",
+  "provincia" : "MURCIA",
+  "altitud" : "17",
+  "tmed" : "28,3",
+  "prec" : "0,0",
+  "tmin" : "25,6",
+  "horatmin" : "06:00",
+  "tmax" : "31,0",
+  "horatmax" : "14:00",
+  "dir" : "02",
+  "velmedia" : "2,5",
+  "racha" : "8,6",
+  "horaracha" : "01:30",
+  "hrMedia" : "71",
+  "hrMax" : "83",
+  "horaHrMax" : "01:00",
+  "hrMin" : "64",
+  "horaHrMin" : "13:10"
+} ]

@@ -39,7 +39,7 @@ def get_city_station(city_code):
 
     return city_station
 
-def get_data_url(url, city_code):
+def get_data_url(url, city_code, type_query):
     """
     Make a request to the given URL and retrieve JSON data.
     """
@@ -49,24 +49,24 @@ def get_data_url(url, city_code):
         if 'datos' in data:
             return data['datos']
         else:
-            logging.error(f"City code: {city_code}. Error: 'datos' not found in the response")
+            logging.error(f"{type_query} - City code: {city_code}. Error: 'datos' not found in the response")
             return None
     else:
-        logging.error(f"city_code: {city_code} Error: {response.status_code}")
+        logging.error(f"{type_query} - City_code: {city_code} Error: {response.status_code}")
         return None
 
-def fetch_and_save(url, filename, city_code):
+def fetch_and_save(url, filename, city_code,type_query):
     """
     Fetch data from the URL and save it as a JSON file.
     """
-    data_url = get_data_url(url, city_code)
+    data_url = get_data_url(url, city_code,type_query)
     if data_url:
         response = requests.get(data_url)
         if response.status_code == 200:
             with open(filename, 'w', encoding='utf-8') as file:
                 file.write(response.text)
         else:
-            logging.error(f'City code: {city_code}. Error {response.status_code} when requesting {data_url}')
+            logging.error(f'{type_query} - City code: {city_code}. Error {response.status_code} when requesting {data_url}')
 
 def create_api_url_meteo(url_meteo, station_code):
     """
@@ -116,11 +116,11 @@ if __name__ == "__main__":
     folder_path = get_path_folder("prediction")
     next_day = (datetime.now() + timedelta(days=1)).strftime('%d-%m-%Y')
     prediction_file_name = f"{folder_path}/{city_code}-prediction-{next_day}.json"
-    fetch_and_save(api_url_prediction, prediction_file_name, city_code)
+    fetch_and_save(api_url_prediction, prediction_file_name, city_code, "PREDICTION")
 
     # METEO (measured data of 5 days ago)
     api_url_meteo = create_api_url_meteo(url_meteo, station_code)
     folder_path = get_path_folder("meteo")
     date_5_days_ago_str = (datetime.now() - timedelta(days=5)).strftime('%d-%m-%Y')
     meteo_file_name = f"{folder_path}/{city_code}-meteo-{date_5_days_ago_str}.json"
-    fetch_and_save(api_url_meteo, meteo_file_name, city_code)
+    fetch_and_save(api_url_meteo, meteo_file_name, city_code, "METEO")

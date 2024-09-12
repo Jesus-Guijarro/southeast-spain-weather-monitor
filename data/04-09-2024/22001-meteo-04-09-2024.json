@@ -1,0 +1,22 @@
+[ {
+  "fecha" : "2024-09-04",
+  "indicativo" : "9898",
+  "nombre" : "HUESCA, AEROPUERTO",
+  "provincia" : "HUESCA",
+  "altitud" : "546",
+  "tmed" : "15,4",
+  "prec" : "11,8",
+  "tmin" : "12,4",
+  "horatmin" : "22:50",
+  "tmax" : "18,3",
+  "horatmax" : "12:10",
+  "dir" : "34",
+  "velmedia" : "1,4",
+  "racha" : "6,7",
+  "horaracha" : "23:40",
+  "sol" : "0,2",
+  "presMax" : "952,5",
+  "horaPresMax" : "01",
+  "presMin" : "949,8",
+  "horaPresMin" : "24"
+} ]

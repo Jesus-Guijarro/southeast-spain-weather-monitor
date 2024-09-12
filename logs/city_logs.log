@@ -1,1 +1,4 @@
-2024-09-06 19:57:58,602 - ERROR - City code: 29067 Error: 429
+2024-09-10 20:10:05,048 - ERROR - METEO - City code: 16078. Error: 'datos' not found in the response
+2024-09-11 18:23:38,782 - ERROR - METEO - City code: 12040. Error: 'datos' not found in the response
+2024-09-11 18:25:00,544 - ERROR - METEO - City code: 16078. Error: 'datos' not found in the response
+2024-09-12 19:59:44,068 - ERROR - METEO - City code: 16078. Error: 'datos' not found in the response

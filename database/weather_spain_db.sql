@@ -30,7 +30,7 @@ VALUES
 ('43148', '0042Y', 'Tarragona', 'TARRAGONA'),
 ('08019', '0201D', 'Barcelona', 'BARCELONA'),
 
--- Región de Murcia
+-- Islas Canarias
 ('38038', 'C449C', 'Santa Cruz de Tenerife', 'STA. CRUZ DE TENERIFE'),
 ('35016', 'C658X', 'Las Palmas', 'LAS PALMAS DE GRAN CANARIA, TAFIRA'),
 
@@ -48,7 +48,10 @@ VALUES
 -- Aragón
 ('22125', '8368U', 'Teruel', 'TERUEL'),
 ('22001', '9898', 'Huesca', 'HUESCA, AEROPUERTO'),
-('50297', '9434', 'Zaragoza', 'ZARAGOZA, AEROPUERTO');
+('50297', '9434', 'Zaragoza', 'ZARAGOZA, AEROPUERTO'),
+
+-- Islas Baleares
+('07040', 'B278', 'Palma de Mallorca', 'PALMA DE MALLORCA, AEROPUERTO');
 
 
 CREATE TABLE WEATHER_DATA (

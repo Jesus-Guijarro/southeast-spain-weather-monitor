@@ -1,0 +1,22 @@
+[ {
+  "fecha" : "2024-09-09",
+  "indicativo" : "8416X",
+  "nombre" : "VALENCIA, UPV",
+  "provincia" : "VALENCIA",
+  "altitud" : "6",
+  "tmed" : "25,1",
+  "prec" : "0,0",
+  "tmin" : "21,0",
+  "horatmin" : "03:00",
+  "tmax" : "29,2",
+  "horatmax" : "10:50",
+  "dir" : "13",
+  "velmedia" : "1,4",
+  "racha" : "6,4",
+  "horaracha" : "14:50",
+  "hrMedia" : "67",
+  "hrMax" : "89",
+  "horaHrMax" : "Varias",
+  "hrMin" : "40",
+  "horaHrMin" : "10:50"
+} ]

@@ -1,0 +1,18 @@
+[ {
+  "fecha" : "2024-09-13",
+  "indicativo" : "0042Y",
+  "nombre" : "TARRAGONA ",
+  "provincia" : "TARRAGONA",
+  "altitud" : "55",
+  "tmed" : "19,4",
+  "prec" : "0,0",
+  "tmin" : "13,0",
+  "horatmin" : "05:55",
+  "tmax" : "25,8",
+  "horatmax" : "12:17",
+  "hrMedia" : "41",
+  "hrMax" : "59",
+  "horaHrMax" : "05:50",
+  "hrMin" : "23",
+  "horaHrMin" : "11:10"
+} ]

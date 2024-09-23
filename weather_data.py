@@ -123,4 +123,4 @@ if __name__ == "__main__":
         meteo_file_name = f"{folder_path}/{city_code}-meteo-{date_5_days_ago_str}.json"
         fetch_and_save(api_url_meteo, meteo_file_name, city_code, "METEO")
 
-        time.sleep(5)   # Wait for 5 seconds between requests
+        time.sleep(7)   # Wait for 7 seconds between requests

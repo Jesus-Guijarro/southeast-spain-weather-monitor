@@ -43,7 +43,6 @@ VALUES
 
 -- Castilla-La Mancha
 ('02003', '8178D', 'Albacete', 'ALBACETE'),
-('16078', '8096', 'Cuenca', 'CUENCA'),
 
 -- Aragón
 ('22125', '8368U', 'Teruel', 'TERUEL'),

@@ -1,0 +1,18 @@
+[ {
+  "fecha" : "2024-09-23",
+  "indicativo" : "5783",
+  "nombre" : "SEVILLA AEROPUERTO",
+  "provincia" : "SEVILLA",
+  "altitud" : "34",
+  "tmed" : "22,2",
+  "prec" : "0,0",
+  "tmin" : "17,0",
+  "horatmin" : "05:28",
+  "tmax" : "27,5",
+  "horatmax" : "15:20",
+  "sol" : "7,6",
+  "hrMax" : "94",
+  "horaHrMax" : "Varias",
+  "hrMin" : "31",
+  "horaHrMin" : "15:11"
+} ]

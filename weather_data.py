@@ -114,12 +114,12 @@ if __name__ == "__main__":
         folder_path = get_path_folder("prediction")
         next_day = (datetime.now() + timedelta(days=1)).strftime('%d-%m-%Y')
         prediction_file_name = f"{folder_path}/{city_code}-prediction-{next_day}.json"
-        fetch_and_save(api_url_prediction, prediction_file_name, city_code, "PREDICTION")
+        #fetch_and_save(api_url_prediction, prediction_file_name, city_code, "PREDICTION")
 
         # METEO (measured data of 5 days ago)
         api_url_meteo = create_api_url_meteo(url_meteo, station_code)
         folder_path = get_path_folder("meteo")
-        date_5_days_ago_str = (datetime.now() - timedelta(days=5)).strftime('%d-%m-%Y')
+        date_5_days_ago_str = (datetime.now() - timedelta(days=DAYS_METEO)).strftime('%d-%m-%Y')
         meteo_file_name = f"{folder_path}/{city_code}-meteo-{date_5_days_ago_str}.json"
         fetch_and_save(api_url_meteo, meteo_file_name, city_code, "METEO")
 

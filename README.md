@@ -1,7 +1,7 @@
 # Weather Spain Pipeline
 ## Introduction
 
-This project is dedicated to monitoring meteorological data in regions of the Iberian Peninsula identified as at-risk for desertification. Leveraging data provided by the AEMET (Agencia Estatal de Meteorología) API, this project aims to gather, process, and analyze weather information crucial for understanding desertification risks.
+This project is dedicated to monitoring meteorological data in the southeastern region of Spain, specifically in the provinces of Almería, Murcia, Alicante, and Valencia, areas identified as at-risk for desertification and prone to DANA events. Leveraging data provided by the AEMET (Agencia Estatal de Meteorología) API, this project aims to gather, process, and analyze weather information crucial for understanding these environmental risks.
 
 ## Objectives
 - **Data Collection**: utilize the AEMET API to gather comprehensive meteorological data.
@@ -35,8 +35,8 @@ api/valores/climatologicos/diarios/datos/fechaini/2024-06-03T00%3A00%3A00UTC/fec
 
 It' i's necessary to ask for data from 4-5 days before, since some stations may not have them ready until then.
 
-## Study Cities
-Municipalities that are provincial capitals or with a population exceeding 60,000 inhabitants in peninsular Spain, with nearby meteorological stations and low accumulated precipitation percentages in recent years.
+## Selected cities and towns
+Municipalities with nearby meteorological stations and low accumulated precipitation percentages in recent years.
 
 Areas with the highest risk of desertification and/or drought:
 
@@ -46,6 +46,8 @@ Accumulated Precipitation in the Hydrological Year (2024)
 Spain-Aridity Index
 ![Spain-Aridity Index](images/spain-aridity-index.png)
 
+Cold Drop
+![Spain-Aridity Index](images/cold-drop.png)
 
 ## Running the Project
 

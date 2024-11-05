@@ -1,7 +1,7 @@
 import requests
 from datetime import datetime, timedelta
-import os
 import time
+import os
 import logging
 
 import database.database as db

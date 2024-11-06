@@ -53,17 +53,17 @@ Cold Drop
 
 ### 1. Setup Database 
 
-Create the `weather_station` database:
+Create the `weather_spain` database:
 
 ```sh
 psql
 ```
 
 ```sql
-CREATE DATABASE weather_station;
+CREATE DATABASE weather_spain;
 ```
 ```sh
-\c weather_station;
+\c weather_spain;
 ```
 Copy and run the content of `weather_spain_db.sql` in the terminal.
 
@@ -74,31 +74,12 @@ Configure your database connection details in `config.ini`:
 ```conf
 [database]
 dbname = weather_station
-user = jfgs
+user = username
 password = ******
 host = localhost
 port = 5432
 ```
 
-### 3. Configuring and Running the Airflow DAG
-
-The two scripts to be automated to run daily are:
-
-- `weather_data.py`: script to query the AEMET API, to retrieve the data, to check for errors when fetching from any of the stations, and to save the data in .json files in the /data folder. The JSON files are stored in two subfolders depending on whether it's from a **meteo** (5 days before) or **prediction** (next day) query.
-
-- `weather_etl_job.py`: Script to read the JSON files from the current date, perform calculations, and save them in the `weather_data` database.
-
-Copy the file `weather_data_pipeline_dag.py` in folder `/airflow/dags`.
-
-In two different terminals:
-```sh
-airflow webserver --port 8080
-```
-```sh
-airflow scheduler
-```
-
-Go to http://localhost:8080/ .
 
 
 ## API AEMET

@@ -84,9 +84,9 @@ VALUES
 
 
 CREATE TABLE WEATHER_DATA (
-    city_id SERIAL PRIMARY KEY,
+    city_id INTEGER NOT NULL,
     date DATE NOT NULL,
-
+    
     -- Prediction data
     temperature_predicted_avg FLOAT,
     temperature_predicted_max FLOAT,
@@ -107,6 +107,6 @@ CREATE TABLE WEATHER_DATA (
     humidity_measured_min INTEGER,
     precipitation FLOAT,
 
-    FOREIGN KEY (city_id ) REFERENCES CITIES(city_id),
-    UNIQUE (city_id, date)
+    FOREIGN KEY (city_id) REFERENCES CITIES(city_id),
+    PRIMARY KEY (city_id, date)
 );

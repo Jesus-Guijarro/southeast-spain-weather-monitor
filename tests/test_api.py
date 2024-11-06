@@ -1,20 +1,24 @@
 import requests
 from datetime import datetime, timedelta
-import time
 import logging
 import json
 import database.database as db
 
 DAYS_METEO = 6
 
-def get_cities(conn, cursor):
+def get_cities():
     """
     Retrieve city stations information from the database.
     """
+    conn, cursor = db.get_connection()
+
     query = "SELECT city_id, postal_code, station_code FROM CITIES;"
     cursor.execute(query)
 
     city_stations = cursor.fetchall()
+
+    cursor.close()
+    conn.close()
 
     return city_stations
 
@@ -176,23 +180,24 @@ if __name__ == "__main__":
     # Establish database connection
     conn, cursor = db.get_connection()
 
-    cities = get_cities(conn, cursor)
+    #cities = get_cities()
 
-    for c in cities:
-        city_id, postal_code, station_code = c
+    #for cs in cities:
+        #city_id, postal_code, station_code = cs
 
-        # PREDICTION (prediction data of tomorrow)
-        api_url_prediction = url_prediction.format(postal_code=postal_code)
-        get_prediction_data(api_url_prediction, city_id, conn, cursor)
+    postal_code, station_code = '03014', '8025'
+    city_id = 1
 
-        # METEO (measured data of 6 days ago)
-        current_date = datetime.now()
-        date = current_date - timedelta(days=DAYS_METEO)
+    # PREDICTION (prediction data of tomorrow)
+    api_url_prediction = url_prediction.format(postal_code=postal_code)
+    get_prediction_data(api_url_prediction, city_id, conn, cursor)
 
-        api_url_meteo = create_api_url_meteo(url_meteo, station_code, date)
-        get_meteo_data(api_url_meteo, city_id, date, conn, cursor)
+    # METEO (measured data of 6 days ago)
+    current_date = datetime.now()
+    date = current_date - timedelta(days=DAYS_METEO)
 
-        time.sleep(7)
+    api_url_meteo = create_api_url_meteo(url_meteo, station_code, date)
+    get_meteo_data(api_url_meteo, city_id, date, conn, cursor)
 
     # Close the database connection
     db.close_connection(conn, cursor)

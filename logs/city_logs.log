@@ -1,1 +1,50 @@
-
+2024-11-06 20:01:40,896 - ERROR - METEO - City code: 9 Error: No data
+2024-11-06 20:01:40,896 - ERROR - METEO - City code: 9 Error: incorrect or unavailable data URL
+2024-11-06 20:07:18,249 - ERROR - METEO - City code: 52 Error: error converting response to JSON.
+2024-11-06 20:07:25,701 - ERROR - METEO - City code: 53 Error: error converting response to JSON.
+2024-11-07 20:00:34,642 - ERROR - METEO - City code: 1 Error: error converting response to JSON.
+2024-11-07 20:07:14,931 - ERROR - METEO - City code: 52 Error: error converting response to JSON.
+2024-11-07 20:07:30,416 - ERROR - METEO - City code: 53 Error: error converting response to JSON.
+2024-11-08 20:08:45,961 - ERROR - METEO - City code: 50 Error: error converting response to JSON.
+2024-11-08 20:09:01,556 - ERROR - METEO - City code: 52 Error: error converting response to JSON.
+2024-11-08 20:09:09,040 - ERROR - METEO - City code: 53 Error: error converting response to JSON.
+2024-11-09 20:00:39,993 - ERROR - METEO - City code: 1 Error: error converting response to JSON.
+2024-11-09 20:05:24,146 - ERROR - METEO - City code: 31 Error: error converting response to JSON.
+2024-11-09 20:07:56,086 - ERROR - PREDICTION - City code: 51 Error: 429
+2024-11-09 20:07:56,087 - ERROR - City code: 51 Error: incorrect or unavailable data URL
+2024-11-09 20:07:56,142 - ERROR - METEO - City code: 51 Error: 429
+2024-11-09 20:07:56,143 - ERROR - METEO - City code: 51 Error: incorrect or unavailable data URL
+2024-11-09 20:08:04,576 - ERROR - METEO - City code: 52 Error: error converting response to JSON.
+2024-11-09 20:08:12,175 - ERROR - METEO - City code: 53 Error: error converting response to JSON.
+2024-11-10 20:32:34,247 - ERROR - METEO - City code: 18 Error: error converting response to JSON.
+2024-11-10 20:32:56,127 - ERROR - PREDICTION - City code: 21 Error: 429
+2024-11-10 20:32:56,128 - ERROR - City code: 21 Error: incorrect or unavailable data URL
+2024-11-10 20:32:56,253 - ERROR - METEO - City code: 21 Error: 429
+2024-11-10 20:32:56,254 - ERROR - METEO - City code: 21 Error: incorrect or unavailable data URL
+2024-11-10 20:34:15,516 - ERROR - METEO - City code: 31 Error: error converting response to JSON.
+2024-11-10 20:34:57,504 - ERROR - PREDICTION - City code: 36 Error: 429
+2024-11-10 20:34:57,504 - ERROR - City code: 36 Error: incorrect or unavailable data URL
+2024-11-10 20:34:57,563 - ERROR - METEO - City code: 36 Error: 429
+2024-11-10 20:34:57,563 - ERROR - METEO - City code: 36 Error: incorrect or unavailable data URL
+2024-11-10 20:37:17,651 - ERROR - METEO - City code: 52 Error: error converting response to JSON.
+2024-11-10 20:37:25,374 - ERROR - METEO - City code: 53 Error: error converting response to JSON.
+2024-11-11 20:00:20,701 - ERROR - METEO - City code: 1 Error: error converting response to JSON.
+2024-11-11 20:02:08,410 - ERROR - METEO - City code: 15 Error: No data
+2024-11-11 20:02:08,410 - ERROR - METEO - City code: 15 Error: incorrect or unavailable data URL
+2024-11-11 20:02:32,646 - ERROR - METEO - City code: 18 Error: No data
+2024-11-11 20:02:32,647 - ERROR - METEO - City code: 18 Error: incorrect or unavailable data URL
+2024-11-11 20:04:19,960 - ERROR - METEO - City code: 31 Error: error converting response to JSON.
+2024-11-11 20:07:05,808 - ERROR - METEO - City code: 52 Error: error converting response to JSON.
+2024-11-12 20:20:33,772 - ERROR - METEO - City code: 1 Error: error converting response to JSON.
+2024-11-12 20:21:33,587 - ERROR - METEO - City code: 9 Error: No data
+2024-11-12 20:21:33,587 - ERROR - METEO - City code: 9 Error: incorrect or unavailable data URL
+2024-11-12 20:22:18,310 - ERROR - METEO - City code: 15 Error: No data
+2024-11-12 20:22:18,310 - ERROR - METEO - City code: 15 Error: incorrect or unavailable data URL
+2024-11-12 20:24:12,872 - ERROR - METEO - City code: 29 Error: error converting response to JSON.
+2024-11-12 20:24:57,927 - ERROR - METEO - City code: 35 Error: 429
+2024-11-12 20:24:57,927 - ERROR - METEO - City code: 35 Error: incorrect or unavailable data URL
+2024-11-12 20:27:14,826 - ERROR - METEO - City code: 52 Error: error converting response to JSON.
+2024-11-13 19:55:01,236 - ERROR - PREDICTION - City code: 1 Error: No data
+2024-11-13 19:55:01,237 - ERROR - City code: 1 Error: incorrect or unavailable data URL
+2024-11-16 20:01:20,400 - ERROR - PREDICTION - City code: 1 Error: No data
+2024-11-16 20:01:20,401 - ERROR - City code: 1 Error: incorrect or unavailable data URL

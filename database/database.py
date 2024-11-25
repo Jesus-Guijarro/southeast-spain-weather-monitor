@@ -34,7 +34,7 @@ def get_connection():
         host=config['host'],
         port=config['port']
     )
-
+    
     cursor = connection.cursor()
 
     return connection, cursor

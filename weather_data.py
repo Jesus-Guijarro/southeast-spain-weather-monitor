@@ -18,7 +18,7 @@ def get_cities(conn, cursor):
 
     return city_stations
 
-def get_data_url(url, city_id):
+def get_data_url(url, city_id, type_query):
     try:
         response = requests.get(url, headers=headers, params=querystring)
         response.raise_for_status()
@@ -26,14 +26,14 @@ def get_data_url(url, city_id):
         if 'datos' in data:
             return data['datos']
         else:
-            logging.error(f"City code: {city_id} Error: No data")
+            logging.error(f"{type_query} - City code: {city_id} Error: No data")
             return None
     except requests.RequestException as e:
-        logging.error(f"City code: {city_id} Error: {response.status_code}")
+        logging.error(f"{type_query} - City code: {city_id} Error: {response.status_code}")
         return None
 
 def get_meteo_data(url, city_id, date, conn, cursor):
-    data_url = get_data_url(url, city_id)
+    data_url = get_data_url(url, city_id, "METEO")
     if data_url:
         try:
             response = requests.get(data_url)
@@ -74,14 +74,14 @@ def get_meteo_data(url, city_id, date, conn, cursor):
             conn.commit()
 
         except requests.RequestException:
-            logging.error(f"City code: {city_id} Error: error accessing data URL.")
+            logging.error(f"METEO - City code: {city_id} Error: error accessing data URL.")
         except ValueError:
-            logging.error(f"City code: {city_id} Error: error converting response to JSON.")
+            logging.error(f"METEO - City code: {city_id} Error: error converting response to JSON.")
     else:
-        logging.error(f"City code: {city_id} Error: incorrect or unavailable data URL")
+        logging.error(f"METEO - City code: {city_id} Error: incorrect or unavailable data URL")
 
 def get_prediction_data(url, city_id, conn, cursor):
-    data_url = get_data_url(url, city_id)
+    data_url = get_data_url(url, city_id, "PREDICTION")
     if data_url:
         try:
             response = requests.get(data_url)

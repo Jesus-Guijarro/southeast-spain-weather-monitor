@@ -1,7 +1,7 @@
 # Weather Spain Pipeline
 ## Introduction
 
-This project is dedicated to monitoring meteorological data in the southeastern region of Spain, specifically in the provinces of Almería, Murcia, Alicante, and Valencia, areas identified as at-risk for desertification and prone to DANA events. Leveraging data provided by the AEMET (Agencia Estatal de Meteorología) API, this project aims to gather, process, and analyze weather information crucial for understanding these environmental risks.
+This project is dedicated to monitoring meteorological data in the southeastern region of Spain, specifically in the provinces of Almeria, Murcia, Alicante, and Valencia, areas identified as at-risk for desertification and prone to DANA events. Leveraging data provided by the AEMET (Agencia Estatal de Meteorología) API, this project aims to gather, process, and analyze weather information crucial for understanding these environmental risks.
 
 ## Objectives
 - **Data Collection**: utilize the AEMET API to gather comprehensive meteorological data.
@@ -53,7 +53,7 @@ Cold Drop
 
 ### 1. Setup Database 
 
-Create the `weather_spain` database:
+Create the `southeast_spain_weather` database:
 
 ```sh
 psql
@@ -63,9 +63,9 @@ psql
 CREATE DATABASE weather_spain;
 ```
 ```sh
-\c weather_spain;
+\c southeast_spain_weather;
 ```
-Copy and run the content of `weather_spain_db.sql` in the terminal.
+Copy and run the content of `southeast_spain_weather_db.sql` in the terminal.
 
 
 ### 2. Config database file
@@ -73,14 +73,12 @@ Copy and run the content of `weather_spain_db.sql` in the terminal.
 Configure your database connection details in `config.ini`:
 ```conf
 [database]
-dbname = weather_station
+dbname = southeast_spain_weather
 user = username
 password = ******
 host = localhost
 port = 5432
 ```
-
-
 
 ## API AEMET
 Information about the API:

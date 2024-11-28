@@ -7,19 +7,7 @@ import database.database as db
 
 DAYS_METEO = 6
 
-def get_city(conn, cursor):
-    """
-    Retrieve city station information from the database.
-    """
-
-    query = "SELECT postal_code, station_code FROM CITIES WHERE city_id = %s;"
-    cursor.execute(query, (city_id,))
-
-    city_station = cursor.fetchone()
-
-    return city_station
-
-def get_data_url(url, city_id):
+def get_data_url(url, city_id, type_query):
     try:
         response = requests.get(url, headers=headers, params=querystring)
         response.raise_for_status()
@@ -27,14 +15,14 @@ def get_data_url(url, city_id):
         if 'datos' in data:
             return data['datos']
         else:
-            logging.error(f"City code: {city_id} Error: No data")
+            logging.error(f"{type_query} - City code: {city_id} Error: No data")
             return None
     except requests.RequestException as e:
-        logging.error(f"City code: {city_id} Error: {response.status_code}")
+        logging.error(f"{type_query} - City code: {city_id} Error: {response.status_code}")
         return None
 
 def get_meteo_data(url, city_id, date, conn, cursor):
-    data_url = get_data_url(url, city_id)
+    data_url = get_data_url(url, city_id, "METEO")
     if data_url:
         try:
             response = requests.get(data_url)
@@ -75,14 +63,14 @@ def get_meteo_data(url, city_id, date, conn, cursor):
             conn.commit()
 
         except requests.RequestException:
-            logging.error(f"City code: {city_id} Error: error accessing data URL.")
+            logging.error(f"METEO - City code: {city_id} Error: error accessing data URL.")
         except ValueError:
-            logging.error(f"City code: {city_id} Error: error converting response to JSON.")
+            logging.error(f"METEO - City code: {city_id} Error: error converting response to JSON.")
     else:
-        logging.error(f"City code: {city_id} Error: incorrect or unavailable data URL")
+        logging.error(f"METEO - City code: {city_id} Error: incorrect or unavailable data URL")
 
 def get_prediction_data(url, city_id, conn, cursor):
-    data_url = get_data_url(url, city_id)
+    data_url = get_data_url(url, city_id, "PREDICTION")
     if data_url:
         try:
             response = requests.get(data_url)
@@ -135,13 +123,12 @@ def get_prediction_data(url, city_id, conn, cursor):
             # Commit the transaction
             conn.commit()
 
-
         except requests.RequestException:
-            logging.error(f"City code: {city_id} Error: error accessing data URL.")
+            logging.error(f"PREDICTION - City code: {city_id} Error: error accessing data URL.")
         except ValueError:
-            logging.error(f"City code: {city_id} Error: error converting response to JSON")
+            logging.error(f"PREDICTION - City code: {city_id} Error: error converting response to JSON")
     else:
-        logging.error(f"City code: {city_id} Error: incorrect or unavailable data URL")
+        logging.error(f"PREDICTION - City code: {city_id} Error: incorrect or unavailable data URL")
 
 def create_api_url_meteo(url_meteo, station_code, date):
     """
@@ -153,50 +140,3 @@ def create_api_url_meteo(url_meteo, station_code, date):
     api_url_meteo = url_meteo.format(start_date=start_date_str, end_date=end_date_str, station_code=station_code)
 
     return api_url_meteo
-
-if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print("Usage: python weather_city.py <city_id>")
-        sys.exit(1)
-    city_id = sys.argv[1]
-
-    logging.basicConfig(filename='logs/city_logs.log', level=logging.INFO, 
-                        format='%(asctime)s - %(levelname)s - %(message)s')
-    
-    # Read API key from file
-    with open('keys/api.txt', 'r') as file:
-        api_key = file.read().strip()
-
-    querystring = {"api_key":api_key}
-
-    headers = {
-        'cache-control': "no-cache",
-        'accept': "application/json"
-        }
-
-    # URLs for API requests
-    url_prediction = "https://opendata.aemet.es/opendata/api/prediccion/especifica/municipio/horaria/{postal_code}"
-    url_meteo= "https://opendata.aemet.es/opendata/api/valores/climatologicos/diarios/datos/fechaini/{start_date}/fechafin/{end_date}/estacion/{station_code}"
-    
-    # Establish database connection
-    conn, cursor = db.get_connection()
-
-    city = get_city(conn, cursor)
-
-    postal_code, station_code = city
-
-    print(station_code)
-
-    # PREDICTION (prediction data of tomorrow)
-    api_url_prediction = url_prediction.format(postal_code=postal_code)
-    get_prediction_data(api_url_prediction, city_id, conn, cursor)
-
-    # METEO (measured data of 6 days ago)
-    current_date = datetime.now()
-    date = current_date - timedelta(days=DAYS_METEO)
-
-    api_url_meteo = create_api_url_meteo(url_meteo, station_code, date)
-    get_meteo_data(api_url_meteo, city_id, date, conn, cursor)
-
-    # Close the database connection
-    db.close_connection(conn, cursor)

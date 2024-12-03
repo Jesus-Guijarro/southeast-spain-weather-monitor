@@ -1,3 +1,3 @@
 @echo off
-python weather_data.py
+python main.py
 pause

@@ -56,11 +56,11 @@ Cold Drop
 Create the `southeast_spain_weather` database:
 
 ```sh
-psql
+psql -U postgres
 ```
 
 ```sql
-CREATE DATABASE weather_spain;
+CREATE DATABASE southeast_spain_weather;
 ```
 ```sh
 \c southeast_spain_weather;

@@ -1,13 +1,29 @@
 import requests
-from datetime import datetime, timedelta
 import logging
 import json
-import sys
+from datetime import datetime, timedelta
 import database.database as db
 
-DAYS_METEO = 6
+def create_api_url_meteo(url_meteo, station_code, date):
+    """
+    Create and return the API URL for meteorological data based on current date and station code.
+    """
+    start_date_str = date.strftime("%Y-%m-%dT00:00:00UTC")
+    end_date_str = date.strftime("%Y-%m-%dT23:59:59UTC")
 
-def get_data_url(url, city_id, type_query):
+    api_url_meteo = url_meteo.format(start_date=start_date_str, end_date=end_date_str, station_code=station_code)
+
+    return api_url_meteo
+
+def get_data_url(url, city_id, api_key, type_query):
+
+    querystring = {"api_key":api_key}
+
+    headers = {
+        'cache-control': "no-cache",
+        'accept': "application/json"
+    }
+
     try:
         response = requests.get(url, headers=headers, params=querystring)
         response.raise_for_status()
@@ -21,8 +37,11 @@ def get_data_url(url, city_id, type_query):
         logging.error(f"{type_query} - City code: {city_id} Error: {response.status_code}")
         return None
 
-def get_meteo_data(url, city_id, date, conn, cursor):
-    data_url = get_data_url(url, city_id, "METEO")
+def get_meteo_data(city_id, station_code, date, api_key, conn, cursor):
+    url_meteo= "https://opendata.aemet.es/opendata/api/valores/climatologicos/diarios/datos/fechaini/{start_date}/fechafin/{end_date}/estacion/{station_code}"
+    api_url_meteo = create_api_url_meteo(url_meteo, station_code, date)
+
+    data_url = get_data_url(api_url_meteo, city_id, api_key, "METEO")
     if data_url:
         try:
             response = requests.get(data_url)
@@ -40,27 +59,35 @@ def get_meteo_data(url, city_id, date, conn, cursor):
             humidity_min = int(data[0].get("hrMin", "None"))
 
             # Update data in WEATHER_DATA table
-            insert_or_update_query = """
-            INSERT INTO WEATHER_DATA (city_id, date, temperature_measured_avg, temperature_measured_max, 
-                                    temperature_measured_min, humidity_measured_avg, 
-                                    humidity_measured_max, humidity_measured_min, precipitation)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
-            ON CONFLICT (city_id, date)
-            DO UPDATE SET 
-                temperature_measured_avg = EXCLUDED.temperature_measured_avg,
-                temperature_measured_max = EXCLUDED.temperature_measured_max,
-                temperature_measured_min = EXCLUDED.temperature_measured_min,
-                humidity_measured_avg = EXCLUDED.humidity_measured_avg,
-                humidity_measured_max = EXCLUDED.humidity_measured_max,
-                humidity_measured_min = EXCLUDED.humidity_measured_min,
-                precipitation = EXCLUDED.precipitation;
+            update_query = """
+            UPDATE WEATHER_DATA
+            SET 
+                temperature_measured_avg = %s,
+                temperature_measured_max = %s,
+                temperature_measured_min = %s,
+                humidity_measured_avg = %s,
+                humidity_measured_max = %s,
+                humidity_measured_min = %s,
+                precipitation = %s
+            WHERE city_id = %s AND date = %s;
             """
-
-            cursor.execute(insert_or_update_query, (city_id, date, temperature_avg, temperature_max, temperature_min,
-                                        humidity_avg, humidity_max, humidity_min, precipitation))
-
-            # Commit the transaction
-            conn.commit()
+            cursor.execute(update_query, (
+                temperature_avg, temperature_max, temperature_min,
+                humidity_avg, humidity_max, humidity_min, precipitation,
+                city_id, date
+            ))
+            if cursor.rowcount == 0:
+                insert_query = """
+                INSERT INTO WEATHER_DATA (
+                    city_id, date, temperature_measured_avg, temperature_measured_max, 
+                    temperature_measured_min, humidity_measured_avg, 
+                    humidity_measured_max, humidity_measured_min, precipitation
+                ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s);
+                """
+                cursor.execute(insert_query, (
+                    city_id, date, temperature_avg, temperature_max, temperature_min,
+                    humidity_avg, humidity_max, humidity_min, precipitation
+                ))
 
         except requests.RequestException:
             logging.error(f"METEO - City code: {city_id} Error: error accessing data URL.")
@@ -69,8 +96,11 @@ def get_meteo_data(url, city_id, date, conn, cursor):
     else:
         logging.error(f"METEO - City code: {city_id} Error: incorrect or unavailable data URL")
 
-def get_prediction_data(url, city_id, conn, cursor):
-    data_url = get_data_url(url, city_id, "PREDICTION")
+def get_prediction_data(city_id, postal_code, api_key, conn, cursor):
+    url_prediction = "https://opendata.aemet.es/opendata/api/prediccion/especifica/municipio/horaria/{postal_code}"
+    api_url_prediction = url_prediction.format(postal_code=postal_code)
+
+    data_url = get_data_url(api_url_prediction, city_id, api_key, "PREDICTION")
     if data_url:
         try:
             response = requests.get(data_url)
@@ -120,23 +150,9 @@ def get_prediction_data(url, city_id, conn, cursor):
                                           json.dumps(precipitations), json.dumps(prob_precipitation), 
                                           json.dumps(prob_storm)))
 
-            # Commit the transaction
-            conn.commit()
-
         except requests.RequestException:
             logging.error(f"PREDICTION - City code: {city_id} Error: error accessing data URL.")
         except ValueError:
             logging.error(f"PREDICTION - City code: {city_id} Error: error converting response to JSON")
     else:
         logging.error(f"PREDICTION - City code: {city_id} Error: incorrect or unavailable data URL")
-
-def create_api_url_meteo(url_meteo, station_code, date):
-    """
-    Create and return the API URL for meteorological data based on current date and station code.
-    """
-    start_date_str = date.strftime("%Y-%m-%dT00:00:00UTC")
-    end_date_str = date.strftime("%Y-%m-%dT23:59:59UTC")
-
-    api_url_meteo = url_meteo.format(start_date=start_date_str, end_date=end_date_str, station_code=station_code)
-
-    return api_url_meteo

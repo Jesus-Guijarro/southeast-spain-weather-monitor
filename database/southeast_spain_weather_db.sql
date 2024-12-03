@@ -71,25 +71,25 @@ CREATE TABLE WEATHER_DATA (
     date DATE NOT NULL,
     
     -- Prediction data
-    temperature_predicted_avg FLOAT,
-    temperature_predicted_max FLOAT,
-    temperature_predicted_min FLOAT,
-    humidity_predicted_avg INTEGER,
-    humidity_predicted_max INTEGER,
-    humidity_predicted_min INTEGER,
-    precipitations JSON,
-    prob_precipitation JSON,
-    prob_storm JSON,
+    temperature_predicted_avg REAL,
+    temperature_predicted_max REAL,
+    temperature_predicted_min REAL,
+    humidity_predicted_avg REAL,
+    humidity_predicted_max REAL,
+    humidity_predicted_min REAL,
+    precipitations JSONB,
+    prob_precipitation JSONB,
+    prob_storm JSONB,
 
     -- Meteo data
-    temperature_measured_avg FLOAT,
-    temperature_measured_max FLOAT,
-    temperature_measured_min FLOAT,
-    humidity_measured_avg INTEGER,
-    humidity_measured_max INTEGER,
-    humidity_measured_min INTEGER,
-    precipitation FLOAT,
+    temperature_measured_avg REAL,
+    temperature_measured_max REAL,
+    temperature_measured_min REAL,
+    humidity_measured_avg REAL,
+    humidity_measured_max REAL,
+    humidity_measured_min REAL,
+    precipitation REAL DEFAULT 0.0,
 
-    FOREIGN KEY (city_id) REFERENCES CITIES(city_id),
+    FOREIGN KEY (city_id) REFERENCES CITIES(city_id) ON DELETE CASCADE,
     PRIMARY KEY (city_id, date)
 );

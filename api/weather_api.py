@@ -2,7 +2,9 @@ import requests
 import logging
 import json
 from datetime import datetime, timedelta
+
 import database.database as db
+from utils.helpers import convert_to_float, convert_to_int
 
 def create_api_url_meteo(url_meteo, station_code, date):
     """
@@ -33,8 +35,8 @@ def get_data_url(url, city_id, api_key, type_query):
         else:
             logging.error(f"{type_query} - City code: {city_id} Error: No data")
             return None
-    except requests.RequestException as e:
-        logging.error(f"{type_query} - City code: {city_id} Error: {response.status_code}")
+    except requests.exceptions.RequestException as e:
+        logging.error(f"{type_query} - City code: {city_id} No response received.")
         return None
 
 def get_meteo_data(city_id, station_code, date, api_key, conn, cursor):
@@ -48,47 +50,27 @@ def get_meteo_data(city_id, station_code, date, api_key, conn, cursor):
             response.raise_for_status()
             data = response.json()
 
-            precipitation = float(data[0].get("prec", "None").replace(",", "."))
+            precipitation = convert_to_float(data[0].get("prec", None))
+            temperature_avg = convert_to_float(data[0].get("tmed", None))
+            temperature_max = convert_to_float(data[0].get("tmax", None))
+            temperature_min = convert_to_float(data[0].get("tmin", None))
 
-            temperature_avg = round(float(data[0].get("tmed", "None").replace(",", ".")))
-            temperature_max = round(float(data[0].get("tmax", "None").replace(",", ".")))
-            temperature_min = round(float(data[0].get("tmin", "None").replace(",", ".")))
+            humidity_avg = convert_to_int(data[0].get("hrMedia", None))
+            humidity_max = convert_to_int(data[0].get("hrMax", None))
+            humidity_min = convert_to_int(data[0].get("hrMin", None))
 
-            humidity_avg = int(data[0].get("hrMedia", "None"))
-            humidity_max = int(data[0].get("hrMax", "None"))
-            humidity_min = int(data[0].get("hrMin", "None"))
-
-            # Update data in WEATHER_DATA table
-            update_query = """
-            UPDATE WEATHER_DATA
-            SET 
-                temperature_measured_avg = %s,
-                temperature_measured_max = %s,
-                temperature_measured_min = %s,
-                humidity_measured_avg = %s,
-                humidity_measured_max = %s,
-                humidity_measured_min = %s,
-                precipitation = %s
-            WHERE city_id = %s AND date = %s;
-            """
-            cursor.execute(update_query, (
-                temperature_avg, temperature_max, temperature_min,
-                humidity_avg, humidity_max, humidity_min, precipitation,
-                city_id, date
-            ))
-            if cursor.rowcount == 0:
-                insert_query = """
-                INSERT INTO WEATHER_DATA (
-                    city_id, date, temperature_measured_avg, temperature_measured_max, 
-                    temperature_measured_min, humidity_measured_avg, 
-                    humidity_measured_max, humidity_measured_min, precipitation
-                ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s);
-                """
-                cursor.execute(insert_query, (
-                    city_id, date, temperature_avg, temperature_max, temperature_min,
-                    humidity_avg, humidity_max, humidity_min, precipitation
-                ))
-
+            return {
+                "city_id": city_id,
+                "date": date,
+                "precipitation": precipitation,
+                "temperature_avg": temperature_avg,
+                "temperature_max": temperature_max,
+                "temperature_min": temperature_min,
+                "humidity_avg": humidity_avg,
+                "humidity_max": humidity_max,
+                "humidity_min": humidity_min
+            }
+            
         except requests.RequestException:
             logging.error(f"METEO - City code: {city_id} Error: error accessing data URL.")
         except ValueError:
@@ -108,48 +90,47 @@ def get_prediction_data(city_id, postal_code, api_key, conn, cursor):
             data = response.json()
 
             prediction  = data[0]["prediccion"]
-            precipitations = prediction.get('dia', [{}])[1].get('precipitacion', "None")
-            prob_precipitation = prediction.get('dia', [{}])[1].get('probPrecipitacion', "None")
-            prob_storm = prediction.get('dia', [{}])[1].get('probTormenta', "None")
+            precipitations = prediction.get('dia', [{}])[1].get('precipitacion', None)
+            prob_precipitation = prediction.get('dia', [{}])[1].get('probPrecipitacion', None)
+            prob_storm = prediction.get('dia', [{}])[1].get('probTormenta', None)
 
-            temperatures = prediction.get('dia', [{}])[1].get('temperatura', "None")
+            temperatures = prediction.get('dia', [{}])[1].get('temperatura', None)
+            if temperatures:
+                values=[]
+                for t in temperatures:
+                    values.append(float(t['value']))
 
-            values=[]
-            for t in temperatures:
-                values.append(float(t['value']))
-
-            # Calculate max, min, and average temperature
-            temperature_max = max(values)
-            temperature_min = min(values)
-            temperature_avg = round(float(sum(values)/len(values)))
+                # Calculate max, min, and average temperature
+                temperature_max = max(values)
+                temperature_min = min(values)
+                temperature_avg = round(float(sum(values)/len(values)))
             
-            humidity = prediction.get('dia', [{}])[1].get('humedadRelativa', "None")
+            humidity = prediction.get('dia', [{}])[1].get('humedadRelativa', None)
+            if humidity:
+                values=[]
+                for h in humidity:
+                    values.append(float(h['value']))
 
-            values=[]
-            for h in humidity:
-                values.append(float(h['value']))
-
-            # Calculate max, min, and average humidity
-            humidity_max = max(values)
-            humidity_min = min(values)
-            humidity_avg = round(float(sum(values)/len(values)))
+                # Calculate max, min, and average humidity
+                humidity_max = max(values)
+                humidity_min = min(values)
+                humidity_avg = round(float(sum(values)/len(values)))
             
             date = (datetime.now() + timedelta(days=1)).strftime("%Y-%m-%d")
 
-            # Insert data into WEATHER_DATA table
-            insert_query = """
-            INSERT INTO WEATHER_DATA (
-                city_id, date, temperature_predicted_max, temperature_predicted_min, temperature_predicted_avg,
-                humidity_predicted_avg, humidity_predicted_max, humidity_predicted_min, precipitations, 
-                prob_precipitation, prob_storm
-            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-            ON CONFLICT (city_id, date) DO NOTHING;
-            """
-            cursor.execute(insert_query, (city_id, date, temperature_max, temperature_min, temperature_avg,
-                                          humidity_max, humidity_min, humidity_avg, 
-                                          json.dumps(precipitations), json.dumps(prob_precipitation), 
-                                          json.dumps(prob_storm)))
-
+            return {
+                "city_id": city_id,
+                "date": date,
+                "temperature_max": temperature_max,
+                "temperature_min": temperature_min,
+                "temperature_avg": temperature_avg,
+                "humidity_avg": humidity_avg,
+                "humidity_max": humidity_max,
+                "humidity_min": humidity_min,
+                "precipitations": precipitations,
+                "prob_precipitation": prob_precipitation,
+                "prob_storm": prob_storm,
+            }
         except requests.RequestException:
             logging.error(f"PREDICTION - City code: {city_id} Error: error accessing data URL.")
         except ValueError:

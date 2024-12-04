@@ -1,6 +1,7 @@
 import configparser
 import os
 import psycopg2
+import json
 
 def read_db_config():
     """
@@ -79,8 +80,52 @@ def get_cities(conn, cursor):
     except psycopg2.Error as e:
         raise Exception(f"Error in obtaining cities: {e}")
 
-def insert_meteo_data():
-    print("meteo")
+def insert_meteo_data(meteo_data, conn, cursor):
+    # Insert meteo data in WEATHER_DATA table
+    update_query = """
+    UPDATE WEATHER_DATA
+    SET 
+        temperature_measured_avg = %s,
+        temperature_measured_max = %s,
+        temperature_measured_min = %s,
+        humidity_measured_avg = %s,
+        humidity_measured_max = %s,
+        humidity_measured_min = %s,
+        precipitation = %s
+    WHERE city_id = %s AND date = %s;
+    """
+    cursor.execute(update_query, (
+        meteo_data['temperature_avg'], meteo_data['temperature_max'], meteo_data['temperature_min'],
+        meteo_data['humidity_avg'], meteo_data['humidity_max'], meteo_data['humidity_min'], meteo_data['precipitation'],
+        meteo_data['city_id'],meteo_data['date']
+    ))
+    if cursor.rowcount == 0:
+        insert_query = """
+        INSERT INTO WEATHER_DATA (
+            city_id, date, temperature_measured_avg, temperature_measured_max, 
+            temperature_measured_min, humidity_measured_avg, 
+            humidity_measured_max, humidity_measured_min, precipitation
+        ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s);
+        """
+        cursor.execute(insert_query, (
+            meteo_data['city_id'], meteo_data['date'], meteo_data['temperature_avg'], meteo_data['temperature_max'],
+            meteo_data['temperature_min'], meteo_data['humidity_avg'], meteo_data['humidity_max'], meteo_data['humidity_min'],
+            meteo_data['precipitation']
+        ))
 
-def insert_prediction_data():
-    print("prediction")
+def insert_prediction_data(prediction_data, conn, cursor):
+    # Insert prediction data into WEATHER_DATA table
+    insert_query = """
+    INSERT INTO WEATHER_DATA (
+        city_id, date, temperature_predicted_max, temperature_predicted_min, temperature_predicted_avg,
+        humidity_predicted_avg, humidity_predicted_max, humidity_predicted_min, precipitations, 
+        prob_precipitation, prob_storm
+    ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+    ON CONFLICT (city_id, date) DO NOTHING;
+    """
+    cursor.execute(insert_query, (prediction_data['city_id'], prediction_data['date'], prediction_data['temperature_max'], prediction_data['temperature_min'], 
+                                    prediction_data['temperature_avg'], prediction_data['humidity_max'], prediction_data['humidity_min'], prediction_data['humidity_avg'], 
+                                    json.dumps(prediction_data['precipitations']), json.dumps(prediction_data['prob_precipitation']), json.dumps(prediction_data['prob_storm'])))
+
+
+                                    

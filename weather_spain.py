@@ -26,10 +26,12 @@ if __name__ == "__main__":
         city_id, postal_code, station_code = city
 
         # PREDICTION (prediction data of tomorrow)
-        get_prediction_data(city_id, postal_code, api_key, conn, cursor)
+        prediction_data = get_prediction_data(city_id, postal_code, api_key, conn, cursor)
+        db.insert_prediction_data(prediction_data, conn, cursor)
 
         # METEO (measured data of 6 days ago)
-        get_meteo_data(city_id, station_code, date, api_key, conn, cursor)
+        meteo_data = get_meteo_data(city_id, station_code, date, api_key, conn, cursor)
+        db.insert_meteo_data(meteo_data, conn, cursor)
 
         conn.commit()
 

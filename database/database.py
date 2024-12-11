@@ -84,7 +84,7 @@ def insert_meteo_data(meteo_data, conn, cursor):
     # Insert meteo data in WEATHER_DATA table
     update_query = """
     UPDATE WEATHER_DATA
-    SET 
+    SET
         temperature_measured_avg = %s,
         temperature_measured_max = %s,
         temperature_measured_min = %s,
@@ -96,22 +96,9 @@ def insert_meteo_data(meteo_data, conn, cursor):
     """
     cursor.execute(update_query, (
         meteo_data['temperature_avg'], meteo_data['temperature_max'], meteo_data['temperature_min'],
-        meteo_data['humidity_avg'], meteo_data['humidity_max'], meteo_data['humidity_min'], meteo_data['precipitation'],
-        meteo_data['city_id'],meteo_data['date']
+        meteo_data['humidity_avg'], meteo_data['humidity_max'], meteo_data['humidity_min'], 
+        meteo_data['precipitation'], meteo_data['city_id'],meteo_data['date']
     ))
-    if cursor.rowcount == 0:
-        insert_query = """
-        INSERT INTO WEATHER_DATA (
-            city_id, date, temperature_measured_avg, temperature_measured_max, 
-            temperature_measured_min, humidity_measured_avg, 
-            humidity_measured_max, humidity_measured_min, precipitation
-        ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s);
-        """
-        cursor.execute(insert_query, (
-            meteo_data['city_id'], meteo_data['date'], meteo_data['temperature_avg'], meteo_data['temperature_max'],
-            meteo_data['temperature_min'], meteo_data['humidity_avg'], meteo_data['humidity_max'], meteo_data['humidity_min'],
-            meteo_data['precipitation']
-        ))
 
 def insert_prediction_data(prediction_data, conn, cursor):
     # Insert prediction data into WEATHER_DATA table

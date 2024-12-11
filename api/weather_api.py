@@ -4,7 +4,6 @@ import json
 from datetime import datetime, timedelta
 
 import database.database as db
-from utils.helpers import convert_to_float, convert_to_int
 
 def create_api_url_meteo(url_meteo, station_code, date):
     """
@@ -16,6 +15,16 @@ def create_api_url_meteo(url_meteo, station_code, date):
     api_url_meteo = url_meteo.format(start_date=start_date_str, end_date=end_date_str, station_code=station_code)
 
     return api_url_meteo
+
+def convert_to_float(value):
+    if value is not None:
+        return round(float(value.replace(",", "."))) if isinstance(value, str) else round(float(value))
+    return value
+
+def convert_to_int(value):
+    if value is not None:
+        return int(value)
+    return value
 
 def get_data_url(url, city_id, api_key, type_query):
 
@@ -59,6 +68,8 @@ def get_meteo_data(city_id, station_code, date, api_key, conn, cursor):
             humidity_max = convert_to_int(data[0].get("hrMax", None))
             humidity_min = convert_to_int(data[0].get("hrMin", None))
 
+            date = date.strftime("%Y-%m-%d")
+
             return {
                 "city_id": city_id,
                 "date": date,
@@ -73,10 +84,13 @@ def get_meteo_data(city_id, station_code, date, api_key, conn, cursor):
             
         except requests.RequestException:
             logging.error(f"METEO - City code: {city_id} Error: error accessing data URL.")
+            return None
         except ValueError:
             logging.error(f"METEO - City code: {city_id} Error: error converting response to JSON.")
+            return None
     else:
         logging.error(f"METEO - City code: {city_id} Error: incorrect or unavailable data URL")
+        return None
 
 def get_prediction_data(city_id, postal_code, api_key, conn, cursor):
     url_prediction = "https://opendata.aemet.es/opendata/api/prediccion/especifica/municipio/horaria/{postal_code}"
@@ -133,7 +147,10 @@ def get_prediction_data(city_id, postal_code, api_key, conn, cursor):
             }
         except requests.RequestException:
             logging.error(f"PREDICTION - City code: {city_id} Error: error accessing data URL.")
+            return None
         except ValueError:
             logging.error(f"PREDICTION - City code: {city_id} Error: error converting response to JSON")
+            return None
     else:
         logging.error(f"PREDICTION - City code: {city_id} Error: incorrect or unavailable data URL")
+        return None

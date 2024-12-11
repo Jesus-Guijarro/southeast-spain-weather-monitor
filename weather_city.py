@@ -1,6 +1,5 @@
 import logging
 from datetime import datetime, timedelta
-import argparse
 import database.database as db
 from api.weather_api import get_prediction_data, get_meteo_data
 
@@ -9,18 +8,18 @@ logging.basicConfig(filename='logs/weather_data_logs.log',
                     format='%(asctime)s - %(levelname)s - %(message)s')
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument("city_id", type=int)
 
-    args = parser.parse_args()
+    try:
+        city_id = int(input("Enter a city ID between 1 and 41: "))
 
-    if 1 <= args.city_id <= 41:
-        print(f"City ID {args.city_id} selected")
-    else:
-        print("Error: The city ID must be between 1 and 41.")
+        if 1 <= city_id <= 41:
+            print(f"City ID {city_id} selected")
+        else:
+            print("Error: The city ID must be between 1 and 41.")
+            exit(1)
+    except ValueError:
+        print("Error: The input must be an integer.")
         exit(1)
-
-    city_id = args.city_id
 
     # Read API key from file
     with open('keys/api.txt', 'r') as file:
@@ -38,8 +37,7 @@ if __name__ == "__main__":
     db.insert_prediction_data(prediction_data, conn, cursor)
 
     #Calculate 'date' to get METEO data
-    current_date = datetime.now()
-    date = current_date - timedelta(days=6)
+    date = datetime.now() - timedelta(days=6)
 
     # METEO (measured data of 6 days ago)
     meteo_data = get_meteo_data(city_id, station_code, date, api_key, conn, cursor)

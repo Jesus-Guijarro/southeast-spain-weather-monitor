@@ -88,7 +88,7 @@ CREATE TABLE WEATHER_DATA (
     humidity_measured_avg REAL,
     humidity_measured_max REAL,
     humidity_measured_min REAL,
-    precipitation REAL DEFAULT 0.0,
+    precipitation REAL,
 
     FOREIGN KEY (city_id) REFERENCES CITIES(city_id) ON DELETE CASCADE,
     PRIMARY KEY (city_id, date)

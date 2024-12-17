@@ -16,7 +16,7 @@ INSERT INTO CITIES (postal_code, station_code, city_name, station_name, province
 VALUES
 
 -- Valencia
-('46250', '8416X', 'Valencia', 'VALENCIA, UPV', 'Valencia'),
+('46250', '8416', 'Valencia', 'VALÈNCIA', 'Valencia'),
 ('46220', '8446Y', 'Sagunto', 'SAGUNT/SAGUNTO', 'Valencia'),
 ('46145', '8293X', 'Xàtiva', 'XÀTIVA', 'Valencia'),
 ('46083', '8300X', 'Carcaixent', 'CARCAIXENT', 'Valencia'),
@@ -60,7 +60,6 @@ VALUES
 -- Almeria
 
 ('04013', '6325O', 'Almería', 'ALMERÍA AEROPUERTO', 'Almeria'),
-('04003', '6277B', 'Adra', 'ADRA', 'Almeria'),
 ('04902', '6291B', 'El Ejido', 'EL EJIDO', 'Almeria'),
 ('04049', '6340X', 'Garrucha', 'GARRUCHA, PUERTO', 'Almeria'),
 ('04053', '6367B', 'Huércal-Overa', 'HUÉRCAL-OVERA', 'Almeria');

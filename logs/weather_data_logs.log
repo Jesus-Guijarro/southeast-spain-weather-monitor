@@ -33,3 +33,13 @@
 2024-12-11 20:41:54,541 - ERROR - METEO - City code: 14 Error: incorrect or unavailable data URL
 2024-12-11 20:42:06,697 - ERROR - PREDICTION - City code: 15 Error: error accessing data URL.
 2024-12-11 20:42:06,812 - ERROR - METEO - City code: 15 Error: error accessing data URL.
+2024-12-12 20:00:03,928 - ERROR - PREDICTION - City code: 1 Error: error accessing data URL.
+2024-12-13 20:00:03,940 - ERROR - METEO - City code: 1 No response received.
+2024-12-13 20:00:03,940 - ERROR - METEO - City code: 1 Error: incorrect or unavailable data URL
+2024-12-14 20:00:03,685 - ERROR - PREDICTION - City code: 1 No response received.
+2024-12-14 20:00:03,685 - ERROR - PREDICTION - City code: 1 Error: incorrect or unavailable data URL
+2024-12-15 20:00:03,351 - ERROR - PREDICTION - City code: 1 No response received.
+2024-12-15 20:00:03,351 - ERROR - PREDICTION - City code: 1 Error: incorrect or unavailable data URL
+2024-12-15 20:00:03,485 - ERROR - METEO - City code: 1 Error: error accessing data URL.
+2024-12-16 20:00:03,057 - ERROR - PREDICTION - City code: 1 Error: error accessing data URL.
+2024-12-16 20:00:03,395 - ERROR - METEO - City code: 1 Error: error accessing data URL.

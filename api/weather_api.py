@@ -82,7 +82,7 @@ def get_meteo_data(city_id, station_code, date, api_key, conn, cursor):
                 "humidity_min": humidity_min
             }
             
-        except requests.RequestException:
+        except requests.exceptions.RequestException:
             logging.error(f"METEO - City code: {city_id} Error: error accessing data URL.")
             return None
         except ValueError:
@@ -145,7 +145,7 @@ def get_prediction_data(city_id, postal_code, api_key, conn, cursor):
                 "prob_precipitation": prob_precipitation,
                 "prob_storm": prob_storm,
             }
-        except requests.RequestException:
+        except requests.exceptions.RequestException:
             logging.error(f"PREDICTION - City code: {city_id} Error: error accessing data URL.")
             return None
         except ValueError:

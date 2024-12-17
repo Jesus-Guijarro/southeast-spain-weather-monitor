@@ -34,14 +34,19 @@ if __name__ == "__main__":
 
     # PREDICTION (prediction data of tomorrow)
     prediction_data = get_prediction_data(city_id, postal_code, api_key, conn, cursor)
-    db.insert_prediction_data(prediction_data, conn, cursor)
 
     #Calculate 'date' to get METEO data
     date = datetime.now() - timedelta(days=6)
 
     # METEO (measured data of 6 days ago)
     meteo_data = get_meteo_data(city_id, station_code, date, api_key, conn, cursor)
-    db.insert_meteo_data(meteo_data, conn, cursor)
+
+    if prediction_data and meteo_data:
+        db.insert_prediction_data(prediction_data, conn, cursor)
+
+        db.insert_meteo_data(meteo_data, conn, cursor)
+    else:  
+        print(f"ERROR - City ID: {city_id}")
 
     conn.commit()
 

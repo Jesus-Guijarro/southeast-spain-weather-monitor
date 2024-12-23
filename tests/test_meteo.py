@@ -51,7 +51,7 @@ def get_meteo_data(station_code, date, api_key):
             response.raise_for_status()
             data = response.json()
         except:
-            print("ERROR")
+            print("ERROR JSON")
     return data
 
 if __name__ == "__main__":
@@ -62,10 +62,11 @@ if __name__ == "__main__":
     current_date = datetime.now()
     date = current_date - timedelta(days=6)
 
-    list_stations = ['8416X', '8309X', '6277B', '7228', '8025']
+    list_stations = ['8019', '8025']
 
     with open("output_test.txt", "w") as f:
         sys.stdout = f
         for station_code in list_stations:
+            print(f"GET DATA FROM {station_code}")
             meteo_data = get_meteo_data(station_code, date, api_key)
             print(meteo_data)

@@ -17,13 +17,17 @@ def create_api_url_meteo(url_meteo, station_code, date):
     return api_url_meteo
 
 def convert_to_float(value):
-    if value is not None:
+    if value is not None and value != "Ip":
         return round(float(value.replace(",", "."))) if isinstance(value, str) else round(float(value))
+    elif value == "Ip":
+        return None
     return value
 
 def convert_to_int(value):
-    if value is not None:
+    if value is not None and value != "Ip":
         return int(value)
+    elif value == "Ip":
+        return None
     return value
 
 def get_data_url(url, city_id, api_key, type_query):
@@ -60,6 +64,7 @@ def get_meteo_data(city_id, station_code, date, api_key, conn, cursor):
             data = response.json()
 
             precipitation = convert_to_float(data[0].get("prec", None))
+
             temperature_avg = convert_to_float(data[0].get("tmed", None))
             temperature_max = convert_to_float(data[0].get("tmax", None))
             temperature_min = convert_to_float(data[0].get("tmin", None))

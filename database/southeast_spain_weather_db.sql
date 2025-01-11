@@ -16,7 +16,7 @@ INSERT INTO CITIES (postal_code, station_code, city_name, station_name, province
 VALUES
 
 -- Valencia
-('46250', '8416', 'Valencia', 'VALÈNCIA', 'Valencia'),
+('46250', '8416X', 'Valencia', 'VALÈNCIA', 'Valencia'),
 ('46220', '8446Y', 'Sagunto', 'SAGUNT/SAGUNTO', 'Valencia'),
 ('46145', '8293X', 'Xàtiva', 'XÀTIVA', 'Valencia'),
 ('46083', '8300X', 'Carcaixent', 'CARCAIXENT', 'Valencia'),

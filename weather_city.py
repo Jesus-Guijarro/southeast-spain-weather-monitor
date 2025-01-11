@@ -7,6 +7,33 @@ logging.basicConfig(filename='logs/weather_data_logs.log',
                     level=logging.INFO, 
                     format='%(asctime)s - %(levelname)s - %(message)s')
 
+def process_city(city, api_key, conn, cursor, date):
+    """
+    Processes a city by obtaining and storing forecast and weather data.
+    Returns True if the processing was successful, False if there were errors.
+    """
+    city_id, postal_code, station_code = city
+
+    try:
+        prediction_data = get_prediction_data(city_id, postal_code, api_key, conn, cursor)
+
+        meteo_data = get_meteo_data(city_id, station_code, date, api_key, conn, cursor)
+
+        # Verificar que los datos no sean nulos
+        if prediction_data and meteo_data:
+            db.insert_prediction_data(prediction_data, conn, cursor)
+            db.insert_meteo_data(meteo_data, conn, cursor)
+
+            conn.commit()  
+
+            return True
+        else:
+            logging.error(f"ERROR - City ID: {city_id}")
+            return False
+    except Exception as e:
+        logging.error(f"ERROR - City ID: {city_id}. Info error: {e}")
+        return False
+
 if __name__ == "__main__":
 
     try:
@@ -29,26 +56,17 @@ if __name__ == "__main__":
     conn, cursor = db.get_connection()
 
     city = db.get_city(city_id, conn, cursor)
-
     postal_code, station_code = city
-
-    # PREDICTION (prediction data of tomorrow)
-    prediction_data = get_prediction_data(city_id, postal_code, api_key, conn, cursor)
+    city = city_id, postal_code, station_code
 
     #Calculate 'date' to get METEO data
     date = datetime.now() - timedelta(days=6)
 
-    # METEO (measured data of 6 days ago)
-    meteo_data = get_meteo_data(city_id, station_code, date, api_key, conn, cursor)
-
-    if prediction_data and meteo_data:
-        db.insert_prediction_data(prediction_data, conn, cursor)
-
-        db.insert_meteo_data(meteo_data, conn, cursor)
-    else:  
+    success = process_city(city, api_key, conn, cursor, date)
+    if not success:
         print(f"ERROR - City ID: {city_id}")
-
-    conn.commit()
+    else:
+        print(f"INFO - City ID {city_id} successfully processed.")
 
     # Close the database connection
     db.close_connection(conn, cursor)

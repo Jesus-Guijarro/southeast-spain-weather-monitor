@@ -1,1 +1,237 @@
 
+2025-01-11 20:02:51,306 - ERROR - PREDICTION - City code: 21 No response received.
+2025-01-11 20:02:51,307 - ERROR - PREDICTION - City code: 21 Error: incorrect or unavailable data URL
+2025-01-11 20:03:09,512 - ERROR - ERROR - City ID: 21
+2025-01-11 20:03:18,862 - ERROR - METEO - City code: 22 Error: error accessing data URL.
+2025-01-11 20:03:18,863 - ERROR - ERROR - City ID: 22
+2025-01-11 20:06:23,205 - INFO - All cities were successfully processed.
+2025-01-12 20:01:40,293 - ERROR - PREDICTION - City code: 12 Error: No data
+2025-01-12 20:01:40,295 - ERROR - PREDICTION - City code: 12 Error: incorrect or unavailable data URL
+2025-01-12 20:01:50,460 - ERROR - METEO - City code: 12 Error: error accessing data URL.
+2025-01-12 20:01:50,460 - ERROR - ERROR - City ID: 12
+2025-01-12 20:06:17,020 - INFO - Attempt 1 to prosecute failed cities.
+2025-01-12 20:06:25,376 - INFO - All cities were successfully processed.
+2025-01-13 20:00:20,923 - ERROR - PREDICTION - City code: 3 No response received.
+2025-01-13 20:00:20,924 - ERROR - PREDICTION - City code: 3 Error: incorrect or unavailable data URL
+2025-01-13 20:00:20,974 - ERROR - METEO - City code: 3 No response received.
+2025-01-13 20:00:20,974 - ERROR - METEO - City code: 3 Error: incorrect or unavailable data URL
+2025-01-13 20:00:20,975 - ERROR - City ID: 3
+2025-01-13 20:00:32,032 - ERROR - PREDICTION - City code: 4 No response received.
+2025-01-13 20:00:32,032 - ERROR - PREDICTION - City code: 4 Error: incorrect or unavailable data URL
+2025-01-13 20:00:33,109 - ERROR - METEO - City code: 4 No response received.
+2025-01-13 20:00:33,109 - ERROR - METEO - City code: 4 Error: incorrect or unavailable data URL
+2025-01-13 20:00:33,109 - ERROR - City ID: 4
+2025-01-13 20:00:42,161 - ERROR - PREDICTION - City code: 5 No response received.
+2025-01-13 20:00:42,161 - ERROR - PREDICTION - City code: 5 Error: incorrect or unavailable data URL
+2025-01-13 20:00:42,208 - ERROR - METEO - City code: 5 No response received.
+2025-01-13 20:00:42,208 - ERROR - METEO - City code: 5 Error: incorrect or unavailable data URL
+2025-01-13 20:00:42,209 - ERROR - City ID: 5
+2025-01-13 20:00:50,264 - ERROR - PREDICTION - City code: 6 No response received.
+2025-01-13 20:00:50,266 - ERROR - PREDICTION - City code: 6 Error: incorrect or unavailable data URL
+2025-01-13 20:00:52,455 - ERROR - City ID: 6
+2025-01-13 20:05:53,113 - INFO - Attempt 1 to prosecute failed cities.
+2025-01-13 20:06:26,622 - INFO - All cities were successfully processed.
+2025-01-14 20:00:03,319 - ERROR - METEO - City code: 2 Error: error accessing data URL.
+2025-01-14 20:00:03,320 - ERROR - City ID: 2
+2025-01-14 20:05:36,979 - INFO - Attempt 1 to prosecute failed cities.
+2025-01-14 20:05:45,314 - INFO - All cities were successfully processed.
+2025-01-15 20:05:40,605 - INFO - All cities were successfully processed.
+2025-01-16 20:05:40,847 - INFO - All cities were successfully processed.
+2025-01-17 20:05:30,489 - ERROR - PREDICTION - City code: 41 Error: error accessing data URL.
+2025-01-17 20:05:30,535 - ERROR - METEO - City code: 41 No response received.
+2025-01-17 20:05:30,536 - ERROR - METEO - City code: 41 Error: incorrect or unavailable data URL
+2025-01-17 20:05:30,536 - ERROR - City ID: 41
+2025-01-17 20:06:08,993 - INFO - Attempt 1 to prosecute failed cities.
+2025-01-17 20:06:17,682 - INFO - All cities were successfully processed.
+2025-01-18 20:04:57,737 - ERROR - PREDICTION - City code: 36 No response received.
+2025-01-18 20:04:57,739 - ERROR - PREDICTION - City code: 36 Error: incorrect or unavailable data URL
+2025-01-18 20:05:00,811 - ERROR - METEO - City code: 36 No response received.
+2025-01-18 20:05:00,813 - ERROR - METEO - City code: 36 Error: incorrect or unavailable data URL
+2025-01-18 20:05:00,813 - ERROR - City ID: 36
+2025-01-18 20:05:09,957 - ERROR - PREDICTION - City code: 37 Error: error accessing data URL.
+2025-01-18 20:05:11,018 - ERROR - METEO - City code: 37 No response received.
+2025-01-18 20:05:11,019 - ERROR - METEO - City code: 37 Error: incorrect or unavailable data URL
+2025-01-18 20:05:11,019 - ERROR - City ID: 37
+2025-01-18 20:05:22,392 - ERROR - METEO - City code: 39 No response received.
+2025-01-18 20:05:22,393 - ERROR - METEO - City code: 39 Error: incorrect or unavailable data URL
+2025-01-18 20:05:22,393 - ERROR - City ID: 39
+2025-01-18 20:05:55,440 - INFO - Attempt 1 to prosecute failed cities.
+2025-01-18 20:06:20,508 - INFO - All cities were successfully processed.
+2025-01-19 20:03:32,570 - ERROR - PREDICTION - City code: 26 No response received.
+2025-01-19 20:03:32,572 - ERROR - PREDICTION - City code: 26 Error: incorrect or unavailable data URL
+2025-01-19 20:03:53,592 - ERROR - METEO - City code: 26 No response received.
+2025-01-19 20:03:53,592 - ERROR - METEO - City code: 26 Error: incorrect or unavailable data URL
+2025-01-19 20:03:53,593 - ERROR - City ID: 26
+2025-01-19 20:04:02,898 - ERROR - METEO - City code: 27 No response received.
+2025-01-19 20:04:02,898 - ERROR - METEO - City code: 27 Error: incorrect or unavailable data URL
+2025-01-19 20:04:02,898 - ERROR - City ID: 27
+2025-01-19 20:06:07,785 - INFO - Attempt 1 to prosecute failed cities.
+2025-01-19 20:06:24,520 - INFO - All cities were successfully processed.
+2025-01-20 20:02:45,376 - ERROR - PREDICTION - City code: 20 No response received.
+2025-01-20 20:02:45,377 - ERROR - PREDICTION - City code: 20 Error: incorrect or unavailable data URL
+2025-01-20 20:02:49,422 - ERROR - METEO - City code: 20 No response received.
+2025-01-20 20:02:49,422 - ERROR - METEO - City code: 20 Error: incorrect or unavailable data URL
+2025-01-20 20:02:49,425 - ERROR - City ID: 20
+2025-01-20 20:02:57,534 - ERROR - PREDICTION - City code: 21 Error: error accessing data URL.
+2025-01-20 20:03:01,688 - ERROR - City ID: 21
+2025-01-20 20:03:16,039 - ERROR - METEO - City code: 22 Error: error accessing data URL.
+2025-01-20 20:03:16,039 - ERROR - City ID: 22
+2025-01-20 20:06:02,365 - INFO - Attempt 1 to prosecute failed cities.
+2025-01-20 20:06:27,396 - INFO - All cities were successfully processed.
+2025-01-21 20:01:37,907 - ERROR - PREDICTION - City code: 12 No response received.
+2025-01-21 20:01:37,909 - ERROR - PREDICTION - City code: 12 Error: incorrect or unavailable data URL
+2025-01-21 20:01:41,958 - ERROR - METEO - City code: 12 No response received.
+2025-01-21 20:01:41,958 - ERROR - METEO - City code: 12 Error: incorrect or unavailable data URL
+2025-01-21 20:01:41,962 - ERROR - City ID: 12
+2025-01-21 20:01:53,023 - ERROR - PREDICTION - City code: 13 No response received.
+2025-01-21 20:01:53,023 - ERROR - PREDICTION - City code: 13 Error: incorrect or unavailable data URL
+2025-01-21 20:01:56,079 - ERROR - METEO - City code: 13 No response received.
+2025-01-21 20:01:56,079 - ERROR - METEO - City code: 13 Error: incorrect or unavailable data URL
+2025-01-21 20:01:56,079 - ERROR - City ID: 13
+2025-01-21 20:02:05,218 - ERROR - PREDICTION - City code: 14 Error: error accessing data URL.
+2025-01-21 20:02:12,336 - ERROR - METEO - City code: 14 Error: error accessing data URL.
+2025-01-21 20:02:12,336 - ERROR - City ID: 14
+2025-01-21 20:06:06,431 - INFO - Attempt 1 to prosecute failed cities.
+2025-01-21 20:06:31,511 - INFO - All cities were successfully processed.
+2025-01-22 20:00:31,733 - ERROR - PREDICTION - City code: 4 Error: error accessing data URL.
+2025-01-22 20:00:47,274 - ERROR - METEO - City code: 4 Error: error accessing data URL.
+2025-01-22 20:00:47,275 - ERROR - City ID: 4
+2025-01-22 20:01:03,743 - ERROR - PREDICTION - City code: 6 Error: error accessing data URL.
+2025-01-22 20:01:05,031 - ERROR - City ID: 6
+2025-01-22 20:06:05,669 - INFO - Attempt 1 to prosecute failed cities.
+2025-01-22 20:06:22,414 - INFO - All cities were successfully processed.
+2025-01-23 20:00:03,603 - ERROR - PREDICTION - City code: 2 No response received.
+2025-01-23 20:00:03,603 - ERROR - PREDICTION - City code: 2 Error: incorrect or unavailable data URL
+2025-01-23 20:00:03,764 - ERROR - City ID: 2
+2025-01-23 20:05:39,592 - INFO - Attempt 1 to prosecute failed cities.
+2025-01-23 20:05:47,919 - INFO - All cities were successfully processed.
+2025-01-24 20:00:03,455 - ERROR - PREDICTION - City code: 2 No response received.
+2025-01-24 20:00:03,456 - ERROR - PREDICTION - City code: 2 Error: incorrect or unavailable data URL
+2025-01-24 20:00:03,645 - ERROR - City ID: 2
+2025-01-24 20:05:37,570 - INFO - Attempt 1 to prosecute failed cities.
+2025-01-24 20:05:45,927 - INFO - All cities were successfully processed.
+2025-01-25 20:05:39,981 - INFO - All cities were successfully processed.
+2025-01-26 20:05:37,669 - INFO - All cities were successfully processed.
+2025-01-27 20:00:58,706 - ERROR - PREDICTION - City code: 8 No response received.
+2025-01-27 20:00:58,708 - ERROR - PREDICTION - City code: 8 Error: incorrect or unavailable data URL
+2025-01-27 20:00:58,764 - ERROR - METEO - City code: 8 No response received.
+2025-01-27 20:00:58,764 - ERROR - METEO - City code: 8 Error: incorrect or unavailable data URL
+2025-01-27 20:00:58,766 - ERROR - City ID: 8
+2025-01-27 20:05:42,045 - INFO - Attempt 1 to prosecute failed cities.
+2025-01-27 20:05:50,393 - INFO - All cities were successfully processed.
+2025-01-28 20:04:59,213 - ERROR - PREDICTION - City code: 36 No response received.
+2025-01-28 20:04:59,213 - ERROR - PREDICTION - City code: 36 Error: incorrect or unavailable data URL
+2025-01-28 20:05:10,208 - ERROR - City ID: 36
+2025-01-28 20:06:05,886 - INFO - Attempt 1 to prosecute failed cities.
+2025-01-28 20:06:14,266 - INFO - All cities were successfully processed.
+2025-01-29 20:00:07,943 - ERROR - PREDICTION - City code: 2 No response received.
+2025-01-29 20:00:07,944 - ERROR - PREDICTION - City code: 2 Error: incorrect or unavailable data URL
+2025-01-29 20:00:08,609 - ERROR - City ID: 2
+2025-01-29 20:04:17,062 - ERROR - PREDICTION - City code: 30 Error: error accessing data URL.
+2025-01-29 20:04:24,136 - ERROR - METEO - City code: 30 No response received.
+2025-01-29 20:04:24,136 - ERROR - METEO - City code: 30 Error: incorrect or unavailable data URL
+2025-01-29 20:04:24,137 - ERROR - City ID: 30
+2025-01-29 20:04:32,198 - ERROR - PREDICTION - City code: 31 No response received.
+2025-01-29 20:04:32,199 - ERROR - PREDICTION - City code: 31 Error: incorrect or unavailable data URL
+2025-01-29 20:04:32,327 - ERROR - METEO - City code: 31 Error: error accessing data URL.
+2025-01-29 20:04:32,328 - ERROR - City ID: 31
+2025-01-29 20:04:40,376 - ERROR - PREDICTION - City code: 32 No response received.
+2025-01-29 20:04:40,376 - ERROR - PREDICTION - City code: 32 Error: incorrect or unavailable data URL
+2025-01-29 20:04:40,493 - ERROR - METEO - City code: 32 Error: error accessing data URL.
+2025-01-29 20:04:40,493 - ERROR - City ID: 32
+2025-01-29 20:06:04,039 - INFO - Attempt 1 to prosecute failed cities.
+2025-01-29 20:06:37,557 - INFO - All cities were successfully processed.
+2025-01-30 20:04:25,004 - ERROR - PREDICTION - City code: 32 No response received.
+2025-01-30 20:04:25,005 - ERROR - PREDICTION - City code: 32 Error: incorrect or unavailable data URL
+2025-01-30 20:04:32,562 - ERROR - METEO - City code: 32 Error: error accessing data URL.
+2025-01-30 20:04:32,563 - ERROR - City ID: 32
+2025-01-30 20:04:43,638 - ERROR - PREDICTION - City code: 33 No response received.
+2025-01-30 20:04:43,638 - ERROR - PREDICTION - City code: 33 Error: incorrect or unavailable data URL
+2025-01-30 20:04:58,727 - ERROR - METEO - City code: 33 No response received.
+2025-01-30 20:04:58,727 - ERROR - METEO - City code: 33 Error: incorrect or unavailable data URL
+2025-01-30 20:04:58,728 - ERROR - City ID: 33
+2025-01-30 20:05:06,789 - ERROR - PREDICTION - City code: 34 No response received.
+2025-01-30 20:05:06,790 - ERROR - PREDICTION - City code: 34 Error: incorrect or unavailable data URL
+2025-01-30 20:05:06,903 - ERROR - METEO - City code: 34 Error: error accessing data URL.
+2025-01-30 20:05:06,904 - ERROR - City ID: 34
+2025-01-30 20:05:14,959 - ERROR - PREDICTION - City code: 35 No response received.
+2025-01-30 20:05:14,959 - ERROR - PREDICTION - City code: 35 Error: incorrect or unavailable data URL
+2025-01-30 20:05:15,008 - ERROR - METEO - City code: 35 No response received.
+2025-01-30 20:05:15,009 - ERROR - METEO - City code: 35 Error: incorrect or unavailable data URL
+2025-01-30 20:05:15,009 - ERROR - City ID: 35
+2025-01-30 20:05:23,056 - ERROR - PREDICTION - City code: 36 No response received.
+2025-01-30 20:05:23,056 - ERROR - PREDICTION - City code: 36 Error: incorrect or unavailable data URL
+2025-01-30 20:05:23,176 - ERROR - METEO - City code: 36 Error: error accessing data URL.
+2025-01-30 20:05:23,176 - ERROR - City ID: 36
+2025-01-30 20:06:13,235 - INFO - Attempt 1 to prosecute failed cities.
+2025-01-30 20:06:55,183 - INFO - All cities were successfully processed.
+2025-01-31 20:03:56,176 - ERROR - PREDICTION - City code: 27 Error: error accessing data URL.
+2025-01-31 20:04:02,347 - ERROR - City ID: 27
+2025-01-31 20:04:10,395 - ERROR - PREDICTION - City code: 28 No response received.
+2025-01-31 20:04:10,395 - ERROR - PREDICTION - City code: 28 Error: incorrect or unavailable data URL
+2025-01-31 20:04:10,441 - ERROR - METEO - City code: 28 No response received.
+2025-01-31 20:04:10,441 - ERROR - METEO - City code: 28 Error: incorrect or unavailable data URL
+2025-01-31 20:04:10,441 - ERROR - City ID: 28
+2025-01-31 20:04:18,492 - ERROR - PREDICTION - City code: 29 No response received.
+2025-01-31 20:04:18,492 - ERROR - PREDICTION - City code: 29 Error: incorrect or unavailable data URL
+2025-01-31 20:04:18,597 - ERROR - METEO - City code: 29 Error: error accessing data URL.
+2025-01-31 20:04:18,598 - ERROR - City ID: 29
+2025-01-31 20:04:26,645 - ERROR - PREDICTION - City code: 30 No response received.
+2025-01-31 20:04:26,645 - ERROR - PREDICTION - City code: 30 Error: incorrect or unavailable data URL
+2025-01-31 20:04:26,692 - ERROR - METEO - City code: 30 No response received.
+2025-01-31 20:04:26,692 - ERROR - METEO - City code: 30 Error: incorrect or unavailable data URL
+2025-01-31 20:04:26,692 - ERROR - City ID: 30
+2025-01-31 20:06:06,550 - INFO - Attempt 1 to prosecute failed cities.
+2025-01-31 20:06:40,157 - INFO - All cities were successfully processed.
+2025-02-01 20:02:24,095 - ERROR - PREDICTION - City code: 17 Error: No data
+2025-02-01 20:02:24,097 - ERROR - PREDICTION - City code: 17 Error: incorrect or unavailable data URL
+2025-02-01 20:02:31,166 - ERROR - METEO - City code: 17 No response received.
+2025-02-01 20:02:31,166 - ERROR - METEO - City code: 17 Error: incorrect or unavailable data URL
+2025-02-01 20:02:31,166 - ERROR - City ID: 17
+2025-02-01 20:02:50,510 - ERROR - METEO - City code: 18 Error: error accessing data URL.
+2025-02-01 20:02:50,511 - ERROR - City ID: 18
+2025-02-01 20:06:10,380 - INFO - Attempt 1 to prosecute failed cities.
+2025-02-01 20:06:27,086 - INFO - All cities were successfully processed.
+2025-02-02 20:01:37,969 - ERROR - METEO - City code: 11 Error: error accessing data URL.
+2025-02-02 20:01:37,971 - ERROR - City ID: 11
+2025-02-02 20:01:49,028 - ERROR - PREDICTION - City code: 12 No response received.
+2025-02-02 20:01:49,028 - ERROR - PREDICTION - City code: 12 Error: incorrect or unavailable data URL
+2025-02-02 20:01:52,101 - ERROR - METEO - City code: 12 No response received.
+2025-02-02 20:01:52,101 - ERROR - METEO - City code: 12 Error: incorrect or unavailable data URL
+2025-02-02 20:01:52,101 - ERROR - City ID: 12
+2025-02-02 20:02:00,218 - ERROR - PREDICTION - City code: 13 Error: error accessing data URL.
+2025-02-02 20:02:01,334 - ERROR - METEO - City code: 13 Error: error accessing data URL.
+2025-02-02 20:02:01,334 - ERROR - City ID: 13
+2025-02-02 20:02:09,387 - ERROR - PREDICTION - City code: 14 No response received.
+2025-02-02 20:02:09,387 - ERROR - PREDICTION - City code: 14 Error: incorrect or unavailable data URL
+2025-02-02 20:02:09,435 - ERROR - METEO - City code: 14 No response received.
+2025-02-02 20:02:09,435 - ERROR - METEO - City code: 14 Error: incorrect or unavailable data URL
+2025-02-02 20:02:09,436 - ERROR - City ID: 14
+2025-02-02 20:02:17,492 - ERROR - PREDICTION - City code: 15 No response received.
+2025-02-02 20:02:17,492 - ERROR - PREDICTION - City code: 15 Error: incorrect or unavailable data URL
+2025-02-02 20:02:17,538 - ERROR - METEO - City code: 15 No response received.
+2025-02-02 20:02:17,539 - ERROR - METEO - City code: 15 Error: incorrect or unavailable data URL
+2025-02-02 20:02:17,539 - ERROR - City ID: 15
+2025-02-02 20:02:25,617 - ERROR - PREDICTION - City code: 16 No response received.
+2025-02-02 20:02:25,617 - ERROR - PREDICTION - City code: 16 Error: incorrect or unavailable data URL
+2025-02-02 20:02:25,665 - ERROR - METEO - City code: 16 No response received.
+2025-02-02 20:02:25,667 - ERROR - METEO - City code: 16 Error: incorrect or unavailable data URL
+2025-02-02 20:02:25,667 - ERROR - City ID: 16
+2025-02-02 20:06:02,666 - INFO - Attempt 1 to prosecute failed cities.
+2025-02-02 20:06:52,855 - INFO - All cities were successfully processed.
+2025-02-03 20:00:04,372 - ERROR - METEO - City code: 2 No response received.
+2025-02-03 20:00:04,373 - ERROR - METEO - City code: 2 Error: incorrect or unavailable data URL
+2025-02-03 20:00:04,374 - ERROR - City ID: 2
+2025-02-03 20:00:19,674 - ERROR - METEO - City code: 3 No response received.
+2025-02-03 20:00:19,674 - ERROR - METEO - City code: 3 Error: incorrect or unavailable data URL
+2025-02-03 20:00:19,674 - ERROR - City ID: 3
+2025-02-03 20:05:45,190 - INFO - Attempt 1 to prosecute failed cities.
+2025-02-03 20:06:01,900 - INFO - All cities were successfully processed.
+2025-02-04 20:00:02,831 - ERROR - PREDICTION - City code: 2 No response received.
+2025-02-04 20:00:02,831 - ERROR - PREDICTION - City code: 2 Error: incorrect or unavailable data URL
+2025-02-04 20:00:03,172 - ERROR - City ID: 2
+2025-02-04 20:05:37,336 - INFO - Attempt 1 to prosecute failed cities.
+2025-02-04 20:05:45,769 - INFO - All cities were successfully processed.
+2025-02-06 20:05:43,362 - INFO - All cities were successfully processed.
+2025-02-07 20:05:43,524 - INFO - All cities were successfully processed.
+2025-02-08 20:05:39,478 - INFO - All cities were successfully processed.

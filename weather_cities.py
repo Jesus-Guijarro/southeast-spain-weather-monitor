@@ -32,10 +32,11 @@ def process_city(city, api_key, conn, cursor, date):
 
             return True
         else:
-            logging.error(f"ERROR - City ID: {city_id}")
+            print(f"Error - City ID: {city_id}")
+            logging.error(f"City ID: {city_id}")
             return False
     except Exception as e:
-        logging.error(f"ERROR - City ID: {city_id}. Info error: {e}")
+        logging.error(f"City ID: {city_id}. Error: {e}")
         return False
 
 def process_cities_with_retries(cities, api_key, conn, cursor, date, retries=3, delay=8):
@@ -59,6 +60,7 @@ def process_cities_with_retries(cities, api_key, conn, cursor, date, retries=3, 
             break  # Exit if all cities were processed
 
         print(f"Attempt {attempt} to prosecute failed cities.")
+        logging.info(f"Attempt {attempt} to prosecute failed cities.")
 
         new_failed_cities = []
 
@@ -76,8 +78,9 @@ def process_cities_with_retries(cities, api_key, conn, cursor, date, retries=3, 
         logging.error("The following cities could not be processed after multiple attempts:")
         for city in failed_cities:
             city_id = city[0]
-            logging.error(f"ERROR - City ID: {city_id}")
+            logging.error(f"City ID: {city_id}")
     else:
+        print("All cities were successfully processed.")
         logging.info("All cities were successfully processed.")
 
 if __name__ == "__main__":

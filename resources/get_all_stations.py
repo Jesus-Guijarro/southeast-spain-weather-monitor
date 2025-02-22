@@ -30,12 +30,11 @@ def fetch_and_save(url):
                 file.write(response.text)
 
 if __name__ == "__main__":
-
     # Read API key from file
     with open('../keys/api.txt', 'r') as file:
         api_key = file.read()
 
-    date = datetime.now() - timedelta(days=10)
+    date = datetime.now() - timedelta(days=3)
 
     date = date.strftime('%Y-%m-%d')
 

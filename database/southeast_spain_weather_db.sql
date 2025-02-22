@@ -1,3 +1,6 @@
+-- CREATE DATABSAE
+CREATE DATABASE southeast_spain_weather;
+
 -- CREATE CITY_STATION TABLE
 
 CREATE TABLE CITIES (
@@ -58,7 +61,6 @@ VALUES
 ('30019', '7145D', 'Cieza', 'CIEZA', 'Murcia'),
 
 -- Almeria
-
 ('04013', '6325O', 'Almería', 'ALMERÍA AEROPUERTO', 'Almeria'),
 ('04902', '6291B', 'El Ejido', 'EL EJIDO', 'Almeria'),
 ('04049', '6340X', 'Garrucha', 'GARRUCHA, PUERTO', 'Almeria'),

@@ -53,7 +53,7 @@ def close_connection(conn, cursor):
     except psycopg2.Error as e:
         raise Exception(f"Error closing the connection to the database: {e}")
 
-def get_city(city_id, conn, cursor):
+def get_city(city_id, cursor):
     """
     Gets information about a city by its ID.
     """
@@ -68,7 +68,7 @@ def get_city(city_id, conn, cursor):
     except psycopg2.Error as e:
         raise Exception(f"Error when obtaining the city: {e}")
 
-def get_cities(conn, cursor):
+def get_cities(cursor):
     """
     Retrieve all cities information from the database.
     """
@@ -80,8 +80,10 @@ def get_cities(conn, cursor):
     except psycopg2.Error as e:
         raise Exception(f"Error in obtaining cities: {e}")
 
-def insert_meteo_data(meteo_data, conn, cursor):
-    # Insert meteo data in WEATHER_DATA table
+def insert_meteo_data(meteo_data, cursor):
+    """
+    Insert meteo data in WEATHER_DATA table
+    """
     update_query = """
     UPDATE WEATHER_DATA
     SET
@@ -100,8 +102,10 @@ def insert_meteo_data(meteo_data, conn, cursor):
         meteo_data['precipitation'], meteo_data['city_id'],meteo_data['date']
     ))
 
-def insert_prediction_data(prediction_data, conn, cursor):
-    # Insert prediction data into WEATHER_DATA table
+def insert_prediction_data(prediction_data, cursor):
+    """
+    Insert prediction data into WEATHER_DATA table
+    """
     insert_query = """
     INSERT INTO WEATHER_DATA (
         city_id, date, temperature_predicted_max, temperature_predicted_min, temperature_predicted_avg,

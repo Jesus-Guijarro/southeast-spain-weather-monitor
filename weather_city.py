@@ -10,19 +10,18 @@ logging.basicConfig(filename='logs/weather_data_logs.log',
 def process_city(city, api_key, conn, cursor, date):
     """
     Processes a city by obtaining and storing forecast and weather data.
-    Returns True if the processing was successful, False if there were errors.
     """
     city_id, postal_code, station_code = city
 
     try:
-        prediction_data = get_prediction_data(city_id, postal_code, api_key, conn, cursor)
+        prediction_data = get_prediction_data(city_id, postal_code, api_key)
 
-        meteo_data = get_meteo_data(city_id, station_code, date, api_key, conn, cursor)
+        meteo_data = get_meteo_data(city_id, station_code, date, api_key)
 
-        # Verificar que los datos no sean nulos
+        # Verify that the data are not null
         if prediction_data and meteo_data:
-            db.insert_prediction_data(prediction_data, conn, cursor)
-            db.insert_meteo_data(meteo_data, conn, cursor)
+            db.insert_prediction_data(prediction_data, cursor)
+            db.insert_meteo_data(meteo_data, cursor)
 
             conn.commit()  
 
@@ -55,12 +54,13 @@ if __name__ == "__main__":
     # Establish database connection
     conn, cursor = db.get_connection()
 
-    city = db.get_city(city_id, conn, cursor)
+    city = db.get_city(city_id,cursor)
     postal_code, station_code = city
     city = city_id, postal_code, station_code
 
     #Calculate 'date' to get METEO data
     date = datetime.now() - timedelta(days=6)
+    #date = datetime(2025, 1, 30) #specific date
 
     success = process_city(city, api_key, conn, cursor, date)
     if not success:

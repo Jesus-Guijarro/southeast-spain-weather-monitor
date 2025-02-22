@@ -14,19 +14,18 @@ logging.basicConfig(
 def process_city(city, api_key, conn, cursor, date):
     """
     Processes a city by obtaining and storing forecast and weather data.
-    Returns True if the processing was successful, False if there were errors.
     """
     city_id, postal_code, station_code = city
 
     try:
-        prediction_data = get_prediction_data(city_id, postal_code, api_key, conn, cursor)
+        prediction_data = get_prediction_data(city_id, postal_code, api_key)
 
-        meteo_data = get_meteo_data(city_id, station_code, date, api_key, conn, cursor)
+        meteo_data = get_meteo_data(city_id, station_code, date, api_key)
 
         # Verificar que los datos no sean nulos
         if prediction_data and meteo_data:
-            db.insert_prediction_data(prediction_data, conn, cursor)
-            db.insert_meteo_data(meteo_data, conn, cursor)
+            db.insert_prediction_data(prediction_data, cursor)
+            db.insert_meteo_data(meteo_data, cursor)
 
             conn.commit()  
 
@@ -42,9 +41,6 @@ def process_city(city, api_key, conn, cursor, date):
 def process_cities_with_retries(cities, api_key, conn, cursor, date, retries=3, delay=8):
     """
     Processes a list of cities, handling retries for failed cities.
-    :param cities: List of cities (ID, zip code, station code).
-    :param retries: Maximum number of retries for failed cities.
-    :param delay: Waiting time between API queries (in seconds).
     """
     failed_cities = []
 
@@ -92,11 +88,12 @@ if __name__ == "__main__":
     conn, cursor = db.get_connection()
 
     # Get the list of cities from the database
-    cities = db.get_cities(conn, cursor)
+    cities = db.get_cities(cursor)
 
     #Calculate 'date' to get METEO data
     current_date = datetime.now()
     date = current_date - timedelta(days=6)
+    #date = datetime(2025, 1, 31)               #specific date
 
     process_cities_with_retries(cities, api_key, conn, cursor, date)
 

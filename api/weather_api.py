@@ -1,9 +1,6 @@
 import requests
 import logging
-import json
 from datetime import datetime, timedelta
-
-import database.database as db
 
 def create_api_url_meteo(url_meteo, station_code, date):
     """
@@ -17,6 +14,9 @@ def create_api_url_meteo(url_meteo, station_code, date):
     return api_url_meteo
 
 def convert_to_float(value):
+    """
+    Function to convert strings to floats
+    """
     if value is not None and value != "Ip":
         return round(float(value.replace(",", "."))) if isinstance(value, str) else round(float(value))
     elif value == "Ip":
@@ -24,6 +24,9 @@ def convert_to_float(value):
     return value
 
 def convert_to_int(value):
+    """
+    Function to convert strings to integers
+    """
     if value is not None and value != "Ip":
         return int(value)
     elif value == "Ip":
@@ -31,7 +34,9 @@ def convert_to_int(value):
     return value
 
 def get_data_url(url, city_id, api_key, type_query):
-
+    """
+    Returns weather data from the URL returned by the API
+    """
     querystring = {"api_key":api_key}
 
     headers = {
@@ -52,7 +57,10 @@ def get_data_url(url, city_id, api_key, type_query):
         logging.error(f"{type_query} - City code: {city_id} No response received.")
         return None
 
-def get_meteo_data(city_id, station_code, date, api_key, conn, cursor):
+def get_meteo_data(city_id, station_code, date, api_key):
+    """
+    Returns 'meteo' data in JSON format
+    """
     url_meteo= "https://opendata.aemet.es/opendata/api/valores/climatologicos/diarios/datos/fechaini/{start_date}/fechafin/{end_date}/estacion/{station_code}"
     api_url_meteo = create_api_url_meteo(url_meteo, station_code, date)
 
@@ -97,7 +105,10 @@ def get_meteo_data(city_id, station_code, date, api_key, conn, cursor):
         logging.error(f"METEO - City code: {city_id} Error: incorrect or unavailable data URL")
         return None
 
-def get_prediction_data(city_id, postal_code, api_key, conn, cursor):
+def get_prediction_data(city_id, postal_code, api_key):
+    """
+    Returns 'prediction' data in JSON format
+    """
     url_prediction = "https://opendata.aemet.es/opendata/api/prediccion/especifica/municipio/horaria/{postal_code}"
     api_url_prediction = url_prediction.format(postal_code=postal_code)
 
@@ -109,6 +120,7 @@ def get_prediction_data(city_id, postal_code, api_key, conn, cursor):
             data = response.json()
 
             prediction  = data[0]["prediccion"]
+
             precipitations = prediction.get('dia', [{}])[1].get('precipitacion', None)
             prob_precipitation = prediction.get('dia', [{}])[1].get('probPrecipitacion', None)
             prob_storm = prediction.get('dia', [{}])[1].get('probTormenta', None)

@@ -9,17 +9,17 @@ The application works by obtaining identifying values for each city stored in th
 
 ### Components
 
-`weather_cities.py`: script to obtain the weather data of all the cities to monitor that are stored in the database. It uses functions of `api\weather_api.py` and `database.py`.
+- `weather_cities.py`: script to obtain the weather data of all the cities to monitor that are stored in the database. It uses functions of `api\weather_api.py` and `database.py`.
 
-`api\weather_api.py`: file that contains the necessary functions for the queries to the AEMET API and the necessary processing of the data to store them in the database.
+- `api\weather_api.py`: file that contains the necessary functions for the queries to the AEMET API and the necessary processing of the data to store them in the database.
 
-`database\database.py`: file that has the database connection and disconnection functions, as well as data insertion functions on the API queries and obtaining data from the cities for the correct operation of `weather_cities.py`.
+- `database\database.py`: file that has the database connection and disconnection functions, as well as data insertion functions on the API queries and obtaining data from the cities for the correct operation of `weather_cities.py`.
 
 **Application Architecture**
 
 <img src="images/application-architecture.png" alt="Application architecture" width="450"/>
 
-### Data storage and use
+### Data Storage
 
 The application database, `southeast_spain_weather`, is composed of two tables:
 
@@ -196,6 +196,7 @@ touch keys/api.txt
 ├── 📂 tests
 │ ├── 📄 output_test.txt
 │ └── 🐍 test_meteo.py
+├── 📂 weather-env
 ├── 🚫 .gitignore
 ├── ⚙️ config.ini
 ├── 📜 LICENSE
@@ -260,9 +261,9 @@ crontab -e
 
 ## 🛠Technologies Used
 
-- 🧑‍💻Programming Language: Python
-- 🛢️Database: PostgreSQL
-- ⏰Task Scheduler: cron /  Windows Task Scheduler
+- Programming Language: Python
+- Database: PostgreSQL
+- Task Scheduler: cron /  Windows Task Scheduler
 
 ## 🔜Future improvements
 

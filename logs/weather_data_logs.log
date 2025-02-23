@@ -468,3 +468,16 @@
 2025-02-21 20:02:17,770 - ERROR - City ID: 16
 2025-02-21 20:05:55,174 - INFO - Attempt 1 to prosecute failed cities.
 2025-02-21 20:07:18,812 - INFO - All cities were successfully processed.
+2025-02-22 20:01:27,032 - ERROR - PREDICTION - City code: 10 Error: error accessing data URL.
+2025-02-22 20:01:34,119 - ERROR - METEO - City code: 10 No response received.
+2025-02-22 20:01:34,119 - ERROR - METEO - City code: 10 Error: incorrect or unavailable data URL
+2025-02-22 20:01:34,122 - ERROR - City ID: 10
+2025-02-22 20:01:42,193 - ERROR - PREDICTION - City code: 11 No response received.
+2025-02-22 20:01:42,193 - ERROR - PREDICTION - City code: 11 Error: incorrect or unavailable data URL
+2025-02-22 20:01:42,330 - ERROR - METEO - City code: 11 Error: error accessing data URL.
+2025-02-22 20:01:42,330 - ERROR - City ID: 11
+2025-02-22 20:01:50,778 - ERROR - METEO - City code: 12 No response received.
+2025-02-22 20:01:50,778 - ERROR - METEO - City code: 12 Error: incorrect or unavailable data URL
+2025-02-22 20:01:50,778 - ERROR - City ID: 12
+2025-02-22 20:06:03,024 - INFO - Attempt 1 to prosecute failed cities.
+2025-02-22 20:06:28,274 - INFO - All cities were successfully processed.

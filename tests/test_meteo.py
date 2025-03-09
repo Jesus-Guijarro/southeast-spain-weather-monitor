@@ -65,7 +65,7 @@ if __name__ == "__main__":
     current_date = datetime.now()
     date = current_date - timedelta(days=6)
 
-    list_stations = ['8050X']
+    list_stations = ['7209']
 
     with open("output_test.txt", "w") as f:
         sys.stdout = f

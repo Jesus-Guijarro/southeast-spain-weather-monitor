@@ -1,2 +1,1 @@
-GET DATA FROM 7261X
-[{'fecha': '2025-02-11', 'indicativo': '7261X', 'nombre': 'ROJALES', 'provincia': 'ALICANTE', 'altitud': '31', 'tmed': '11,9', 'prec': '0,0', 'tmin': '6,4', 'horatmin': '06:59', 'tmax': '17,4', 'horatmax': '13:01', 'dir': '10', 'velmedia': '1,4', 'racha': '5,8', 'horaracha': '13:10', 'hrMedia': '77', 'hrMax': '95', 'horaHrMax': 'Varias', 'hrMin': '59', 'horaHrMin': 'Varias'}]
+GET DATA FROM 7209

@@ -41,7 +41,7 @@ VALUES
 
 -- Murcia
 ('30030', '7178I', 'Murcia', 'MURCIA', 'Murcia'),
-('30016', '7012C', 'Cartagena', 'CARTAGENA', 'Murcia'),
+('30016', '7012D', 'Cartagena', 'CARTAGENA', 'Murcia'),
 ('30024', '7209', 'Lorca', 'LORCA', 'Murcia'),
 ('30026', '7007Y', 'Mazarrón', 'MAZARRÓN/LAS TORRES', 'Murcia'),
 ('30003', '7002Y', 'Águilas', 'ÁGUILAS', 'Murcia'),

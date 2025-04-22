@@ -46,11 +46,12 @@ def get_meteo_data(station_code, date, api_key):
     url_meteo= "https://opendata.aemet.es/opendata/api/valores/climatologicos/diarios/datos/fechaini/{start_date}/fechafin/{end_date}/estacion/{station_code}"
     api_url_meteo = create_api_url_meteo(url_meteo, station_code, date)
 
-    data_url = get_data_url(api_url_meteo, api_key,)
+    data_url = get_data_url(api_url_meteo, api_key)
 
     if data_url:
         try:
             response = requests.get(data_url)
+            
             response.raise_for_status()
             data = response.json()
         except:
@@ -65,7 +66,7 @@ if __name__ == "__main__":
     current_date = datetime.now()
     date = current_date - timedelta(days=6)
 
-    list_stations = ['7209']
+    list_stations = ['8050X']
 
     with open("output_test.txt", "w") as f:
         sys.stdout = f

@@ -1,2 +1,0 @@
-GET DATA FROM 8050X
-No 'datos' key found in the response.

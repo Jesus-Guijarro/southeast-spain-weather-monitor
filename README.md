@@ -175,37 +175,39 @@ touch keys/api.txt
 
 ```
 📦 weather-spain
-├── 📂 api
-│ └── 🐍 weather_api.py
-├── 📂 database
-│ ├── 🐍 database.py
-│ └── 🛢️ southeast_spain_weather_db.sql
+├── 📂 backup
+│ └── 📄 backup_data_and_logs_YYYY-MM-DD.zip
 ├── 📂 images
 │ ├── 🖼️ accumulated-precipitation-2024.png
 │ ├── 🖼️ application-architecture.png
 │ ├── 🖼️ cold-drop.png
 │ ├── 🖼️ entity-relationship-diagram.png
 │ └── 🖼️ spain-aridity-index.png
-├── 📂 keys
-│ └── 📄 api.txt
 ├── 📂 logs
-│ └── 📄 weather_data_logs.log
+│ └── 📄 pipeline.log
 ├── 📂 resources
 │ ├── 🐍 get_all_stations.py
 │ └── 📄 stations.txt
+├── 📂 src
+│ ├── 🐍 __init__.py
+│ ├── 🐍 extract.py
+│ ├── 🐍 load.py
+│ ├── 🐍 pipeline.py
+│ └── 🐍 transform.py
 ├── 📂 tests
-│ ├── 📄 output_test.txt
-│ └── 🐍 test_meteo.py
-├── 📂 weather-env
+│ ├── 🐍 test_extract.py
+│ ├── 🐍 test_load.py
+│ └── 🐍 test_transform.py
+├── ⚙️ .env
 ├── 🚫 .gitignore
+├── 🐍 backup_weather.py
 ├── ⚙️ config.ini
 ├── 📜 LICENSE
+├── 🖥️ pipeline.bat
+├── 🐍 pytest.ini
 ├── 📄 README.md
 ├── 📄 requirements.txt
-├── 🖥️ weather_cities.bat
-├── 🐍 weather_cities.py
-├── 🖥️ weather_city.bat
-└── 🐍 weather_city.py
+└── 🛢️ southeast_spain_weather_db.sql
 ```
 
 ## 🚀Running the Project

@@ -2,21 +2,24 @@
 
 import logging
 import configparser
-import os
+from pathlib import Path
 import psycopg2
 from datetime import datetime, timedelta
 import time
+import os
+from dotenv import load_dotenv
 
-from extract import fetch_meteo_raw, fetch_prediction_raw
-from transform import transform_meteo, transform_prediction
-from load import insert_meteo_data, insert_prediction_data
+from .extract import fetch_meteo_raw, fetch_prediction_raw
+from .transform import transform_meteo, transform_prediction
+from .load import insert_meteo_data, insert_prediction_data
 
 def read_db_config():
     """
     Reads database configuration parameters from config.ini file
     """
     cfg = configparser.ConfigParser()
-    cfg.read(os.path.join(os.path.dirname(__file__), 'config.ini'))
+    project_root = Path(__file__).resolve().parent.parent
+    cfg.read(project_root / 'config.ini')
     db = cfg['database']
     return db['dbname'], db['user'], db['password'], db['host'], db['port']
 
@@ -32,7 +35,7 @@ def get_connection():
 
 def setup_logging():
     logging.basicConfig(
-        filename='logs/weather_pipeline.log',
+        filename='logs/pipeline.log',
         level=logging.INFO,
         format='%(asctime)s - %(levelname)s - %(message)s'
     )
@@ -47,8 +50,8 @@ def run_pipeline():
         cursor.execute("SELECT city_id, postal_code, station_code FROM cities;")
         cities = cursor.fetchall()
 
-        with open('keys/api.txt', 'r') as f:
-            api_key = f.read().strip()
+        load_dotenv()
+        api_key = os.getenv('API_KEY_WEATHER')
 
         target_date = datetime.now() - timedelta(days=6)
 
@@ -69,7 +72,6 @@ def run_pipeline():
                     insert_prediction_data(cursor, pred)
                     insert_meteo_data(cursor, met)
                     conn.commit()
-                    logging.info(f"City {city_id} processed successfully.")
                 except Exception as e:
                     logging.error(f"City {city_id} DB error: {e}")
             else:

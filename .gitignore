@@ -1,4 +1,5 @@
-keys/
 config.ini
 *.bat
 logs/
+.env
+backup/

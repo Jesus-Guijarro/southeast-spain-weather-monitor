@@ -1,32 +1,41 @@
 # Weather Data of Southeastern Spain
 
-## 📖Introduction
-This project is dedicated to monitoring meteorological data in the southeastern region of Spain, specifically in the provinces of Almeria, Murcia, Alicante, and Valencia, areas identified as at-risk for desertification and prone to DANA events. Leveraging data provided by the AEMET (Agencia Estatal de Meteorología) API, this project aims to gather, process, and analyze weather information crucial for understanding these environmental risks.
+This project collects and analyzes meteorological data for drought-prone areas in Southeastern Spain (provinces of Almería, Murcia, Alicante, and Valencia). It implements a Python-based ETL pipeline that extracts data from the AEMET OpenData API, transforms and aggregates the weather data, and loads it into a PostgreSQL database. The goal is to enable analysis of desertification risk and extreme weather events (e.g., DANA/"gota fría"). 
 
-## 🌍Overview 
+## 🌍Overview
 
-The application works by obtaining identifying values for each city stored in the database and making two queries to the AEMET API: one query returns the data collected and processed by the station of a certain city that are available days later, and the other query returns forecast data for the next 24 hours for the same city.
+The data pipeline is orchestrated by `pipeline.py` and follows an ETL pattern:
 
-### Components
+1. **extract.py**
+   - Fetches raw JSON data from the AEMET API.
 
-- `weather_cities.py`: script to obtain the weather data of all the cities to monitor that are stored in the database. It uses functions of `api\weather_api.py` and `database.py`.
+2. **transform.py**
+   - Cleans and normalizes the raw data into Python dictionaries with correct types (`float`, `int`, `str`).  
+   - Computes daily statistics (average, maximum, and minimum) for temperature and relative humidity.
 
-- `api\weather_api.py`: file that contains the necessary functions for the queries to the AEMET API and the necessary processing of the data to store them in the database.
+3. **load.py**
+   - Executes SQL INSERT/UPDATE statements to store the transformed weather data. 
 
-- `database\database.py`: file that has the database connection and disconnection functions, as well as data insertion functions on the API queries and obtaining data from the cities for the correct operation of `weather_cities.py`.
+4. **pipeline.py** _(orchestrator)_
+   - Reads the list of target cities.
+   - Calls `extract.py`, then `transform.py`, then `load.py` for each city.
 
 **Application Architecture**
 
-<img src="images/application-architecture.png" alt="Application architecture" width="450"/>
+The Application Architecture is illustrated below, showing data flow from the AEMET API through the Extract-Transform-Load stages into the PostgreSQL database:
+
+<img src="images/application-architecture.png" alt="Application architecture" width="600"/>
 
 ### Data Storage
 
-The application database, `southeast_spain_weather`, is composed of two tables:
+The PostgreSQL database `southeast_spain_weather` contains two main tables:
 
-- `cities`: table that stores the data about the cities and towns to be able to make the queries to the API as information for future data analysis.
-- `weather_data`: table that stores the data of the API queries.
+- `cities`: stores the data about the cities/towns to be able to make the queries to the API as information for future data analysis.
+- `weather_data`: stores the processed weather records (daily measurements and forecasts) for each city.
 
 <img src="images/entity-relationship-diagram.png" alt="ER Diagram" width="350"/>
+
+*Entity-Relationship diagram for the `southeast_spain_weather` database.*
 
 ### API Queries
 #### **Prediction data**
@@ -53,134 +62,118 @@ Returns a summary of weather values taken at a certain weather station on the sp
 
 It' i's necessary to ask for data from 5-6 days before, since some stations may not have them ready until then.
 
-## Selected cities and towns
-We have select cities and towns with nearby meteorological stations and low accumulated precipitation percentages in recent years.
+## Selected Locations
+The project focuses on cities and towns in Southeastern Spain that are at high risk of desertification or drought. These areas have had unusually low precipitation and high aridity indices in recent years (see figures below for context):
 
-Areas with the highest risk of desertification and/or drought:
-
-**Accumulated Precipitation in the Hydrological Year (2024)_**
+**Accumulated Precipitation in the Hydrological Year (2024)**
 
 <img src="images/accumulated-precipitation-2024.png" alt="Accumulated Precipitation in the Hydrological Year (2024)" width="500"/>
 
 
-**Spain-Aridity Index:**
+**Spain-Aridity Index**
 
 <img src="images/spain-aridity-index.png" alt="Spain-Aridity Index" width="500"/>
 
 
-**Cold Drop:**
-
-<img src="images/cold-drop.png" alt="Cold Drop" width="100">
+**Frequency of DANA (gota fría) events**
 
 
-## API AEMET
-Web page with information for API queries: [AEMET OpenData](https://opendata.aemet.es/dist/index.html)
+<img src="images/frequency-DANA-events.png" alt="Frequency of DANA (gota fría) events" width="100">
+
+
+### Monitored Locations
+
+- **Valencia**: Carcaixent, Llíria, Ontinyent, Sagunto, Utiel, Valencia, Xàtiva
+- **Alicante**: Alcoy, Alicante, Benidorm, Elche, Jávea, Novelda, Orihuela, Pego, Rojales, Villena
+- **Murcia**: Águilas, Alcantarilla, Archena, Bullas, Calasparra, Caravaca de la Cruz, Cartagena, Cieza, Fuente Álamo, Jumilla, Lorca, Mazarrón, Molina de Segura, Mula, Murcia, Puerto Lumbreras, Torre-Pacheco, Totana, Yecla
+- **Almería**: Almería, El Ejido, Garrucha, Huércal-Overa
+
+## 🌐AEMET OpenData API
+
+For details on the available endpoints and data formats, refer to the [AEMET OpenData portal](https://opendata.aemet.es/dist/index.html). An API key is required to access the endpoints (see `Obtain an AEMET API key` below).
+
 
 ## ⚙️Installation and Configuration
 
-### 1. Clone the repository
+1. **Clone the repository** 
 
 ```sh
 git clone https://github.com/Jesus-Guijarro/weather-spain.git
-```
-### 2. Create Virtual Environment and Install Dependencies
-
-1. Create a virtual environment named `weather-env`:
-
-```sh
 cd weather-spain
+```
 
+2. **Create & activate a virtual environment** 
+
+```sh
 python -m venv weather-env
-```
 
-2. Activate the virtual environment:
-
-**🐧 Linux**:
-```sh
+# On Linux/macOS:
 source weather-env/bin/activate
-```
 
-**🖥️ Windows**:
-```sh
+# On Windows:
 weather-env\Scripts\activate
 ```
 
-3. Install the required dependencies:
+Then install dependencies:
 ```sh
 pip install -r requirements.txt
 ```
 
-### 3. Setup Database 
-
-Create the `southeast_spain_weather` database:
+3. **Set up PostgreSQL database**
 
 ```sh
 psql -U postgres
 ```
-
+In the psql console, run:
 ```sql
 CREATE DATABASE southeast_spain_weather;
-```
-```sh
-\c southeast_spain_weather;
-```
-Copy and run the content of `southeast_spain_weather_db.sql` in the terminal or database administration tool like DBeaver.
-
-
-### 4. Config database file
-
-1. Create the config database file:
-```sh
-touch config.ini
+\c southeast_spain_weather
+-- Execute the SQL script to create tables:
+\i database/southeast_spain_weather_db.sql
 ```
 
-2. Configure your database connection details in `config.ini`:
+4. **Configure the database connection**  
+
+Create a file named `config.ini` in the project root with your DB credentials:
 ```conf
 [database]
 dbname = southeast_spain_weather
-user = username
-password = ******
+user = your_username
+password = your_password
 host = localhost
 port = 5432
 ```
 
-### 5. Create file folder and archive for logs`
-Create `logs` folder and `weather_data_logs.log`file manually with the following commands:
+5. **Create logs folder**  
 ```sh
 mkdir logs
-
-touch logs/weather_data_logs.log
+touch logs/pipeline.log
 ```
 
-### 6. Get API key from AEMET
+6. **Obtain an AEMET API key:** 
 
 To access AEMET's weather data, you need an API key. Follow these steps to obtain one:  
 
 1. Go to the [AEMET OpenData website](https://opendata.aemet.es/centrodedescargas/altaUsuario).
-2. Register for a free account by providing your email and filling out the required fields.
-3. After registering, log in to your account.
-4. Navigate to `Mis claves` section.
-5. Generate a new API key and copy it for later use.
+2. Register for a free account on the AEMET OpenData portal.
+3. Log in and go to **Mis claves** to generate a new API key.
+4. Create a `.env` file in the project root (and add it to `.gitignore`).
+5. Add your API key to `.env` as follows:
 
-Once you have your API key, you can use it to authenticate your requests.
-
-We create the `keys` folder and the file where to store the generated key:
 ```sh
-mkdir keys
-
-touch keys/api.txt
+API_KEY_WEATHER="YOUR_API_KEY"
 ```
 
-### 7. Final Project Structure
+7. **Verify project structure:**
 
 ```
 📦 weather-spain
 ├── 📂 backup
-│ └── 📄 backup_data_and_logs_YYYY-MM-DD.zip
+│ └── 📦 backup_data_and_logs_YYYY-MM-DD.zip
 ├── 📂 images
 │ ├── 🖼️ accumulated-precipitation-2024.png
 │ ├── 🖼️ application-architecture.png
-│ ├── 🖼️ cold-drop.png
+│ ├── 🖼️ frequency-DANA-events.png
 │ ├── 🖼️ entity-relationship-diagram.png
 │ └── 🖼️ spain-aridity-index.png
 ├── 📂 logs
@@ -202,6 +195,7 @@ touch keys/api.txt
 ├── 🚫 .gitignore
 ├── 🐍 backup_weather.py
 ├── ⚙️ config.ini
+├── 📓 Data Visualization.ipynb
 ├── 📜 LICENSE
 ├── 🖥️ pipeline.bat
 ├── 🐍 pytest.ini
@@ -214,60 +208,87 @@ touch keys/api.txt
 
 ### Manual Execution
 
-1. Activate the virtual environment in the terminal from the main directory if it is not already activated:
+1. Activate your virtual environment (if not already active):
 
 ```sh
-source weather-env/bin/activate
+source weather-env/bin/activate # or on Windows: weather-env\Scripts\activate
 ```
 
-2. We run the application with `python` or `python3` depending on the version of Python installed:
+2. Run the pipeline:
 ```sh
-python weather_cities.py
+python -m src.pipeline.py
 ```
-3. In case there was no error in any of the cities and we have obtained the data from both queries, we can consult them in the database in the `weather_data` table. If we have had an error in any city we can use the `weather_city.py` script to try to get the data again.
-```sh
-python weather_city.py
-```
+
+This will perform extraction, transformation, and loading for the configured cities and dates. Logs are written to `logs/pipeline.log`.
 
 ### Automatic Execution
-In this execution mode we are going to run `weather_cities.py` every day at 20:00 automatically.
 
-#### 🐧 LINUX (cron job)
-1. Open the terminal and edit the `crontab`:
+- 🐧 Linux (cron job):
+
+Use `crontab -e` to schedule the pipeline to run daily at 20:00. For example:
 
 ```sh
-crontab -e
+0 20 * * * /usr/bin/python3 -m src.pipeline
 ```
-2. Add the following line at the end of the file:
+(Adjust paths as needed.)
+
+-  🖥️ Windows (Task Scheduler)
+
+   1. Open **Task Scheduler** (Win + R, type `taskschd.msc`).
+   2. Click on **Create Basic Task**.
+   3. Create a new Basic Task (e.g., *Weather Data Daily*).
+   4. Select **Daily** and set the time to **20:00**.
+   5. In *Action*: **Start a Program** -> Browse and select `pipeline.bat`.
+   6. Browse and select weather_cities.bat.
+   7. Finish and save the task.
+
+## 🧪Testing
+
+Unit tests for each module are provided in the `tests` directory. To run all tests:
+
 ```sh
-0 20 * * * /usr/bin/python3 /path/to/weather_cities.py
+pytest
 ```
-- Replace `/usr/bin/python3` with the correct Python path if needed.
-- Replace `/path/to/weather_cities.py` with the actual script path.
 
-#### 🖥️ WINDOWS (Task Scheduler)
+To run a specific test file, use:
+```sh
+pytest tests/test_transform.py
+```
 
-1. Open **Task Scheduler** (Win + R, type taskschd.msc, and press Enter).
-2. Click on **Create Basic Task**.
-3. Name the task (e.g., Weather Data).
-4. Select **Daily** and set the time to **20:00**.
-5. In the **Action** step, choose **Start a Program**.
-6. Browse and select weather_cities.bat.
-7. Click **Finish** to save the task.
+## 🔍 Additional Tools
 
-## 🔍Extra
+- `pipeline.bat`: Windows batch file that switches to the project directory and runs the Weather-Spain data pipeline.
 
-- `resources\get_all_stations.py`: script to obtain information about available stations. Useful to update data that have changed and because of that you can't get data from some weather station.
+   ```bat
+   @echo off
 
-- `weather_city.py`: file with which data from a specific city is obtained.
+   set "PROJECT_DIR=C:\path_to\weather-spain"
+
+   cd /d "%PROJECT_DIR%"
+
+   call "%PROJECT_DIR%\weather-env\Scripts\activate.bat"
+
+   python -m src.pipeline
+
+   pause
+   ```
+
+- `resources\get_all_stations.py`: script to fetch metadata for all AEMET weather stations. Use this to update the list of stations (`stations.txt`) if AEMET adds or changes stations.
+
+- `Data Visualization.ipynb`: Jupyter notebook with visualizations of the collected data. It currently compares measured vs. predicted temperature and humidity for each city.
+
+- `backup_weather.py`: script to back up the PostgreSQL database and pipeline logs (e.g., scheduled weekly via cron or Task Scheduler).
+
 
 ## 🛠Technologies Used
 
-- Programming Language: Python
-- Database: PostgreSQL
-- Task Scheduler: cron /  Windows Task Scheduler
+- **Language**: Python 3.x (libraries: requests, configparser, psycopg2, etc.).
+- **Database**: PostgreSQL (with SQL scripts for schema).
+- **Scheduling**: Linux cron, Windows Task Scheduler.
+- **Testing**: Pytest for unit testing.
+- **Visualization**: Jupyter Notebook (matplotlib, pandas, ipywidgets).
 
 ## 🔜Future improvements
 
-- Develop the data visualization part.
-- Process log information and implement changes in the project to reduce the number of daily errors produced when using the AEMET API.
+- Process and analyze log information (e.g., pipeline performance metrics).
+- Add end-to-end integration tests for the full ETL workflow.

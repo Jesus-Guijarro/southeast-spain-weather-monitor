@@ -3,6 +3,7 @@ from unittest.mock import Mock
 import load
 
 def test_insert_meteo_data_calls_execute_with_correct_parameters():
+    # Prepare a fake cursor and sample data dict
     cursor = Mock()
     data = {
         'temperature_avg': 20.5,
@@ -16,8 +17,10 @@ def test_insert_meteo_data_calls_execute_with_correct_parameters():
         'date': '2025-05-03'
     }
 
+    # Call the function under test
     load.insert_meteo_data(cursor, data)
 
+    # Expected SQL with placeholders matching order of params
     expected_query = """
     UPDATE weather_data
     SET
@@ -41,6 +44,7 @@ def test_insert_meteo_data_calls_execute_with_correct_parameters():
 
 
 def test_insert_prediction_data_calls_execute_with_correct_parameters():
+    # Prepare fake cursor and sample prediction data
     cursor = Mock()
     data = {
         'city_id': 456,
@@ -56,29 +60,35 @@ def test_insert_prediction_data_calls_execute_with_correct_parameters():
         'prob_storm': {'storm': 0.1}
     }
 
+    # Call the function under test
     load.insert_prediction_data(cursor, data)
 
     expected_query = """
     INSERT INTO weather_data (
-      city_id, date,
-      temperature_predicted_max, temperature_predicted_min, temperature_predicted_avg,
-      humidity_predicted_avg, humidity_predicted_max, humidity_predicted_min,
-      precipitations, prob_precipitation, prob_storm
+      city_id, 
+      date,
+      temperature_predicted_max, 
+      temperature_predicted_min, 
+      temperature_predicted_avg,
+      humidity_predicted_avg, 
+      humidity_predicted_max, 
+      humidity_predicted_min,
+      precipitations, 
+      prob_precipitation, 
+      prob_storm
     ) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
     ON CONFLICT (city_id, date) DO NOTHING;
     """
 
     executed_query, params = cursor.execute.call_args[0]
-    assert expected_query.strip() == executed_query.strip()
+    assert expected_query.strip() == executed_query.strip() # Compare stripped queries to avoid whitespace differences
 
-    # Verify that JSON-serializable fields are dumped
-    expected_precip_str = json.dumps(data['precipitations'])
-    expected_prob_precip_str = json.dumps(data['prob_precipitation'])
-    expected_prob_storm_str = json.dumps(data['prob_storm'])
-
+    # Ensure JSON fields are serialized correctly
     assert params == (
         data['city_id'], data['date'],
         data['temperature_max'], data['temperature_min'], data['temperature_avg'],
         data['humidity_avg'], data['humidity_max'], data['humidity_min'],
-        expected_precip_str, expected_prob_precip_str, expected_prob_storm_str
+        json.dumps(data['precipitations']),
+        json.dumps(data['prob_precipitation']),
+        json.dumps(data['prob_storm'])
     )

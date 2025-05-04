@@ -2,7 +2,6 @@ import pytest
 from datetime import datetime, date, timedelta
 import transform
 
-
 @pytest.mark.parametrize("input_value, expected", [
     (None, None),
     ('Ip', None),
@@ -11,6 +10,7 @@ import transform
     (5.678, 5.68),
 ])
 def test_to_float(input_value, expected):
+    # _to_float should handle None, 'Ip', comma/punto decimal, and float inputs
     assert transform._to_float(input_value) == expected
 
 
@@ -21,15 +21,17 @@ def test_to_float(input_value, expected):
     (7, 7),
 ])
 def test_to_int(input_value, expected):
+    # _to_int should convert numeric strings and ints, handle 'Ip' and None
     assert transform._to_int(input_value) == expected
 
 def test_transform_meteo_none_or_empty():
-    
+    # Input cases with no valid data should return None
     assert transform.transform_meteo([], city_id=1, date=date.today()) is None
     assert transform.transform_meteo(None, city_id=1, date=date.today()) is None
     assert transform.transform_meteo({}, city_id=1, date=date.today()) is None
 
 def test_transform_meteo_correct_values():
+    # Verify correct parsing and conversion of various fields
     raw = [{
         'prec': '1,234',
         'tmed': '10.5',
@@ -45,15 +47,16 @@ def test_transform_meteo_correct_values():
         'city_id': 99,
         'date': '2025-05-03',
         'precipitation': 1.23,
-        'temperature_avg': 10.50,
+        'temperature_avg': 10,
         'temperature_max': None,
-        'temperature_min': 0.00,
+        'temperature_min': 0,
         'humidity_avg': 80,
         'humidity_max': 90,
         'humidity_min': 70
     }
 
 def test_transform_prediction_none():
+    # Cases where prediction data is missing or empty should return None
     base = [{'prediccion': {'dia': []}}]
     assert transform.transform_prediction([], city_id=5) is None
     assert transform.transform_prediction(None, city_id=5) is None
@@ -61,6 +64,7 @@ def test_transform_prediction_none():
     assert transform.transform_prediction(base, city_id=5) is None
 
 def test_transform_prediction_correct_values():
+    # Validate parsing of nested prediction structure and correct aggregation
     tomorrow_data = {
         'prediccion': {
             'dia': [

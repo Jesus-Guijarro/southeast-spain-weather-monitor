@@ -138,11 +138,12 @@ Create a file named `config.ini` in the project root with your DB credentials:
 ```conf
 [database]
 dbname = southeast_spain_weather
-user = your_username
-password = your_password
+user = <YOUR_POSTGRES_USERNAME>
+password = <YOUR_POSTGRES_PASSWORD>
 host = localhost
 port = 5432
 ```
+Replace the placeholders with your actual Postgres username and password.
 
 5. **Create logs folder**  
 ```sh
@@ -237,7 +238,7 @@ Use `crontab -e` to schedule the pipeline to run daily at 20:00. For example:
    1. Open **Task Scheduler** (Win + R, type `taskschd.msc`).
    2. Click on **Create Basic Task**.
    3. Create a new Basic Task (e.g., *Weather Data Daily*).
-   4. Select **Daily** and set the time to **20:00**.
+   4. Select **Daily** and set the time to **20:00:00**.
    5. In *Action*: **Start a Program** -> Browse and select `pipeline.bat`.
    6. Browse and select weather_cities.bat.
    7. Finish and save the task.
@@ -276,6 +277,8 @@ pytest tests/test_transform.py
 - `resources\get_all_stations.py`: script to fetch metadata for all AEMET weather stations. Use this to update the list of stations (`stations.txt`) if AEMET adds or changes stations.
 
 - `Data Visualization.ipynb`: Jupyter notebook with visualizations of the collected data. It currently compares measured vs. predicted temperature and humidity for each city.
+
+<img src="images/example-dashboard.png" alt="Example Dashboard" width="500"/>
 
 - `backup_weather.py`: script to back up the PostgreSQL database and pipeline logs (e.g., scheduled weekly via cron or Task Scheduler).
 

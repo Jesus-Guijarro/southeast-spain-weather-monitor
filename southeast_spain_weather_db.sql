@@ -1,9 +1,8 @@
--- CREATE DATABSAE
+-- CREATE southeast_spain_weather DATABASE
 CREATE DATABASE southeast_spain_weather;
 
--- CREATE CITY_STATION TABLE
-
-CREATE TABLE CITIES (
+-- CREATE CITIES TABLE
+CREATE TABLE cities (
     city_id SERIAL PRIMARY KEY,
     postal_code VARCHAR(100) NOT NULL,
     station_code VARCHAR(100) NOT NULL,
@@ -13,11 +12,9 @@ CREATE TABLE CITIES (
     UNIQUE (postal_code)
 );
 
--- INSERT DATA IN TABLE CITY_STATION
-
-INSERT INTO CITIES (postal_code, station_code, city_name, station_name, province)
+-- INSERT DATA IN cities
+INSERT INTO cities (postal_code, station_code, city_name, station_name, province)
 VALUES
-
 -- Valencia
 ('46250', '8416X', 'Valencia', 'VALENCIA, UPV', 'Valencia'),
 ('46220', '8446Y', 'Sagunto', 'SAGUNT/SAGUNTO', 'Valencia'),
@@ -26,7 +23,6 @@ VALUES
 ('46184', '8283X', 'Ontinyent', 'ONTINYENT', 'Valencia'),
 ('46147', '8409X', 'Llíria', 'LLÍRIA', 'Valencia'),
 ('46249', '8309X', 'Utiel', 'UTIEL', 'Valencia'),
-
 -- Alicante
 ('03014', '8025', 'Alicante/Alacant', 'ALACANT/ALICANTE', 'Alicante'),
 ('03031', '8036Y', 'Benidorm', 'BENIDORM', 'Alicante'),
@@ -38,7 +34,6 @@ VALUES
 ('03093', '8013X', 'Novelda', 'NOVELDA', 'Alicante'),
 ('03113', '7261X', 'Rojales', 'ROJALES', 'Alicante'),
 ('03082', '8050X', 'Jávea', 'JÁVEA/ XÀBIA', 'Alicante'),
-
 -- Murcia
 ('30030', '7178I', 'Murcia', 'MURCIA', 'Murcia'),
 ('30016', '7012D', 'Cartagena', 'CARTAGENA', 'Murcia'),
@@ -59,15 +54,14 @@ VALUES
 ('30022', '7138B', 'Jumilla', 'JUMILLA', 'Murcia'),
 ('30012', '7127X', 'Bullas', 'BULLAS', 'Murcia'),
 ('30019', '7145D', 'Cieza', 'CIEZA', 'Murcia'),
-
 -- Almeria
 ('04013', '6325O', 'Almería', 'ALMERÍA AEROPUERTO', 'Almeria'),
 ('04902', '6291B', 'El Ejido', 'EL EJIDO', 'Almeria'),
 ('04049', '6340X', 'Garrucha', 'GARRUCHA, PUERTO', 'Almeria'),
 ('04053', '6367B', 'Huércal-Overa', 'HUÉRCAL-OVERA', 'Almeria');
 
-
-CREATE TABLE WEATHER_DATA (
+-- CREATE weather_data TABLE
+CREATE TABLE weather_data (
     city_id INTEGER NOT NULL,
     date DATE NOT NULL,
     

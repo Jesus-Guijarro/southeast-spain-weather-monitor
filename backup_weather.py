@@ -28,7 +28,7 @@ DB_PORT       = db_cfg.get('port', '5432')
 
 # Determine the appropriate pg_dump executable based on the OS
 if platform.system() == 'Windows':
-    PG_DUMP_EXE = r'C:\Program Files\PostgreSQL\16\bin\pg_dump.exe'
+    PG_DUMP_EXE = r'C:\Program Files\PostgreSQL\17\bin\pg_dump.exe'
 else:
     PG_DUMP_EXE = 'pg_dump'
 

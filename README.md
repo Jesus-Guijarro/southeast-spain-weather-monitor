@@ -168,7 +168,7 @@ API_KEY_WEATHER="YOUR_API_KEY"
 7. **Verify project structure:**
 
 ```
-📦 weather-spain
+📂 weather-spain
 ├── 📂 backup
 │ └── 📦 backup_data_and_logs_YYYY-MM-DD.zip
 ├── 📂 images

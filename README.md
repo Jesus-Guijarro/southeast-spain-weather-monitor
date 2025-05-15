@@ -179,7 +179,9 @@ API_KEY_WEATHER="YOUR_API_KEY"
 │ └── 🖼️ spain-aridity-index.png
 ├── 📂 logs
 │ └── 📄 pipeline.log
-├── 📂 resources
+├── 📂 tools
+│ ├── 🐍 debug_city.py
+│ ├── 🐍 run_single_city.py
 │ ├── 🐍 get_all_stations.py
 │ └── 📄 stations.txt
 ├── 📂 src
@@ -274,7 +276,11 @@ pytest tests/test_transform.py
    pause
    ```
 
-- `resources\get_all_stations.py`: script to fetch metadata for all AEMET weather stations. Use this to update the list of stations (`stations.txt`) if AEMET adds or changes stations.
+- `tools\debug_city.py`: script to diagnose why a specific city is not returning data.
+
+- `tools\run_single_city.py`: re-runs the full ETL pipeline for a single city.
+
+- `tools\get_all_stations.py`: script to fetch metadata for all AEMET weather stations. Use this to update the list of stations (`stations.txt`) if AEMET adds or changes stations.
 
 - `Data Visualization.ipynb`: Jupyter notebook with visualizations of the collected data. It currently compares measured vs. predicted temperature and humidity for each city.
 

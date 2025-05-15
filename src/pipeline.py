@@ -84,28 +84,30 @@ def run_pipeline():
 
         # Process each city in the list
         for city_id, postal_code, station_code in cities:
-            # --- Extract phase ---
+            #Extract
             # Fetch raw meteorological data
             raw_met = fetch_meteo_raw(city_id, station_code, target_date, api_key)
             # Fetch raw prediction data
             raw_pred = fetch_prediction_raw(city_id, postal_code, api_key)
 
-            # --- Transform phase ---
+            # Transform
             # Convert raw meteorological data to structured format
             met = transform_meteo(raw_met, city_id, target_date)
             # Convert raw prediction data to structured format
             pred = transform_prediction(raw_pred, city_id)
 
-            # --- Load phase ---
-            if met and pred:
-                try:
-                    # Insert prediction first, then meteorological data
-                    insert_prediction_data(cursor, pred)
-                    insert_meteo_data(cursor, met)
-                    conn.commit()  # Commit transaction on success
-                except Exception as e:
-                    # Log database errors per city
-                    logging.error(f"City {city_id} DB error: {e}")
+            #Load
+            loaded = False 
+            # Insert prediction data first, then meteorological data
+            if pred:                            
+                insert_prediction_data(cursor, pred)
+                loaded = True
+            if met:
+                insert_meteo_data(cursor, met)
+                loaded = True
+
+            if loaded:    
+                conn.commit()           # Commit transaction on success
             else:
                 # Log if either transformation returned no data
                 logging.error(
@@ -125,7 +127,6 @@ def run_pipeline():
             logging.info(f"Failed cities: {failed_cities}")
             print(f"Failed cities: {failed_cities}")
     finally:
-        # Ensure resources are closed even if errors occur
         cursor.close()
         conn.close()
 

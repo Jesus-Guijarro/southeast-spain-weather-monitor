@@ -3,7 +3,6 @@ from datetime import datetime, timedelta
 import os
 from dotenv import load_dotenv
 
-
 def get_data_url(url):
     """
     Make a request to the given URL and retrieve JSON data.
@@ -33,7 +32,7 @@ def fetch_and_save(url):
     if data_url:
         response = requests.get(data_url)
         if response.status_code == 200:
-            with open("stations.txt", 'w', encoding='utf-8') as f:
+            with open("all_stations.txt", 'w', encoding='utf-8') as f:
                 f.write(response.text)
 
 if __name__ == "__main__":

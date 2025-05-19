@@ -6,29 +6,37 @@ def insert_meteo_data(cursor, data):
     """
     # Prepare SQL statement to update with meteo data into an existing weather_data record
     q = """
-    UPDATE weather_data
-    SET
-      temperature_measured_avg = %s,
-      temperature_measured_max = %s,
-      temperature_measured_min = %s,
-      humidity_measured_avg = %s,
-      humidity_measured_max = %s,
-      humidity_measured_min = %s,
-      precipitation = %s
-    WHERE city_id = %s AND date = %s;
+    INSERT INTO weather_data (
+      city_id,
+      date,
+      temperature_measured_avg,
+      temperature_measured_max,
+      temperature_measured_min,
+      humidity_measured_avg,
+      humidity_measured_max,
+      humidity_measured_min,
+      precipitation
+    ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+    ON CONFLICT (city_id, date) DO UPDATE
+      SET
+        temperature_measured_avg = EXCLUDED.temperature_measured_avg,
+        temperature_measured_max = EXCLUDED.temperature_measured_max,
+        temperature_measured_min = EXCLUDED.temperature_measured_min,
+        humidity_measured_avg = EXCLUDED.humidity_measured_avg,
+        humidity_measured_max = EXCLUDED.humidity_measured_max,
+        humidity_measured_min = EXCLUDED.humidity_measured_min,
+        precipitation = EXCLUDED.precipitation;
     """
-
-    # Execute the update with values extracted
     cursor.execute(q, (
-        data['temperature_avg'], 
-        data['temperature_max'], 
+        data['city_id'],
+        data['date'],
+        data['temperature_avg'],
+        data['temperature_max'],
         data['temperature_min'],
-        data['humidity_avg'], 
-        data['humidity_max'], 
+        data['humidity_avg'],
+        data['humidity_max'],
         data['humidity_min'],
-        data['precipitation'], 
-        data['city_id'], 
-        data['date']
+        data['precipitation']
     ))
 
 
@@ -39,31 +47,40 @@ def insert_prediction_data(cursor, data):
     # Prepare INSERT statement with ON CONFLICT to avoid duplicate entries
     q = """
     INSERT INTO weather_data (
-      city_id, 
+      city_id,
       date,
-      temperature_predicted_max, 
-      temperature_predicted_min, 
+      temperature_predicted_max,
+      temperature_predicted_min,
       temperature_predicted_avg,
-      humidity_predicted_avg, 
-      humidity_predicted_max, 
+      humidity_predicted_avg,
+      humidity_predicted_max,
       humidity_predicted_min,
-      precipitations, 
-      prob_precipitation, 
+      precipitations,
+      prob_precipitation,
       prob_storm
     ) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
-    ON CONFLICT (city_id, date) DO NOTHING;
+    ON CONFLICT (city_id, date) DO UPDATE
+      SET
+        temperature_predicted_max = EXCLUDED.temperature_predicted_max,
+        temperature_predicted_min = EXCLUDED.temperature_predicted_min,
+        temperature_predicted_avg = EXCLUDED.temperature_predicted_avg,
+        humidity_predicted_avg = EXCLUDED.humidity_predicted_avg,
+        humidity_predicted_max = EXCLUDED.humidity_predicted_max,
+        humidity_predicted_min = EXCLUDED.humidity_predicted_min,
+        precipitations = EXCLUDED.precipitations,
+        prob_precipitation = EXCLUDED.prob_precipitation,
+        prob_storm = EXCLUDED.prob_storm;
     """
-    # Serialize list or dict fields to JSON where necessary, then execute
     cursor.execute(q, (
-        data['city_id'], 
+        data['city_id'],
         data['date'],
-        data['temperature_max'], 
-        data['temperature_min'], 
+        data['temperature_max'],
+        data['temperature_min'],
         data['temperature_avg'],
-        data['humidity_avg'], 
-        data['humidity_max'], 
+        data['humidity_avg'],
+        data['humidity_max'],
         data['humidity_min'],
-        json.dumps(data['precipitations']), 
-        json.dumps(data['prob_precipitation']), 
+        json.dumps(data['precipitations']),
+        json.dumps(data['prob_precipitation']),
         json.dumps(data['prob_storm'])
     ))

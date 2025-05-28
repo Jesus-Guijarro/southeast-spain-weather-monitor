@@ -84,53 +84,61 @@ def run_pipeline():
 
         # Process each city in the list
         for city_id, postal_code, station_code in cities:
-            #Extract
+            
+            # --------- Extraction Phase ---------
             # Fetch raw meteorological data
             raw_met = fetch_meteo_raw(city_id, station_code, target_date, api_key)
             # Fetch raw prediction data
             raw_pred = fetch_prediction_raw(city_id, postal_code, api_key)
 
-            # Transform
+            # --------- Transform Phase ---------
             # Convert raw meteorological data to structured format
             met = transform_meteo(raw_met, city_id, target_date)
             # Convert raw prediction data to structured format
             pred = transform_prediction(raw_pred, city_id)
 
-            #Load
-            loaded = False 
+            # --------- Load Phase ---------
+            # Initialize flags to track successful insertion
+            pred_loaded = False
+            met_loaded  = False
+
             # Insert prediction data first, then meteorological data
             if pred:                            
                 insert_prediction_data(cursor, pred)
-                loaded = True
+                pred_loaded = True
             if met:
                 insert_meteo_data(cursor, met)
-                loaded = True
+                met_loaded = True
 
-            if loaded:    
-                conn.commit()           # Commit transaction on success
+            if pred_loaded and met_loaded:  
+                conn.commit()           
+            elif pred_loaded or met_loaded:
+                # Commit meteo or prediction data but flag the city as incomplete
+                conn.commit()
+                loaded = 'PREDICTION' if pred_loaded else 'METEO'
+                missing = 'METEO' if pred_loaded else 'PREDICTION'
+                logging.warning(f"City {city_id}: only {loaded} data loaded; {missing} data missing.")
+                failed_cities.append(city_id)
             else:
-                # Log if either transformation returned no data
-                logging.error(
-                    f"City {city_id} - missing data: "
-                    f"met={bool(met)}, pred={bool(pred)}"
-                )
+                # Nothing was loaded
+                logging.error( f"City {city_id}: no data loaded.")
                 failed_cities.append(city_id)
 
-            # Pause between API calls to avoid rate limiting
+            # Pause between API calls to respect API rate limits
             time.sleep(10)
 
-        # After processing all cities, report overall status
+        # --------- Final Status Report ---------
         if not failed_cities:
             logging.info("All cities processed successfully.")
             print("All cities processed successfully.")
         else:
             logging.info(f"Failed cities: {failed_cities}")
             print(f"Failed cities: {failed_cities}")
+            
     finally:
         cursor.close()
         conn.close()
 
-
 if __name__ == "__main__":
-    # Entry point: run the pipeline when script is executed directly
+    # Execute the pipeline when the script is run directly
     run_pipeline()

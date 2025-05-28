@@ -78,15 +78,17 @@ The project focuses on cities and towns in Southeastern Spain that are at high r
 **Frequency of DANA (gota fría) events**
 
 
-<img src="images/frequency-DANA-events.png" alt="Frequency of DANA (gota fría) events" width="100">
+<img src="images/frequency-DANA-events.png" alt="Frequency of DANA (gota fría) events" width="250">
 
 
 ### Monitored Locations
 
-- **Valencia**: Carcaixent, Llíria, Ontinyent, Sagunto, Utiel, Valencia, Xàtiva
-- **Alicante**: Alcoy, Alicante, Benidorm, Elche, Jávea, Novelda, Orihuela, Pego, Rojales, Villena
-- **Murcia**: Águilas, Alcantarilla, Archena, Bullas, Calasparra, Caravaca de la Cruz, Cartagena, Cieza, Fuente Álamo, Jumilla, Lorca, Mazarrón, Molina de Segura, Mula, Murcia, Puerto Lumbreras, Torre-Pacheco, Totana, Yecla
-- **Almería**: Almería, El Ejido, Garrucha, Huércal-Overa
+<img src="images/selected-cities.png" alt="Selected municipalities" width="500">
+
+- **Valencia**: Carcaixent, Llíria, Miramar, Ontinyent, Sagunto, València, Xàtiva.
+- **Alicante**: Alcoy, Alicante/Alacant, Benidorm, Elche, Jávea, Novelda, Orihuela, Pego, Rojales, Villena.
+- **Murcia**: Águilas, Alcantarilla, Archena, Bullas, Calasparra, Caravaca de la Cruz, Cartagena, Cieza, Fuente Álamo, Jumilla, Lorca, Mazarrón, Molina de Segura, Mula, Murcia, Puerto Lumbreras, Torre-Pacheco, Totana, Yecla.
+- **Almería**: Albox, Almería, Carboneras, El Ejido, Garrucha, Huércal-Overa, Láujar de Andarax, Roquetas de Mar.
 
 ## 🌐AEMET OpenData API
 
@@ -176,12 +178,14 @@ API_KEY_WEATHER="YOUR_API_KEY"
 │ ├── 🖼️ application-architecture.png
 │ ├── 🖼️ frequency-DANA-events.png
 │ ├── 🖼️ entity-relationship-diagram.png
+│ ├── 🖼️ selected-cities.png
 │ └── 🖼️ spain-aridity-index.png
 ├── 📂 logs
 │ └── 📄 pipeline.log
 ├── 📂 tools
 │ ├── 🐍 debug_city.py
 │ ├── 🐍 run_single_city.py
+│ ├── 🐍 fetch_raw_json.py
 │ ├── 🐍 get_all_stations.py
 │ └── 📄 stations.txt
 ├── 📂 src
@@ -281,6 +285,8 @@ pytest tests/test_transform.py
 - `tools\run_single_city.py`: re-runs the full ETL pipeline for a single city.
 
 - `tools\get_all_stations.py`: script to fetch metadata for all AEMET weather stations. Use this to update the list of stations (`stations.txt`) if AEMET adds or changes stations.
+
+- `tools\fetch_raw_json.py`: script to fetch raw JSON data for a given `city_id`.
 
 - `Data Visualization.ipynb`: Jupyter notebook with visualizations of the collected data. It currently compares measured vs. predicted temperature and humidity for each city.
 

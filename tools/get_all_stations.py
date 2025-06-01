@@ -32,7 +32,7 @@ def fetch_and_save(url):
     if data_url:
         response = requests.get(data_url)
         if response.status_code == 200:
-            with open("all_stations.txt", 'w', encoding='utf-8') as f:
+            with open("tools/all_stations.txt", 'w', encoding='utf-8') as f:
                 f.write(response.text)
 
 if __name__ == "__main__":

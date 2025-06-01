@@ -52,7 +52,7 @@ def main() -> None:
         return
 
     postal_code, station_code = row
-    target_date = datetime.now() - timedelta(days=args.days_ago)
+    target_date = datetime.now() - timedelta(days=6)
 
     # Load API key from .env file
     load_dotenv()

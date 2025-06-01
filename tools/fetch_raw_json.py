@@ -1,6 +1,7 @@
 """
-Usage::
-    python -m tools.fetch_raw_json --city_id 23 [--days_ago 6]
+Usage
+-----
+    python -m tools.fetch_raw_json --city_id 23
 """
 import argparse
 import json
@@ -14,7 +15,7 @@ from src.extract import fetch_meteo_raw, fetch_prediction_raw
 from src.pipeline import get_connection
 
 
-def main() -> None:
+def main():
     parser = argparse.ArgumentParser(
         description="Fetch raw JSON responses for METEO and PREDICTION for a specified city and store them as files in the current working directory."
     )
@@ -23,12 +24,6 @@ def main() -> None:
         type=int,
         required=True,
         help="City identifier present in the 'cities' table.",
-    )
-    parser.add_argument(
-        "--days_ago",
-        type=int,
-        default=6,
-        help="Number of days back for historic station data (default: 6).",
     )
     args = parser.parse_args()
 
@@ -57,7 +52,7 @@ def main() -> None:
         return
 
     postal_code, station_code = row
-    target_date = datetime.now() - timedelta(days=args.days_ago)
+    target_date = datetime.now() - timedelta(days=6)
     date_tag = target_date.strftime("%Y-%m-%d")
 
     # Fetch METEO data

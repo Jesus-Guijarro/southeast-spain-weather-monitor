@@ -24,13 +24,13 @@ def test_to_int(input_value, expected):
     # _to_int should convert numeric strings and ints, handle 'Ip' and None
     assert transform._to_int(input_value) == expected
 
-def test_transform_meteo_none_or_empty():
+def test_transform_observed_none_or_empty():
     # Input cases with no valid data should return None
-    assert transform.transform_meteo([], city_id=1, date=date.today()) is None
-    assert transform.transform_meteo(None, city_id=1, date=date.today()) is None
-    assert transform.transform_meteo({}, city_id=1, date=date.today()) is None
+    assert transform.transform_observed([], municipality_id=1, date=date.today()) is None
+    assert transform.transform_observed(None, municipality_id=1, date=date.today()) is None
+    assert transform.transform_observed({}, municipality_id=1, date=date.today()) is None
 
-def test_transform_meteo_correct_values():
+def test_transform_observed_correct_values():
     # Verify correct parsing and conversion of various fields
     raw = [{
         'prec': '1,234',
@@ -42,9 +42,9 @@ def test_transform_meteo_correct_values():
         'hrMin': '70'
     }]
     d = date(2025, 5, 3)
-    out = transform.transform_meteo(raw, city_id=99, date=d)
+    out = transform.transform_observed(raw, municipality_id=99, date=d)
     assert out == {
-        'city_id': 99,
+        'municipality_id': 99,
         'date': '2025-05-03',
         'precipitation': 1.23,
         'temperature_avg': 10,
@@ -55,16 +55,16 @@ def test_transform_meteo_correct_values():
         'humidity_min': 70
     }
 
-def test_transform_prediction_none():
-    # Cases where prediction data is missing or empty should return None
-    base = [{'prediccion': {'dia': []}}]
-    assert transform.transform_prediction([], city_id=5) is None
-    assert transform.transform_prediction(None, city_id=5) is None
-    assert transform.transform_prediction([{}], city_id=5) is None
-    assert transform.transform_prediction(base, city_id=5) is None
+def test_transform_forecast_none():
+    # Cases where forecast data is missing or empty should return None
+    data = [{'prediccion': {'dia': []}}]
+    assert transform.transform_forecast([], municipality_id=5) is None
+    assert transform.transform_forecast(None, municipality_id=5) is None
+    assert transform.transform_forecast([{}], municipality_id=5) is None
+    assert transform.transform_forecast(data, municipality_id=5) is None
 
-def test_transform_prediction_correct_values():
-    # Validate parsing of nested prediction structure and correct aggregation
+def test_transform_forecast_correct_values():
+    # Validate parsing of nested forecast structure and correct aggregation
     tomorrow_data = {
         'prediccion': {
             'dia': [
@@ -79,7 +79,7 @@ def test_transform_prediction_correct_values():
             ]
         }
     }
-    out = transform.transform_prediction([tomorrow_data], city_id=123)
+    out = transform.transform_forecast([tomorrow_data], municipality_id=123)
     expected_date = (datetime.now() + timedelta(days=1)).strftime('%Y-%m-%d')
     assert out['date'] == expected_date
     
@@ -95,4 +95,4 @@ def test_transform_prediction_correct_values():
     assert out['prob_precipitation'] == [{'value': '30'}]
     assert out['prob_storm'] == [{'value': '5'}]
 
-    assert out['city_id'] == 123
+    assert out['municipality_id'] == 123

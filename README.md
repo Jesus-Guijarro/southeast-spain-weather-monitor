@@ -17,8 +17,8 @@ The data pipeline is orchestrated by `pipeline.py` and follows an ETL pattern:
    - Executes SQL INSERT/UPDATE statements to store the transformed weather data. 
 
 4. **pipeline.py** _(orchestrator)_
-   - Reads the list of target cities.
-   - Calls `extract.py`, then `transform.py`, then `load.py` for each city.
+   - Reads the list of target municipalities.
+   - Calls `extract.py`, then `transform.py`, then `load.py` for each municipality.
 
 **Application Architecture**
 
@@ -30,16 +30,16 @@ The Application Architecture is illustrated below, showing data flow from the AE
 
 The PostgreSQL database `southeast_spain_weather` contains two main tables:
 
-- `cities`: stores the data about the cities/towns to be able to make the queries to the API as information for future data analysis.
-- `weather_data`: stores the processed weather records (daily measurements and forecasts) for each city.
+- `municipalities`: stores the data about the municipalities to be able to make the queries to the API as information for future data analysis.
+- `weather_records`: stores the processed weather records (daily measurements and forecasts) for each municipality.
 
 <img src="images/entity-relationship-diagram.png" alt="ER Diagram" width="350"/>
 
 *Entity-Relationship diagram for the `southeast_spain_weather` database.*
 
 ### API Queries
-#### **Prediction data**
-Hourly forecast for the city passed as a parameter: **postal_code**. Provides hourly information up to 48 hours.
+#### **Forecast data**
+Hourly forecast for the municipality passed as a parameter: **postal_code**. Provides hourly information up to 48 hours.
 
 Queries are performed starting from 20:00 to obtain values for the next 24 hours of the following day.
 
@@ -53,8 +53,8 @@ There's another similar query:
 ```
 But it provides the same response data.
 
-#### **Meteo data**
-Returns a summary of weather values taken at a certain weather station on the specified date. In this case we have to put limits in the date so that they are 24 hours and coincide with the data of the prediction query.
+#### **Observed data**
+Returns a summary of weather values taken at a certain weather station on the specified date. In this case we have to put limits in the date so that they are 24 hours and coincide with the data of the forecast query.
 
 ```sh
 /api/valores/climatologicos/diarios/datos/fechaini/{start_date}/fechafin/{end_date}/estacion/{station_code}
@@ -63,7 +63,7 @@ Returns a summary of weather values taken at a certain weather station on the sp
 It' i's necessary to ask for data from 5-6 days before, since some stations may not have them ready until then.
 
 ## Selected Locations
-The project focuses on cities and towns in Southeastern Spain that are at high risk of desertification or drought. These areas have had unusually low precipitation and high aridity indices in recent years (see figures below for context):
+The project focuses on municipalities in Southeastern Spain that are at high risk of desertification or drought. These areas have had unusually low precipitation and high aridity indices in recent years (see figures below for context):
 
 **Accumulated Precipitation in the Hydrological Year (2024)**
 
@@ -83,7 +83,7 @@ The project focuses on cities and towns in Southeastern Spain that are at high r
 
 ### Monitored Locations
 
-<img src="images/selected-cities.png" alt="Selected municipalities" width="500">
+<img src="images/selected-municipalities.png" alt="Selected municipalities" width="500">
 
 - **Valencia**: Carcaixent, Llíria, Miramar, Ontinyent, Sagunto, València, Xàtiva.
 - **Alicante**: Alcoy, Alicante/Alacant, Benidorm, Elche, Jávea, Novelda, Orihuela, Pego, Rojales, Villena.
@@ -178,15 +178,15 @@ API_KEY_WEATHER="YOUR_API_KEY"
 │ ├── 🖼️ application-architecture.png
 │ ├── 🖼️ frequency-DANA-events.png
 │ ├── 🖼️ entity-relationship-diagram.png
-│ ├── 🖼️ selected-cities.png
+│ ├── 🖼️ selected-municipalities.png
 │ └── 🖼️ spain-aridity-index.png
 ├── 📂 logs
 │ └── 📄 pipeline.log
 ├── 📂 tools
-│ ├── 🐍 debug_city.py
-│ ├── 🐍 run_single_city.py
+│ ├── 🐍 debug_municipality.py
 │ ├── 🐍 fetch_raw_json.py
 │ ├── 🐍 get_all_stations.py
+│ ├── 🐍 run_single_municipality.py
 │ └── 📄 stations.txt
 ├── 📂 src
 │ ├── 🐍 __init__.py
@@ -223,10 +223,10 @@ source weather-env/bin/activate # or on Windows: weather-env\Scripts\activate
 
 2. Run the pipeline:
 ```sh
-python -m src.pipeline.py
+python -m src.pipeline
 ```
 
-This will perform extraction, transformation, and loading for the configured cities and dates. Logs are written to `logs/pipeline.log`.
+This will perform extraction, transformation, and loading for the configured municipalities and dates. Logs are written to `logs/pipeline.log`.
 
 ### Automatic Execution
 
@@ -246,8 +246,7 @@ Use `crontab -e` to schedule the pipeline to run daily at 20:00. For example:
    3. Create a new Basic Task (e.g., *Weather Data Daily*).
    4. Select **Daily** and set the time to **20:00:00**.
    5. In *Action*: **Start a Program** -> Browse and select `pipeline.bat`.
-   6. Browse and select weather_cities.bat.
-   7. Finish and save the task.
+   6. Finish and save the task.
 
 ## 🧪Testing
 
@@ -280,15 +279,15 @@ pytest tests/test_transform.py
    pause
    ```
 
-- `tools\debug_city.py`: script to diagnose why a specific city is not returning data.
+- `tools\debug_municipality.py`: script to diagnose why a specific municipality is not returning data.
 
-- `tools\run_single_city.py`: re-runs the full ETL pipeline for a single city.
+- `tools\run_single_municipality.py`: re-runs the full ETL pipeline for a single municipality.
 
 - `tools\get_all_stations.py`: script to fetch metadata for all AEMET weather stations. Use this to update the list of stations (`stations.txt`) if AEMET adds or changes stations.
 
-- `tools\fetch_raw_json.py`: script to fetch raw JSON data for a given `city_id`.
+- `tools\fetch_raw_json.py`: script to fetch raw JSON data for a given `municipality_id`.
 
-- `Data Visualization.ipynb`: Jupyter notebook with visualizations of the collected data. It currently compares measured vs. predicted temperature and humidity for each city.
+- `Data Visualization.ipynb`: Jupyter notebook with visualizations of the collected data. It currently compares observed vs. forecast temperature and humidity for each municipality.
 
 <img src="images/example-dashboard.png" alt="Example Dashboard" width="500"/>
 

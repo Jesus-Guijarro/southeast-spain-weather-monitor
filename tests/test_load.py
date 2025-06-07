@@ -2,7 +2,7 @@ import json
 from unittest.mock import Mock
 import load
 
-def test_insert_meteo_data_calls_execute_with_correct_parameters():
+def test_insert_observed_data_calls_execute_with_correct_parameters():
     # Prepare a fake cursor and sample data dict
     cursor = Mock()
     data = {
@@ -13,41 +13,47 @@ def test_insert_meteo_data_calls_execute_with_correct_parameters():
         'humidity_max': 80.0,
         'humidity_min': 40.0,
         'precipitation': 5.0,
-        'city_id': 123,
+        'municipality_id': 123,
         'date': '2025-05-03'
     }
 
     # Call the function under test
-    load.insert_meteo_data(cursor, data)
+    load.insert_observed_data(cursor, data)
 
     # Expected SQL with placeholders matching order of params
     expected_query = """
-    UPDATE weather_data
-    SET
-      temperature_measured_avg = %s,
-      temperature_measured_max = %s,
-      temperature_measured_min = %s,
-      humidity_measured_avg = %s,
-      humidity_measured_max = %s,
-      humidity_measured_min = %s,
-      precipitation = %s
-    WHERE city_id = %s AND date = %s;
+    INSERT INTO weather_records (
+      municipality_id,
+      date,
+      temperature_observed_avg,
+      temperature_observed_max,
+      temperature_observed_min,
+      humidity_observed_avg,
+      humidity_observed_max,
+      humidity_observed_min,
+      precipitation
+    ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+    ON CONFLICT (municipality_id, date) DO UPDATE
+      SET
+        temperature_observed_avg = EXCLUDED.temperature_observed_avg,
+        temperature_observed_max = EXCLUDED.temperature_observed_max,
+        temperature_observed_min = EXCLUDED.temperature_observed_min,
+        humidity_observed_avg = EXCLUDED.humidity_observed_avg,
+        humidity_observed_max = EXCLUDED.humidity_observed_max,
+        humidity_observed_min = EXCLUDED.humidity_observed_min,
+        precipitation = EXCLUDED.precipitation;
     """
-    # Compare stripped queries to avoid whitespace differences
+
     executed_query, params = cursor.execute.call_args[0]
-    assert expected_query.strip() == executed_query.strip()
-    assert params == (
-        data['temperature_avg'], data['temperature_max'], data['temperature_min'],
-        data['humidity_avg'], data['humidity_max'], data['humidity_min'],
-        data['precipitation'], data['city_id'], data['date']
-    )
 
+    # Compare stripped queries to avoid whitespace differences
+    assert expected_query.strip() == executed_query.strip()  
 
-def test_insert_prediction_data_calls_execute_with_correct_parameters():
-    # Prepare fake cursor and sample prediction data
+def test_insert_forecast_data_calls_execute_with_correct_parameters():
+    # Prepare fake cursor and sample forecast data
     cursor = Mock()
     data = {
-        'city_id': 456,
+        'municipality_id': 456,
         'date': '2025-05-04',
         'temperature_max': 30.0,
         'temperature_min': 20.0,
@@ -61,31 +67,43 @@ def test_insert_prediction_data_calls_execute_with_correct_parameters():
     }
 
     # Call the function under test
-    load.insert_prediction_data(cursor, data)
+    load.insert_forecast_data(cursor, data)
 
     expected_query = """
-    INSERT INTO weather_data (
-      city_id, 
+    INSERT INTO weather_records (
+      municipality_id,
       date,
-      temperature_predicted_max, 
-      temperature_predicted_min, 
-      temperature_predicted_avg,
-      humidity_predicted_avg, 
-      humidity_predicted_max, 
-      humidity_predicted_min,
-      precipitations, 
-      prob_precipitation, 
+      temperature_forecast_max,
+      temperature_forecast_min,
+      temperature_forecast_avg,
+      humidity_forecast_avg,
+      humidity_forecast_max,
+      humidity_forecast_min,
+      precipitations,
+      prob_precipitation,
       prob_storm
     ) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
-    ON CONFLICT (city_id, date) DO NOTHING;
+    ON CONFLICT (municipality_id, date) DO UPDATE
+      SET
+        temperature_forecast_max = EXCLUDED.temperature_forecast_max,
+        temperature_forecast_min = EXCLUDED.temperature_forecast_min,
+        temperature_forecast_avg = EXCLUDED.temperature_forecast_avg,
+        humidity_forecast_avg = EXCLUDED.humidity_forecast_avg,
+        humidity_forecast_max = EXCLUDED.humidity_forecast_max,
+        humidity_forecast_min = EXCLUDED.humidity_forecast_min,
+        precipitations = EXCLUDED.precipitations,
+        prob_precipitation = EXCLUDED.prob_precipitation,
+        prob_storm = EXCLUDED.prob_storm;
     """
 
     executed_query, params = cursor.execute.call_args[0]
-    assert expected_query.strip() == executed_query.strip() # Compare stripped queries to avoid whitespace differences
+    
+    # Compare stripped queries to avoid whitespace differences
+    assert expected_query.strip() == executed_query.strip() 
 
     # Ensure JSON fields are serialized correctly
     assert params == (
-        data['city_id'], data['date'],
+        data['municipality_id'], data['date'],
         data['temperature_max'], data['temperature_min'], data['temperature_avg'],
         data['humidity_avg'], data['humidity_max'], data['humidity_min'],
         json.dumps(data['precipitations']),

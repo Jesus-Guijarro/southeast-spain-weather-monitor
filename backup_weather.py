@@ -91,7 +91,6 @@ def compress_and_cleanup(session_dir: Path) -> Path:
     shutil.rmtree(session_dir)
     return zip_path
 
-
 def rotate_log():
     """
     Clear the contents of the main log file after successful backup,
@@ -99,7 +98,6 @@ def rotate_log():
     """
     # Overwrite the log file with an empty string
     LOG_FILE.write_text('')
-
 
 def purge_old_backups():
     """
@@ -136,7 +134,6 @@ def main():
     purge_old_backups()
 
     print(f'Backup completed: {zip_file}')
-
 
 if __name__ == '__main__':
     try:

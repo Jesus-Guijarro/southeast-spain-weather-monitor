@@ -25,13 +25,13 @@ def _to_int(value):
     return int(value)
 
 
-def transform_meteo(raw_json, city_id, date):
+def transform_observed(raw_json, municipality_id, date):
     """
-    Clean and reshape daily meteorological observations into a flat dict.
+    Clean and reshape daily observed observations into a flat dict.
 
     Parameters:
         raw_json (list of dict): List containing one dict of daily stats.
-        city_id: Identifier for the city.
+        municipality_id: Identifier for the municipality.
         date (datetime): Date for which data was fetched.
 
     Returns:
@@ -41,28 +41,28 @@ def transform_meteo(raw_json, city_id, date):
     if not raw_json or not isinstance(raw_json, list) or len(raw_json) == 0:
         return None
     
-    d0 = raw_json[0]
+    observed_data = raw_json[0]
     
     return {
-        'city_id': city_id,
+        'municipality_id': municipality_id,
         'date': date.strftime('%Y-%m-%d'),
-        'precipitation': _to_float(d0.get('prec')),
-        'temperature_avg': round(_to_float(d0.get('tmed'))) if _to_float(d0.get('tmed')) is not None else None,
-        'temperature_max': round(_to_float(d0.get('tmax'))) if _to_float(d0.get('tmax')) is not None else None,
-        'temperature_min': round(_to_float(d0.get('tmin'))) if _to_float(d0.get('tmin')) is not None else None,
-        'humidity_avg': _to_int(d0.get('hrMedia')),
-        'humidity_max': _to_int(d0.get('hrMax')),
-        'humidity_min': _to_int(d0.get('hrMin'))
+        'precipitation': _to_float(observed_data.get('prec')),
+        'temperature_avg': round(_to_float(observed_data.get('tmed'))) if _to_float(observed_data.get('tmed')) is not None else None,
+        'temperature_max': round(_to_float(observed_data.get('tmax'))) if _to_float(observed_data.get('tmax')) is not None else None,
+        'temperature_min': round(_to_float(observed_data.get('tmin'))) if _to_float(observed_data.get('tmin')) is not None else None,
+        'humidity_avg': _to_int(observed_data.get('hrMedia')),
+        'humidity_max': _to_int(observed_data.get('hrMax')),
+        'humidity_min': _to_int(observed_data.get('hrMin'))
     }
 
 
-def transform_prediction(raw_json, city_id):
+def transform_forecast(raw_json, municipality_id):
     """
     Clean and reshape hourly forecast for the next day into summary metrics.
 
     Parameters:
         raw_json (list of dict): AEMET forecast response, with 'prediccion' key.
-        city_id: Identifier for the municipality.
+        municipality_id: Identifier for the municipality.
 
     Returns:
         dict summarizing tomorrow's temperature and humidity extremes and averages,
@@ -71,8 +71,8 @@ def transform_prediction(raw_json, city_id):
     # Basic validation: need at least one element with 'prediccion'
     if not raw_json or not isinstance(raw_json, list) or len(raw_json) == 0:
         return None
-    pred = raw_json[0].get('prediccion', {})
-    days = pred.get('dia', []) # List of day-wise forecasts
+    forecast = raw_json[0].get('prediccion', {})
+    days = forecast.get('dia', []) # List of day-wise forecasts
 
     # Expect today's (0) and tomorrow's (1) entries
     if len(days) < 2:
@@ -89,7 +89,7 @@ def transform_prediction(raw_json, city_id):
     hum_vals = [float(h['value']) for h in hums]
     
     return {
-        'city_id': city_id,
+        'municipality_id': municipality_id,
         'date': (datetime.now() + timedelta(days=1)).strftime('%Y-%m-%d'),
         'temperature_max': max(temp_vals) if temp_vals else None,
         'temperature_min': min(temp_vals) if temp_vals else None,

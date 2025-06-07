@@ -1,34 +1,34 @@
 import json
 
-def insert_meteo_data(cursor, data):
+def insert_observed_data(cursor, data):
     """
-    Insert meteo data in WEATHER_DATA table
+    Insert observed data in WEATHER_records table
     """
-    # Prepare SQL statement to update with meteo data into an existing weather_data record
+    # Prepare SQL statement to update with observed data into an existing "weather_records" record
     q = """
-    INSERT INTO weather_data (
-      city_id,
+    INSERT INTO weather_records (
+      municipality_id,
       date,
-      temperature_measured_avg,
-      temperature_measured_max,
-      temperature_measured_min,
-      humidity_measured_avg,
-      humidity_measured_max,
-      humidity_measured_min,
+      temperature_observed_avg,
+      temperature_observed_max,
+      temperature_observed_min,
+      humidity_observed_avg,
+      humidity_observed_max,
+      humidity_observed_min,
       precipitation
     ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
-    ON CONFLICT (city_id, date) DO UPDATE
+    ON CONFLICT (municipality_id, date) DO UPDATE
       SET
-        temperature_measured_avg = EXCLUDED.temperature_measured_avg,
-        temperature_measured_max = EXCLUDED.temperature_measured_max,
-        temperature_measured_min = EXCLUDED.temperature_measured_min,
-        humidity_measured_avg = EXCLUDED.humidity_measured_avg,
-        humidity_measured_max = EXCLUDED.humidity_measured_max,
-        humidity_measured_min = EXCLUDED.humidity_measured_min,
+        temperature_observed_avg = EXCLUDED.temperature_observed_avg,
+        temperature_observed_max = EXCLUDED.temperature_observed_max,
+        temperature_observed_min = EXCLUDED.temperature_observed_min,
+        humidity_observed_avg = EXCLUDED.humidity_observed_avg,
+        humidity_observed_max = EXCLUDED.humidity_observed_max,
+        humidity_observed_min = EXCLUDED.humidity_observed_min,
         precipitation = EXCLUDED.precipitation;
     """
     cursor.execute(q, (
-        data['city_id'],
+        data['municipality_id'],
         data['date'],
         data['temperature_avg'],
         data['temperature_max'],
@@ -40,39 +40,39 @@ def insert_meteo_data(cursor, data):
     ))
 
 
-def insert_prediction_data(cursor, data):
+def insert_forecast_data(cursor, data):
     """
-    Insert prediction data into WEATHER_DATA table
+    Insert forecast data into weather_records table
     """
     # Prepare INSERT statement with ON CONFLICT to avoid duplicate entries
     q = """
-    INSERT INTO weather_data (
-      city_id,
+    INSERT INTO weather_records (
+      municipality_id,
       date,
-      temperature_predicted_max,
-      temperature_predicted_min,
-      temperature_predicted_avg,
-      humidity_predicted_avg,
-      humidity_predicted_max,
-      humidity_predicted_min,
+      temperature_forecast_max,
+      temperature_forecast_min,
+      temperature_forecast_avg,
+      humidity_forecast_avg,
+      humidity_forecast_max,
+      humidity_forecast_min,
       precipitations,
       prob_precipitation,
       prob_storm
     ) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
-    ON CONFLICT (city_id, date) DO UPDATE
+    ON CONFLICT (municipality_id, date) DO UPDATE
       SET
-        temperature_predicted_max = EXCLUDED.temperature_predicted_max,
-        temperature_predicted_min = EXCLUDED.temperature_predicted_min,
-        temperature_predicted_avg = EXCLUDED.temperature_predicted_avg,
-        humidity_predicted_avg = EXCLUDED.humidity_predicted_avg,
-        humidity_predicted_max = EXCLUDED.humidity_predicted_max,
-        humidity_predicted_min = EXCLUDED.humidity_predicted_min,
+        temperature_forecast_max = EXCLUDED.temperature_forecast_max,
+        temperature_forecast_min = EXCLUDED.temperature_forecast_min,
+        temperature_forecast_avg = EXCLUDED.temperature_forecast_avg,
+        humidity_forecast_avg = EXCLUDED.humidity_forecast_avg,
+        humidity_forecast_max = EXCLUDED.humidity_forecast_max,
+        humidity_forecast_min = EXCLUDED.humidity_forecast_min,
         precipitations = EXCLUDED.precipitations,
         prob_precipitation = EXCLUDED.prob_precipitation,
         prob_storm = EXCLUDED.prob_storm;
     """
     cursor.execute(q, (
-        data['city_id'],
+        data['municipality_id'],
         data['date'],
         data['temperature_max'],
         data['temperature_min'],

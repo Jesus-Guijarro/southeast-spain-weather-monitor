@@ -7,9 +7,9 @@ import time
 import os
 from dotenv import load_dotenv
 
-from .extract import fetch_meteo_raw, fetch_prediction_raw
-from .transform import transform_meteo, transform_prediction
-from .load import insert_meteo_data, insert_prediction_data
+from .extract import fetch_observed_raw, fetch_forecast_raw
+from .transform import transform_observed, transform_forecast
+from .load import insert_observed_data, insert_forecast_data
 
 def read_db_config():
     """
@@ -29,7 +29,6 @@ def read_db_config():
     # Extract and return connection parameters
     return db['dbname'], db['user'], db['password'], db['host'], db['port']
 
-
 def get_connection():
     """
     Establishes a connection to the PostgreSQL database
@@ -43,7 +42,6 @@ def get_connection():
     # Return both connection and cursor for executing queries
     return conn, conn.cursor()
 
-
 def setup_logging():
     """
     Configures logging to write INFO level and above messages to a log file
@@ -54,13 +52,12 @@ def setup_logging():
         format='%(asctime)s - %(levelname)s - %(message)s'  # Timestamped format
     )
 
-
 def run_pipeline():
     """
     Main pipeline orchestration function:
     1. Sets up logging
-    2. Fetches list of cities
-    3. For each city: extracts, transforms, and loads weather data
+    2. Fetches list of municipalities
+    3. For each municipality: extracts, transforms, and loads weather data
     4. Handles errors and logs failures
     """
     setup_logging()
@@ -69,9 +66,9 @@ def run_pipeline():
     conn, cursor = get_connection()
 
     try:
-        # Retrieve cities and their codes from the database
-        cursor.execute("SELECT city_id, postal_code, station_code FROM cities;")
-        cities = cursor.fetchall()
+        # Retrieve municipalities and their codes from the database
+        cursor.execute("SELECT municipality_id, postal_code, station_code FROM municipalities;")
+        municipalities = cursor.fetchall()
 
         # Load environment variables (e.g., API key)
         load_dotenv()
@@ -80,60 +77,60 @@ def run_pipeline():
         # Target date for historical data: 6 days ago
         target_date = datetime.now() - timedelta(days=6)
 
-        failed_cities = []  # Track cities where processing fails
+        failed_municipalities = []  # Track municipalities where processing fails
 
-        # Process each city in the list
-        for city_id, postal_code, station_code in cities:
+        # Process each municipality in the list
+        for municipality_id, postal_code, station_code in municipalities:
             
             # --------- Extraction Phase ---------
-            # Fetch raw meteorological data
-            raw_met = fetch_meteo_raw(city_id, station_code, target_date, api_key)
-            # Fetch raw prediction data
-            raw_pred = fetch_prediction_raw(city_id, postal_code, api_key)
+            # Fetch raw observed data
+            raw_observed = fetch_observed_raw(municipality_id, station_code, target_date, api_key)
+            # Fetch raw forecast data
+            raw_forecast = fetch_forecast_raw(municipality_id, postal_code, api_key)
 
             # --------- Transform Phase ---------
-            # Convert raw meteorological data to structured format
-            met = transform_meteo(raw_met, city_id, target_date)
-            # Convert raw prediction data to structured format
-            pred = transform_prediction(raw_pred, city_id)
+            # Convert raw observed data to structured format
+            observed = transform_observed(raw_observed, municipality_id, target_date)
+            # Convert raw forecast data to structured format
+            forecast = transform_forecast(raw_forecast, municipality_id)
 
             # --------- Load Phase ---------
             # Initialize flags to track successful insertion
-            pred_loaded = False
-            met_loaded  = False
+            forecast_loaded = False
+            observed_loaded  = False
 
-            # Insert prediction data first, then meteorological data
-            if pred:                            
-                insert_prediction_data(cursor, pred)
-                pred_loaded = True
-            if met:
-                insert_meteo_data(cursor, met)
-                met_loaded = True
+            # Insert forecast data first, then observed data
+            if forecast:                            
+                insert_forecast_data(cursor, forecast)
+                forecast_loaded = True
+            if observed:
+                insert_observed_data(cursor, observed)
+                observed_loaded = True
 
-            if pred_loaded and met_loaded:  
+            if forecast_loaded and observed_loaded:  
                 conn.commit()           
-            elif pred_loaded or met_loaded:
-                # Commit meteo or prediction data but flag the city as incomplete
+            elif forecast_loaded or observed_loaded:
+                # Commit observed or forecast data but flag the municipality as incomplete
                 conn.commit()
-                loaded = 'PREDICTION' if pred_loaded else 'METEO'
-                missing = 'METEO' if pred_loaded else 'PREDICTION'
-                logging.warning(f"City {city_id}: only {loaded} data loaded; {missing} data missing.")
-                failed_cities.append(city_id)
+                loaded = 'FORECAST' if forecast_loaded else 'OBSERVED'
+                missing = 'OBSERVED' if forecast_loaded else 'FORECAST'
+                logging.warning(f"Municipality {municipality_id}: only {loaded} data loaded; {missing} data missing.")
+                failed_municipalities.append(municipality_id)
             else:
                 # Nothing was loaded
-                logging.error( f"City {city_id}: no data loaded.")
-                failed_cities.append(city_id)
+                logging.error( f"Municipality {municipality_id}: no data loaded.")
+                failed_municipalities.append(municipality_id)
 
             # Pause between API calls to respect API rate limits
             time.sleep(10)
 
         # --------- Final Status Report ---------
-        if not failed_cities:
-            logging.info("All cities processed successfully.")
-            print("All cities processed successfully.")
+        if not failed_municipalities:
+            logging.info("All municipalities processed successfully.")
+            print("All municipalities processed successfully.")
         else:
-            logging.info(f"Failed cities: {failed_cities}")
-            print(f"Failed cities: {failed_cities}")
+            logging.info(f"Failed municipalities: {failed_municipalities}")
+            print(f"Failed municipalities: {failed_municipalities}")
             
     finally:
         cursor.close()

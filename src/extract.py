@@ -9,7 +9,7 @@ MAX_RETRIES = 5
 # Delay between retries in seconds
 DELAY = 10
 
-def _get_json_with_retry(url, headers=None, params=None, query_type=None, city_id=None):
+def _get_json_with_retry(url, headers=None, params=None, query_type=None, municipality_id=None):
     """
     Perform an HTTP GET with automatic retries on transient failures.
 
@@ -17,8 +17,8 @@ def _get_json_with_retry(url, headers=None, params=None, query_type=None, city_i
         url (str): Full endpoint URL to request.
         headers (dict, optional): HTTP headers to include.
         params (dict, optional): Query parameters for the request.
-        query_type (str, optional): Label for logging context (e.g., 'METEO').
-        city_id (int or str, optional): Identifier for the city, for logging.
+        query_type (str, optional): Label for logging context (e.g., 'OBSERVED').
+        municipality_id (int or str, optional): Identifier for the municipality, for logging.
 
     Returns:
         dict or list: Parsed JSON response on success, or None on failure.
@@ -32,7 +32,7 @@ def _get_json_with_retry(url, headers=None, params=None, query_type=None, city_i
             # If we get a retryable status code, log and retry
             if status in RETRY_STATUS_CODES:
                 logging.warning(
-                    f"{query_type} - City {city_id} - status {status}. "
+                    f"{query_type} - municipality {municipality_id} - status {status}. "
                     f"Attempt {attempt}/{MAX_RETRIES}"
                 )
                 if attempt < MAX_RETRIES:
@@ -50,20 +50,20 @@ def _get_json_with_retry(url, headers=None, params=None, query_type=None, city_i
             # Only retry on configured status codes or network errors
             if (status in RETRY_STATUS_CODES or status is None) and attempt < MAX_RETRIES:
                 logging.warning(
-                    f"{query_type} - City {city_id} - request error {status or ''}: {e}. "
+                    f"{query_type} - Municipality {municipality_id} - request error {status or ''}: {e}. "
                     f"Attempt {attempt}/{MAX_RETRIES}"
                 )
                 time.sleep(DELAY)
                 continue
 
             # Log final failure if out of retries or unrecoverable error
-            logging.error(f"{query_type} - City {city_id} - request error final: {e}")
+            logging.error(f"{query_type} - Municipality {municipality_id} - request error final: {e}")
             return None
     # Exhausted all retries without success
     return None
 
 
-def _get_data_url(endpoint_url, city_id, api_key, query_type):
+def _get_data_url(endpoint_url, municipality_id, api_key, query_type):
     """
     Retrieve the actual data URL ('datos') from the AEMET API response.
 
@@ -77,21 +77,21 @@ def _get_data_url(endpoint_url, city_id, api_key, query_type):
     # Fetch the metadata JSON that includes 'datos'
     data = _get_json_with_retry(
         endpoint_url, headers=headers, params=params,
-        query_type=query_type, city_id=city_id
+        query_type=query_type, municipality_id=municipality_id
     )
 
     # Ensure the response contains the 'datos' field
     if not data or 'datos' not in data:
-        logging.error(f"{query_type} - City {city_id} - 'datos' key missing or fetch failed")
+        logging.error(f"{query_type} - Municipality {municipality_id} - 'datos' key missing or fetch failed")
         return None
     
     # Return the URL where the actual JSON data resides
     return data['datos']
 
 
-def fetch_meteo_raw(city_id, station_code, date, api_key):
+def fetch_observed_raw(municipality_id, station_code, date, api_key):
     """
-    Fetch raw daily meteorological observations for a station on a given date.
+    Fetch raw daily observed observations for a station on a given date.
 
     This function:
       1. Constructs the AEMET API endpoint for daily station data.
@@ -116,33 +116,33 @@ def fetch_meteo_raw(city_id, station_code, date, api_key):
     )
 
     # First call to retrieve the data URL
-    data_url = _get_data_url(endpoint, city_id, api_key, "METEO")
+    data_url = _get_data_url(endpoint, municipality_id, api_key, "OBSERVED")
     if not data_url:
         return None
     
-    # Second call to fetch the actual meteo data
-    return _get_json_with_retry(data_url, query_type="METEO", city_id=city_id)
+    # Second call to fetch the actual observed data
+    return _get_json_with_retry(data_url, query_type="OBSERVED", municipality_id=municipality_id)
 
 
-def fetch_prediction_raw(city_id, postal_code, api_key):
+def fetch_forecast_raw(municipality_id, postal_code, api_key):
     """
-    Fetch raw hourly weather predictions for the next 24 hours for a municipality.
+    Fetch raw hourly weather forecast for the next 24 hours for a municipality.
 
     Steps:
       1. Call the AEMET 'prediccion' endpoint for the given postal code.
       2. Extract the 'datos' URL via _get_data_url.
       3. Retrieve and return the JSON forecast array.
     """
-    # Construct the specific prediction endpoint URL for the municipality
+    # Construct the specific forecast endpoint URL for the municipality
     endpoint = (
         f"https://opendata.aemet.es/opendata/api/"
         f"prediccion/especifica/municipio/horaria/{postal_code}"
     )
 
     # Obtain the URL where the 24h forecast JSON is hosted
-    data_url = _get_data_url(endpoint, city_id, api_key, "PREDICTION")
+    data_url = _get_data_url(endpoint, municipality_id, api_key, "FORECAST")
     if not data_url:
         return None
     
-    # Fetch and return the actual prediction data
-    return _get_json_with_retry(data_url, query_type="PREDICTION", city_id=city_id)
+    # Fetch and return the actual forecast data
+    return _get_json_with_retry(data_url, query_type="FORECAST", municipality_id=municipality_id)

@@ -1,6 +1,6 @@
 """
 Usage::
-    python -m tools.debug_city --city_id 23 [--days_ago 6]
+    python -m tools.debug_municipality --municipality_id 23 [--days_ago 6]
 """
 import argparse
 import json
@@ -9,8 +9,8 @@ from datetime import datetime, timedelta
 
 from dotenv import load_dotenv
 
-from src.extract import fetch_meteo_raw, fetch_prediction_raw
-from src.transform import transform_meteo, transform_prediction
+from src.extract import fetch_observed_raw, fetch_forecast_raw
+from src.transform import transform_observed, transform_forecast
 from src.pipeline import get_connection
 
 # Helper
@@ -20,13 +20,13 @@ def _pp(obj: object) -> str:
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description="Diagnose why a city/station is not returning data from AEMET."
+        description="Diagnose why a municipality/station is not returning data from AEMET."
     )
     parser.add_argument(
-        "--city_id",
+        "--municipality_id",
         type=int,
         required=True,
-        help="City identifier present in the 'cities' table.",
+        help="Municipality identifier present in the 'municipalities' table.",
     )
     parser.add_argument(
         "--days_ago",
@@ -36,19 +36,18 @@ def main() -> None:
     )
     args = parser.parse_args()
 
-    
-    # Look up the city in the database to obtain its postal and station codes
+    # Look up the municipality in the database to obtain its postal and station codes
     conn, cur = get_connection()
     cur.execute(
-        "SELECT postal_code, station_code FROM cities WHERE city_id = %s;",
-        (args.city_id,),
+        "SELECT postal_code, station_code FROM municipalities WHERE municipality_id = %s;",
+        (args.municipality_id,),
     )
     row = cur.fetchone()
     cur.close()
     conn.close()
 
     if row is None:
-        print(f"[ERROR] city_id {args.city_id} not found in table 'cities'.")
+        print(f"[ERROR] municipality_id {args.municipality_id} not found in table 'municipalities'.")
         return
 
     postal_code, station_code = row
@@ -62,31 +61,30 @@ def main() -> None:
         return
 
     print(
-        f"\n--- Diagnosis for city_id={args.city_id} "
+        f"\n--- Diagnosis for municipality_id={args.municipality_id} "
         f"(station={station_code}, postal={postal_code}) ---"
     )
     print(f"Target historic date: {target_date.strftime('%Y-%m-%d')}\n")
 
-    # METEO extraction
-    print("=> Fetching METEO …")
-    raw_met = fetch_meteo_raw(args.city_id, station_code, target_date, api_key)
-    if raw_met is None:
-        print("❌  METEO fetch failed (check messages above).")
+    # OBSERVED extraction
+    print("=> Fetching OBSERVED …")
+    raw_observed = fetch_observed_raw(args.municipality_id, station_code, target_date, api_key)
+    if raw_observed is None:
+        print("❌  OBSERVED fetch failed (check messages above).")
     else:
-        print("✅  METEO fetch succeeded.")
+        print("✅  OBSERVED fetch succeeded.")
         print("Transformed record:")
-        print(_pp(transform_meteo(raw_met, args.city_id, target_date)))
+        print(_pp(transform_observed(raw_observed, args.municipality_id, target_date)))
 
-    # PREDICTION extraction
-    print("\n=> Fetching PREDICTION …")
-    raw_pred = fetch_prediction_raw(args.city_id, postal_code, api_key)
-    if raw_pred is None:
-        print("❌  PREDICTION fetch failed (check messages above).")
+    # FORECAST extraction
+    print("\n=> Fetching FORECAST …")
+    raw_forecast = fetch_forecast_raw(args.municipality_id, postal_code, api_key)
+    if raw_forecast is None:
+        print("❌  FORECAST fetch failed (check messages above).")
     else:
-        print("✅  PREDICTION fetch succeeded.")
+        print("✅  FORECAST fetch succeeded.")
         print("Transformed record:")
-        print(_pp(transform_prediction(raw_pred, args.city_id)))
-
+        print(_pp(transform_forecast(raw_forecast, args.municipality_id)))
 
 if __name__ == "__main__":
     main()

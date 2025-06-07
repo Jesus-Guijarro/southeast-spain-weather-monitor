@@ -1,14 +1,14 @@
 """
 Usage
 -----
-# 1) Meteo + Prediction (default mode: meteo uses offset -6 days)
-python -m tools.run_single_city --city_id 23
+# 1) Observed + Forecast data (default mode: observed uses offset -6 days)
+python -m tools.run_single_municipality --municipality_id 23
 
-# 2) Prediction ONLY
-python -m tools.run_single_city --city_id 23 --pred
+# 2) Forecast data ONLY
+python -m tools.run_single_municipality --municipality_id 23 --forecast
 
-# 3) Meteo ONLY for a specific date, formatted as YYYY-MM-DD
-python -m tools.run_single_city --city_id 23 --met-date 2025-05-30
+# 3) Observed data ONLY for a specific date, formatted as YYYY-MM-DD
+python -m tools.run_single_municipality --municipality_id 23 --date 2025-05-30
 """
 
 import argparse
@@ -16,60 +16,58 @@ import os
 from datetime import datetime, timedelta
 
 from dotenv import load_dotenv
-from src.extract import fetch_meteo_raw, fetch_prediction_raw
-from src.transform import transform_meteo, transform_prediction
-from src.load import insert_meteo_data, insert_prediction_data
+from src.extract import fetch_observed_raw, fetch_forecast_raw
+from src.transform import transform_observed, transform_forecast
+from src.load import insert_observed_data, insert_forecast_data
 from src.pipeline import get_connection
 
 
-def get_city(cur, city_id):
-    """Fetch postal and station codes for a city."""
+def get_municipality(cur, municipality_id):
+    """Fetch postal and station codes for a municipality."""
     cur.execute(
-        "SELECT postal_code, station_code FROM cities WHERE city_id = %s;",
-        (city_id,),
+        "SELECT postal_code, station_code FROM municipalities WHERE municipality_id = %s;",
+        (municipality_id,),
     )
     return cur.fetchone()
 
-
 def main():
-    parser = argparse.ArgumentParser(description="Run the ETL pipeline for a single city.")
-    parser.add_argument("--city_id", type=int, required=True,
-                        help="City identifier present in the 'cities' table.")
-    parser.add_argument("--met-date", dest="met_date", type=str,
-                        help="Run ONLY meteo for the given date (YYYY-MM-DD).")
-    parser.add_argument("--pred", dest="pred_only", action="store_true",
-                        help="Run ONLY prediction.")
+    parser = argparse.ArgumentParser(description="Run the ETL pipeline for a single municipality.")
+    parser.add_argument("--municipality_id", type=int, required=True,
+                        help="Municipality identifier present in the 'municipalities' table.")
+    parser.add_argument("--date", dest="date", type=str,
+                        help="Run ONLY observed for the given date (YYYY-MM-DD).")
+    parser.add_argument("--forecast", dest="forecast_only", action="store_true",
+                        help="Run ONLY forecast.")
     args, _ = parser.parse_known_args()
 
-    if args.met_date and args.pred_only:
-        parser.error("Choose either --met-date or --pred, not both.")
+    if args.date and args.forecast_only:
+        parser.error("Choose either --date or --forecast, not both.")
 
-    if args.met_date:
-        # Mode 3: only meteo for a specific date
+    if args.date:
+        # Mode 3: only observed for a specific date
         try:
-            target_date = datetime.strptime(args.met_date, "%Y-%m-%d")
+            target_date = datetime.strptime(args.date, "%Y-%m-%d")
         except ValueError:
-            parser.error("--met-date must be in YYYY-MM-DD format.")
-        run_meteo, run_pred = True, False
-    elif args.pred_only:
-        # Mode 2: only prediction
+            parser.error("--date must be in YYYY-MM-DD format.")
+        run_observed, run_forecast = True, False
+    elif args.forecast_only:
+        # Mode 2: only forecast
         target_date = None
-        run_meteo, run_pred = False, True
+        run_observed, run_forecast = False, True
     else:
-        # Mode 1: both meteo and prediction, default to -6 days offset
+        # Mode 1: both observed and forecast, default to -6 days offset
         target_date = datetime.now() - timedelta(days=6)
-        run_meteo, run_pred = True, True
+        run_observed, run_forecast = True, True
 
     conn, cur = get_connection()
-    meta = get_city(cur, args.city_id)
-    if meta is None:
-        print(f"[ERROR] city_id {args.city_id} not found in 'cities' table.")
+    municipality = get_municipality(cur, args.municipality_id)
+    if municipality is None:
+        print(f"[ERROR] municipality_id {args.municipality_id} not found in 'municipalities' table.")
         cur.close()
         conn.close()
         return
 
-    postal_code, station_code = meta
-
+    postal_code, station_code = municipality
 
     load_dotenv()
     api_key = os.getenv("API_KEY_WEATHER")
@@ -80,30 +78,30 @@ def main():
         return
     
     # ------------------------------ Extract -------------------------------- #
-    raw_meteo = raw_pred = None
-    if run_meteo:
-        raw_meteo = fetch_meteo_raw(
-            args.city_id, station_code, target_date, api_key
+    raw_observed = raw_forecast = None
+    if run_observed:
+        raw_observed = fetch_observed_raw(
+            args.municipality_id, station_code, target_date, api_key
         )
-    if run_pred:
-        raw_pred = fetch_prediction_raw(
-            args.city_id, postal_code, api_key
+    if run_forecast:
+        raw_forecast = fetch_forecast_raw(
+            args.municipality_id, postal_code, api_key
         )
 
     # ------------------------------ Transform ------------------------------- #
-    meteo_data = pred_data = None
-    if run_meteo and raw_meteo:
-        meteo_data = transform_meteo(raw_meteo, args.city_id, target_date)
-    if run_pred and raw_pred:
-        pred_data = transform_prediction(raw_pred, args.city_id)
+    observed_data = forecast_data = None
+    if run_observed and raw_observed:
+        observed_data = transform_observed(raw_observed, args.municipality_id, target_date)
+    if run_forecast and raw_forecast:
+        forecast_data = transform_forecast(raw_forecast, args.municipality_id)
 
     # -------------------------------- Load ---------------------------------- #
     wrote_anything = False
-    if pred_data:
-        insert_prediction_data(cur, pred_data)
+    if forecast_data:
+        insert_forecast_data(cur, forecast_data)
         wrote_anything = True
-    if meteo_data:
-        insert_meteo_data(cur, meteo_data)
+    if observed_data:
+        insert_observed_data(cur, observed_data)
         wrote_anything = True
 
     if wrote_anything:
@@ -111,14 +109,13 @@ def main():
         print("✅ Data committed to database successfully.")
     else:
         print("❌ Nothing written to DB:")
-        if run_meteo and not meteo_data:
-            print("   • METEO data missing or invalid")
-        if run_pred and not pred_data:
-            print("   • PREDICTION data missing or invalid")
+        if run_observed and not observed_data:
+            print("   • OBSERVED data missing or invalid")
+        if run_forecast and not forecast_data:
+            print("   • FORECAST data missing or invalid")
 
     cur.close()
     conn.close()
-
 
 if __name__ == "__main__":
     main()

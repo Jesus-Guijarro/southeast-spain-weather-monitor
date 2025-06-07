@@ -15,12 +15,12 @@ VALUES
   ('Murcia'),
   ('Almería');
 
--- CREATE cities TABLE
-CREATE TABLE cities (
-    city_id SERIAL PRIMARY KEY,
+-- CREATE municipalities TABLE
+CREATE TABLE municipalities (
+    municipality_id SERIAL PRIMARY KEY,
     postal_code VARCHAR(5) NOT NULL,
     station_code VARCHAR(6) NOT NULL,
-    city_name VARCHAR(70) NOT NULL,
+    municipality_name VARCHAR(70) NOT NULL,
     station_name VARCHAR(70) NOT NULL,
     latitude NUMERIC(9,6) NOT NULL,
     longitude NUMERIC(9,6) NOT NULL,
@@ -30,8 +30,8 @@ CREATE TABLE cities (
     UNIQUE (postal_code)
 );
 
--- INSERT DATA IN cities
-INSERT INTO cities (postal_code, station_code, city_name, station_name, latitude, longitude, province_id)
+-- INSERT DATA IN municipalities
+INSERT INTO municipalities (postal_code, station_code, municipality_name, station_name, latitude, longitude, province_id)
 VALUES
 -- Valencia
 ('46250', '8416Y', 'Valencia', 'VALÈNCIA, VIVEROS',39.480339,-0.368115,1),
@@ -86,31 +86,33 @@ VALUES
 ('04006','6364X','Albox','ALBOX',37.388507,-2.147991,4);
 
 
--- CREATE weather_data TABLE
-CREATE TABLE weather_data (
-    city_id INTEGER NOT NULL,
+-- CREATE weather_recordsTABLE
+CREATE TABLE weather_records (
+    municipality_id INTEGER NOT NULL,
     date DATE NOT NULL,
     
-    -- Prediction data
-    temperature_predicted_avg REAL,
-    temperature_predicted_max REAL,
-    temperature_predicted_min REAL,
-    humidity_predicted_avg REAL,
-    humidity_predicted_max REAL,
-    humidity_predicted_min REAL,
+    -- Forecast data (forecast for next 24 hours)
+    temperature_forecast_avg REAL,
+    temperature_forecast_max REAL,
+    temperature_forecast_min REAL,
+    humidity_forecast_avg REAL,
+    humidity_forecast_max REAL,
+    humidity_forecast_min REAL,
     precipitations JSONB,
     prob_precipitation JSONB,
     prob_storm JSONB,
 
-    -- Meteo data
-    temperature_measured_avg REAL,
-    temperature_measured_max REAL,
-    temperature_measured_min REAL,
-    humidity_measured_avg REAL,
-    humidity_measured_max REAL,
-    humidity_measured_min REAL,
+    -- Observed data (measurements available after a few days)
+    temperature_observed_avg REAL,
+    temperature_observed_max REAL,
+    temperature_observed_min REAL,
+    humidity_observed_avg REAL,
+    humidity_observed_max REAL,
+    humidity_observed_min REAL,
     precipitation REAL,
 
-    FOREIGN KEY (city_id) REFERENCES CITIES(city_id) ON DELETE CASCADE,
-    PRIMARY KEY (city_id, date)
+    FOREIGN KEY (municipality_id) REFERENCES MUNICIPALITIES(municipality_id) 
+      ON DELETE CASCADE 
+      ON UPDATE CASCADE,
+    PRIMARY KEY (municipality_id, date)
 );

@@ -19,18 +19,17 @@ config.read(CONFIG_PATH)
 
 # Database connection settings
 db_cfg = config['database']
-DB_TYPE       = 'postgres'
-DB_NAME       = db_cfg.get('dbname')
-DB_USER       = db_cfg.get('user')
-DB_PASSWORD   = db_cfg.get('password')
-DB_HOST       = db_cfg.get('host', 'localhost')
-DB_PORT       = db_cfg.get('port', '5432')
+db_name       = db_cfg.get('dbname')
+db_user       = db_cfg.get('user')
+db_password   = db_cfg.get('password')
+db_host       = db_cfg.get('host', 'localhost')
+db_port       = db_cfg.get('port', '5432')
 
 # Determine the appropriate pg_dump executable based on the OS
 if platform.system() == 'Windows':
-    PG_DUMP_EXE = r'C:\Program Files\PostgreSQL\17\bin\pg_dump.exe'
+    pg_dump_exe = r'C:\Program Files\PostgreSQL\17\bin\pg_dump.exe'
 else:
-    PG_DUMP_EXE = 'pg_dump'
+    pg_dump_exe = 'pg_dump'
 
 def ensure_dirs():
     """
@@ -38,7 +37,7 @@ def ensure_dirs():
     """
     BACKUP_ROOT.mkdir(parents=True, exist_ok=True)
 
-def timestamp() -> str:
+def timestamp():
     """
     Generate a date-based string for naming sessions (e.g., '2025-05-03').
     """
@@ -49,22 +48,22 @@ def dump_database(session_dir: Path):
     Dump the PostgreSQL database to a .sql file within the session directory.
     Uses pg_dump with credentials supplied via environment variable.
     """
-    dump_path = session_dir / f'{DB_NAME}.sql'
+    dump_path = session_dir / f'{db_name}.sql'
 
     # Build the pg_dump command arguments
     cmd = [
-        PG_DUMP_EXE,
+        pg_dump_exe,
         '-w',                  # no password prompt (use PGPASSWORD)
-        '-U', DB_USER,         # database user
-        '-h', DB_HOST,         # database host
-        '-p', DB_PORT,         # database port
+        '-U', db_user,         # database user
+        '-h', db_host,         # database host
+        '-p', db_port,         # database port
         '-f', str(dump_path),  # output file
-        DB_NAME,               # database name
+        db_name,               # database name
     ]
 
     # Copy current environment and inject the password for pg_dump
     env = os.environ.copy()
-    env['PGPASSWORD'] = DB_PASSWORD
+    env['PGPASSWORD'] = db_password
 
     # Execute the dump command, raising an error if it fails
     subprocess.run(cmd, check=True, env=env)

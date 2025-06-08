@@ -10,8 +10,8 @@ import transform
     (5.678, 5.68),
 ])
 def test_to_float(input_value, expected):
-    # _to_float should handle None, 'Ip', comma/punto decimal, and float inputs
-    assert transform._to_float(input_value) == expected
+    # to_float should handle None, 'Ip', comma/punto decimal, and float inputs
+    assert transform.to_float(input_value) == expected
 
 
 @pytest.mark.parametrize("input_value, expected", [
@@ -21,8 +21,8 @@ def test_to_float(input_value, expected):
     (7, 7),
 ])
 def test_to_int(input_value, expected):
-    # _to_int should convert numeric strings and ints, handle 'Ip' and None
-    assert transform._to_int(input_value) == expected
+    # to_int should convert numeric strings and ints, handle 'Ip' and None
+    assert transform.to_int(input_value) == expected
 
 def test_transform_observed_none_or_empty():
     # Input cases with no valid data should return None

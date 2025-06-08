@@ -1,6 +1,8 @@
 config.ini
-*.bat
-logs/
 .env
+*.bat
+
+logs/
 backup/
 tools/*.json
+

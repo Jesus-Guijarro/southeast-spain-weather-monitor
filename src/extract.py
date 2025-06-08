@@ -9,7 +9,7 @@ MAX_RETRIES = 5
 # Delay between retries in seconds
 DELAY = 10
 
-def _get_json_with_retry(url, headers=None, params=None, query_type=None, municipality_id=None):
+def get_json_with_retry(url, headers=None, params=None, query_type=None, municipality_id=None):
     """
     Perform an HTTP GET with automatic retries on transient failures.
 
@@ -63,7 +63,7 @@ def _get_json_with_retry(url, headers=None, params=None, query_type=None, munici
     return None
 
 
-def _get_data_url(endpoint_url, municipality_id, api_key, query_type):
+def get_data_url(endpoint_url, municipality_id, api_key, query_type):
     """
     Retrieve the actual data URL ('datos') from the AEMET API response.
 
@@ -75,7 +75,7 @@ def _get_data_url(endpoint_url, municipality_id, api_key, query_type):
     params = {"api_key": api_key}
 
     # Fetch the metadata JSON that includes 'datos'
-    data = _get_json_with_retry(
+    data = get_json_with_retry(
         endpoint_url, headers=headers, params=params,
         query_type=query_type, municipality_id=municipality_id
     )
@@ -89,60 +89,47 @@ def _get_data_url(endpoint_url, municipality_id, api_key, query_type):
     return data['datos']
 
 
-def fetch_observed_raw(municipality_id, station_code, date, api_key):
+def get_observed_raw(municipality_id, station_code, date, api_key):
     """
     Fetch raw daily observed observations for a station on a given date.
 
     This function:
       1. Constructs the AEMET API endpoint for daily station data.
-      2. Retrieves the 'datos' link via _get_data_url.
+      2. Retrieves the 'datos' link via get_data_url.
       3. Fetches and returns the actual JSON readings.
     """
-    # AEMET API template with placeholders for start/end timestamps and station
-    template = (
-        "https://opendata.aemet.es/opendata/api/"
-        "valores/climatologicos/diarios/datos/"
-        "fechaini/{start}/fechafin/{end}/estacion/{station_code}"
-    )
 
     # Format the start and end timestamps for the full day in UTC
     start = date.strftime("%Y-%m-%dT00:00:00UTC")
     end = date.strftime("%Y-%m-%dT23:59:59UTC")
 
-    endpoint = template.format(
-        start=start, 
-        end=end, 
-        station_code=station_code
-    )
+    url = f"https://opendata.aemet.es/opendata/api/valores/climatologicos/diarios/datos/fechaini/{start}/fechafin/{end}/estacion/{station_code}"
 
     # First call to retrieve the data URL
-    data_url = _get_data_url(endpoint, municipality_id, api_key, "OBSERVED")
+    data_url = get_data_url(url, municipality_id, api_key, "OBSERVED")
     if not data_url:
         return None
     
     # Second call to fetch the actual observed data
-    return _get_json_with_retry(data_url, query_type="OBSERVED", municipality_id=municipality_id)
+    return get_json_with_retry(data_url, query_type="OBSERVED", municipality_id=municipality_id)
 
-
-def fetch_forecast_raw(municipality_id, postal_code, api_key):
+def get_forecast_raw(municipality_id, postal_code, api_key):
     """
     Fetch raw hourly weather forecast for the next 24 hours for a municipality.
 
     Steps:
       1. Call the AEMET 'prediccion' endpoint for the given postal code.
-      2. Extract the 'datos' URL via _get_data_url.
+      2. Extract the 'datos' URL via get_data_url.
       3. Retrieve and return the JSON forecast array.
     """
     # Construct the specific forecast endpoint URL for the municipality
-    endpoint = (
-        f"https://opendata.aemet.es/opendata/api/"
-        f"prediccion/especifica/municipio/horaria/{postal_code}"
-    )
+    url = f"https://opendata.aemet.es/opendata/api/prediccion/especifica/municipio/horaria/{postal_code}"
+    
 
     # Obtain the URL where the 24h forecast JSON is hosted
-    data_url = _get_data_url(endpoint, municipality_id, api_key, "FORECAST")
+    data_url = get_data_url(url, municipality_id, api_key, "FORECAST")
     if not data_url:
         return None
     
     # Fetch and return the actual forecast data
-    return _get_json_with_retry(data_url, query_type="FORECAST", municipality_id=municipality_id)
+    return get_json_with_retry(data_url, query_type="FORECAST", municipality_id=municipality_id)

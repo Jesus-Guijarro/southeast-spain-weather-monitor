@@ -1,6 +1,6 @@
-# Weather Data of Southeastern Spain
+# Weather Data Pipeline for Southeastern Spain
 
-This project collects and analyzes meteorological data for drought-prone areas in Southeastern Spain (provinces of Almería, Murcia, Alicante, and Valencia). It implements a Python-based ETL pipeline that extracts data from the AEMET OpenData API, transforms and aggregates the weather data, and loads it into a PostgreSQL database. The goal is to enable analysis of desertification risk and extreme weather events (e.g., DANA/"gota fría"). 
+This project builds an automated pipeline to collect, process, and analyze meteorological data in drought-prone areas of Southeastern Spain (provinces of Almería, Murcia, Alicante, and Valencia), enabling early detection of desertification trends and extreme weather events. It implements a Python-based ETL pipeline that extracts data from the AEMET OpenData API, transforms and aggregates the weather data, and loads it into a PostgreSQL database. The goal is to enable analysis of desertification risk and extreme weather events (e.g., DANA).
 
 ## 🌍Overview
 
@@ -38,10 +38,11 @@ The PostgreSQL database `southeast_spain_weather` contains two main tables:
 *Entity-Relationship diagram for the `southeast_spain_weather` database.*
 
 ### API Queries
+
 #### **Forecast data**
 Hourly forecast for the municipality passed as a parameter: **postal_code**. Provides hourly information up to 48 hours.
 
-Queries are performed starting from 20:00 to obtain values for the next 24 hours of the following day.
+Queries are performed starting from 20:00 (CEST time zone) to obtain values for the next 24 hours of the following day.
 
 ```sh
 /api/prediccion/especifica/municipio/horaria/{postal_code}
@@ -60,7 +61,7 @@ Returns a summary of weather values taken at a certain weather station on the sp
 /api/valores/climatologicos/diarios/datos/fechaini/{start_date}/fechafin/{end_date}/estacion/{station_code}
 ```
 
-It' i's necessary to ask for data from 5-6 days before, since some stations may not have them ready until then.
+It's necessary to ask for data from 5-6 days before, since some stations may not have them ready until then.
 
 ## Selected Locations
 The project focuses on municipalities in Southeastern Spain that are at high risk of desertification or drought. These areas have had unusually low precipitation and high aridity indices in recent years (see figures below for context):
@@ -184,7 +185,7 @@ API_KEY_WEATHER="YOUR_API_KEY"
 │ └── 📄 pipeline.log
 ├── 📂 tools
 │ ├── 🐍 debug_municipality.py
-│ ├── 🐍 fetch_raw_json.py
+│ ├── 🐍 get_raw_json.py
 │ ├── 🐍 get_all_stations.py
 │ ├── 🐍 run_single_municipality.py
 │ └── 📄 stations.txt
@@ -285,7 +286,7 @@ pytest tests/test_transform.py
 
 - `tools\get_all_stations.py`: script to fetch metadata for all AEMET weather stations. Use this to update the list of stations (`stations.txt`) if AEMET adds or changes stations.
 
-- `tools\fetch_raw_json.py`: script to fetch raw JSON data for a given `municipality_id`.
+- `tools\get_raw_json.py`: script to fetch raw JSON data for a given `municipality_id`.
 
 - `Data Visualization.ipynb`: Jupyter notebook with visualizations of the collected data. It currently compares observed vs. forecast temperature and humidity for each municipality.
 

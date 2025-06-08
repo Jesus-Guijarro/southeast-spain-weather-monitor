@@ -7,9 +7,9 @@ import time
 import os
 from dotenv import load_dotenv
 
-from .extract import fetch_observed_raw, fetch_forecast_raw
+from .extract import get_observed_raw, get_forecast_raw
 from .transform import transform_observed, transform_forecast
-from .load import insert_observed_data, insert_forecast_data
+from .load import load_observed_data, load_forecast_data
 
 def read_db_config():
     """
@@ -84,9 +84,9 @@ def run_pipeline():
             
             # --------- Extraction Phase ---------
             # Fetch raw observed data
-            raw_observed = fetch_observed_raw(municipality_id, station_code, target_date, api_key)
+            raw_observed = get_observed_raw(municipality_id, station_code, target_date, api_key)
             # Fetch raw forecast data
-            raw_forecast = fetch_forecast_raw(municipality_id, postal_code, api_key)
+            raw_forecast = get_forecast_raw(municipality_id, postal_code, api_key)
 
             # --------- Transform Phase ---------
             # Convert raw observed data to structured format
@@ -101,10 +101,10 @@ def run_pipeline():
 
             # Insert forecast data first, then observed data
             if forecast:                            
-                insert_forecast_data(cursor, forecast)
+                load_forecast_data(cursor, forecast)
                 forecast_loaded = True
             if observed:
-                insert_observed_data(cursor, observed)
+                load_observed_data(cursor, observed)
                 observed_loaded = True
 
             if forecast_loaded and observed_loaded:  

@@ -2,7 +2,7 @@ import json
 from unittest.mock import Mock
 import load
 
-def test_insert_observed_data_calls_execute_with_correct_parameters():
+def test_load_observed_data_calls_execute_with_correct_parameters():
     # Prepare a fake cursor and sample data dict
     cursor = Mock()
     data = {
@@ -18,7 +18,7 @@ def test_insert_observed_data_calls_execute_with_correct_parameters():
     }
 
     # Call the function under test
-    load.insert_observed_data(cursor, data)
+    load.load_observed_data(cursor, data)
 
     # Expected SQL with placeholders matching order of params
     expected_query = """
@@ -49,7 +49,7 @@ def test_insert_observed_data_calls_execute_with_correct_parameters():
     # Compare stripped queries to avoid whitespace differences
     assert expected_query.strip() == executed_query.strip()  
 
-def test_insert_forecast_data_calls_execute_with_correct_parameters():
+def test_load_forecast_data_calls_execute_with_correct_parameters():
     # Prepare fake cursor and sample forecast data
     cursor = Mock()
     data = {
@@ -67,7 +67,7 @@ def test_insert_forecast_data_calls_execute_with_correct_parameters():
     }
 
     # Call the function under test
-    load.insert_forecast_data(cursor, data)
+    load.load_forecast_data(cursor, data)
 
     expected_query = """
     INSERT INTO weather_records (

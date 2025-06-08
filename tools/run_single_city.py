@@ -16,11 +16,10 @@ import os
 from datetime import datetime, timedelta
 
 from dotenv import load_dotenv
-from src.extract import fetch_observed_raw, fetch_forecast_raw
+from src.extract import get_observed_raw, get_forecast_raw
 from src.transform import transform_observed, transform_forecast
-from src.load import insert_observed_data, insert_forecast_data
+from src.load import load_observed_data, load_forecast_data
 from src.pipeline import get_connection
-
 
 def get_municipality(cur, municipality_id):
     """Fetch postal and station codes for a municipality."""
@@ -80,11 +79,11 @@ def main():
     # ------------------------------ Extract -------------------------------- #
     raw_observed = raw_forecast = None
     if run_observed:
-        raw_observed = fetch_observed_raw(
+        raw_observed = get_observed_raw(
             args.municipality_id, station_code, target_date, api_key
         )
     if run_forecast:
-        raw_forecast = fetch_forecast_raw(
+        raw_forecast = get_forecast_raw(
             args.municipality_id, postal_code, api_key
         )
 
@@ -98,10 +97,10 @@ def main():
     # -------------------------------- Load ---------------------------------- #
     wrote_anything = False
     if forecast_data:
-        insert_forecast_data(cur, forecast_data)
+        load_forecast_data(cur, forecast_data)
         wrote_anything = True
     if observed_data:
-        insert_observed_data(cur, observed_data)
+        load_observed_data(cur, observed_data)
         wrote_anything = True
 
     if wrote_anything:

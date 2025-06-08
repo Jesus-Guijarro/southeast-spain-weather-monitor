@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 
 
-def _to_float(value):
+def to_float(value):
     """
     Function to convert strings to floats
     """
@@ -16,7 +16,7 @@ def _to_float(value):
     return round(v, 2)
 
 
-def _to_int(value):
+def to_int(value):
     """
     Function to convert strings to integers
     """
@@ -46,13 +46,13 @@ def transform_observed(raw_json, municipality_id, date):
     return {
         'municipality_id': municipality_id,
         'date': date.strftime('%Y-%m-%d'),
-        'precipitation': _to_float(observed_data.get('prec')),
-        'temperature_avg': round(_to_float(observed_data.get('tmed'))) if _to_float(observed_data.get('tmed')) is not None else None,
-        'temperature_max': round(_to_float(observed_data.get('tmax'))) if _to_float(observed_data.get('tmax')) is not None else None,
-        'temperature_min': round(_to_float(observed_data.get('tmin'))) if _to_float(observed_data.get('tmin')) is not None else None,
-        'humidity_avg': _to_int(observed_data.get('hrMedia')),
-        'humidity_max': _to_int(observed_data.get('hrMax')),
-        'humidity_min': _to_int(observed_data.get('hrMin'))
+        'precipitation': to_float(observed_data.get('prec')),
+        'temperature_avg': round(to_float(observed_data.get('tmed'))) if to_float(observed_data.get('tmed')) is not None else None,
+        'temperature_max': round(to_float(observed_data.get('tmax'))) if to_float(observed_data.get('tmax')) is not None else None,
+        'temperature_min': round(to_float(observed_data.get('tmin'))) if to_float(observed_data.get('tmin')) is not None else None,
+        'humidity_avg': to_int(observed_data.get('hrMedia')),
+        'humidity_max': to_int(observed_data.get('hrMax')),
+        'humidity_min': to_int(observed_data.get('hrMin'))
     }
 
 

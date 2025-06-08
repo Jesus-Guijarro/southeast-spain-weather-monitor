@@ -1,6 +1,6 @@
 import json
 
-def insert_observed_data(cursor, data):
+def load_observed_data(cursor, data):
     """
     Insert observed data in WEATHER_records table
     """
@@ -40,7 +40,7 @@ def insert_observed_data(cursor, data):
     ))
 
 
-def insert_forecast_data(cursor, data):
+def load_forecast_data(cursor, data):
     """
     Insert forecast data into weather_records table
     """

@@ -1,7 +1,7 @@
 """
 Usage
 -----
-    python -m tools.fetch_raw_json --municipality_id 23
+    python -m tools.get_raw_json --municipality_id 23
 """
 import argparse
 import json
@@ -11,9 +11,8 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
-from src.extract import fetch_observed_raw, fetch_forecast_raw
+from src.extract import get_observed_raw, get_forecast_raw
 from src.pipeline import get_connection
-
 
 def main():
     parser = argparse.ArgumentParser(
@@ -56,7 +55,7 @@ def main():
     date_tag = target_date.strftime("%Y-%m-%d")
 
     # Fetch OBSERVED data
-    raw_observed = fetch_observed_raw(args.municipality_id, station_code, target_date, api_key)
+    raw_observed = get_observed_raw(args.municipality_id, station_code, target_date, api_key)
     if raw_observed is None:
         print("❌  OBSERVED fetch failed (check messages above).")
     else:
@@ -67,7 +66,7 @@ def main():
         print(f"✅  OBSERVED JSON guardado en tools/{observed_filename}")
 
     # Fetch FORECAST data
-    raw_forecast = fetch_forecast_raw(args.municipality_id, postal_code, api_key)
+    raw_forecast = get_forecast_raw(args.municipality_id, postal_code, api_key)
     if raw_forecast is None:
         print("❌  FORECAST fetch failed (check messages above).")
     else:

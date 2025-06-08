@@ -9,16 +9,16 @@ from datetime import datetime, timedelta
 
 from dotenv import load_dotenv
 
-from src.extract import fetch_observed_raw, fetch_forecast_raw
+from src.extract import get_observed_raw, get_forecast_raw
 from src.transform import transform_observed, transform_forecast
 from src.pipeline import get_connection
 
 # Helper
-def _pp(obj: object) -> str:
+def pretty_print(obj: object):
     """Pretty-print any JSON-serialisable object (2-space indent, UTF-8)."""
     return json.dumps(obj, indent=2, ensure_ascii=False)
 
-def main() -> None:
+def main():
     parser = argparse.ArgumentParser(
         description="Diagnose why a municipality/station is not returning data from AEMET."
     )
@@ -68,23 +68,23 @@ def main() -> None:
 
     # OBSERVED extraction
     print("=> Fetching OBSERVED …")
-    raw_observed = fetch_observed_raw(args.municipality_id, station_code, target_date, api_key)
+    raw_observed = get_observed_raw(args.municipality_id, station_code, target_date, api_key)
     if raw_observed is None:
         print("❌  OBSERVED fetch failed (check messages above).")
     else:
         print("✅  OBSERVED fetch succeeded.")
         print("Transformed record:")
-        print(_pp(transform_observed(raw_observed, args.municipality_id, target_date)))
+        print(pretty_print(transform_observed(raw_observed, args.municipality_id, target_date)))
 
     # FORECAST extraction
     print("\n=> Fetching FORECAST …")
-    raw_forecast = fetch_forecast_raw(args.municipality_id, postal_code, api_key)
+    raw_forecast = get_forecast_raw(args.municipality_id, postal_code, api_key)
     if raw_forecast is None:
         print("❌  FORECAST fetch failed (check messages above).")
     else:
         print("✅  FORECAST fetch succeeded.")
         print("Transformed record:")
-        print(_pp(transform_forecast(raw_forecast, args.municipality_id)))
+        print(pretty_print(transform_forecast(raw_forecast, args.municipality_id)))
 
 if __name__ == "__main__":
     main()

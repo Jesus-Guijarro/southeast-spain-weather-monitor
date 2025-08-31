@@ -14,6 +14,7 @@ python -m tools.run_single_municipality --municipality_id 23 --date 2025-05-30
 import argparse
 import os
 from datetime import datetime, timedelta
+import logging
 
 from dotenv import load_dotenv
 from src.extract import get_observed_raw, get_forecast_raw
@@ -57,7 +58,7 @@ def main():
         # Mode 1: both observed and forecast, default to -6 days offset
         target_date = datetime.now() - timedelta(days=6)
         run_observed, run_forecast = True, True
-
+    
     conn, cur = get_connection()
     municipality = get_municipality(cur, args.municipality_id)
     if municipality is None:
@@ -76,8 +77,12 @@ def main():
         conn.close()
         return
     
-    # ------------------------------ Extract -------------------------------- #
-    raw_observed = raw_forecast = None
+    # Suppress error and warning logs to keep output clean
+    logging.disable(logging.ERROR)
+
+    # --------- Extract ---------
+    raw_observed = None
+    raw_forecast = None
     if run_observed:
         raw_observed = get_observed_raw(
             args.municipality_id, station_code, target_date, api_key
@@ -87,31 +92,35 @@ def main():
             args.municipality_id, postal_code, api_key
         )
 
-    # ------------------------------ Transform ------------------------------- #
-    observed_data = forecast_data = None
+    # --------- Transform ---------
+    observed_data = None
+    forecast_data = None
+
     if run_observed and raw_observed:
         observed_data = transform_observed(raw_observed, args.municipality_id, target_date)
     if run_forecast and raw_forecast:
         forecast_data = transform_forecast(raw_forecast, args.municipality_id)
 
-    # -------------------------------- Load ---------------------------------- #
-    wrote_anything = False
+    # --------- Load ---------
+    forecast_loaded = False
+    observed_loaded = False
     if forecast_data:
         load_forecast_data(cur, forecast_data)
-        wrote_anything = True
+        forecast_loaded = True
     if observed_data:
         load_observed_data(cur, observed_data)
-        wrote_anything = True
+        observed_loaded = True
 
-    if wrote_anything:
+    if forecast_loaded and observed_loaded:  
         conn.commit()
         print("✅ Data committed to database successfully.")
+    elif forecast_loaded or observed_loaded:
+        conn.commit()
+        loaded = 'FORECAST' if forecast_loaded else 'OBSERVED'
+        missing = 'OBSERVED' if forecast_loaded else 'FORECAST'
+        print(f"⚠️  {loaded} data loaded, but {missing} data was not loaded.")
     else:
-        print("❌ Nothing written to DB:")
-        if run_observed and not observed_data:
-            print("   • OBSERVED data missing or invalid")
-        if run_forecast and not forecast_data:
-            print("   • FORECAST data missing or invalid")
+        print("❌ Nothing written to DB.")
 
     cur.close()
     conn.close()

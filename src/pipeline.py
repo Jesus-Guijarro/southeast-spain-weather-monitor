@@ -11,6 +11,8 @@ from .extract import get_observed_raw, get_forecast_raw
 from .transform import transform_observed, transform_forecast
 from .load import load_observed_data, load_forecast_data
 
+DAYS = 7
+
 def read_db_config():
     """
     Reads database configuration parameters from config.ini file
@@ -97,7 +99,7 @@ def run_pipeline():
             # --------- Load Phase ---------
             # Initialize flags to track successful insertion
             forecast_loaded = False
-            observed_loaded  = False
+            observed_loaded = False
 
             # Insert forecast data first, then observed data
             if forecast:                            

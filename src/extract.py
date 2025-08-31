@@ -2,12 +2,35 @@ import requests
 import logging
 import time
 
+from datetime import datetime, timezone
+from email.utils import parsedate_to_datetime
+
 # HTTP status codes that should trigger a retry
 RETRY_STATUS_CODES = {429, 500, 502, 503, 504}
 # Maximum number of retry attempts
 MAX_RETRIES = 5
 # Delay between retries in seconds
-DELAY = 10
+DELAY = 5
+
+def get_wait_time(response_status, response_headers, delay=DELAY):
+    """
+    Calculate how long to wait before retrying.
+    Handles 'Retry-After' header if status is 429.
+    """
+    wait_time = delay
+    if response_status == 429 and response_headers:
+        retry_after = response_headers.get("Retry-After")
+        if retry_after:
+            try:
+                wait_time = int(retry_after)
+            except ValueError:
+                try:
+                    retry_date = parsedate_to_datetime(retry_after)
+                    now = datetime.now(timezone.utc)
+                    wait_time = max((retry_date - now).total_seconds(), delay)
+                except Exception:
+                    wait_time = delay
+    return wait_time
 
 def get_json_with_retry(url, headers=None, params=None, query_type=None, municipality_id=None):
     """
@@ -26,7 +49,7 @@ def get_json_with_retry(url, headers=None, params=None, query_type=None, municip
     # Try up to MAX_RETRIES times
     for attempt in range(1, MAX_RETRIES + 1):
         try:
-            response = requests.get(url, headers=headers, params=params)
+            response = requests.get(url, headers=headers, params=params, timeout=(5, 10)) # 5s connect, 10s read
             status = response.status_code
 
             # If we get a retryable status code, log and retry
@@ -35,9 +58,9 @@ def get_json_with_retry(url, headers=None, params=None, query_type=None, municip
                     f"{query_type} - municipality {municipality_id} - status {status}. "
                     f"Attempt {attempt}/{MAX_RETRIES}"
                 )
-                if attempt < MAX_RETRIES:
-                    time.sleep(DELAY) 
-                    continue
+                wait_time = get_wait_time(status, getattr(response, 'headers', None))
+                time.sleep(wait_time)
+                continue
 
             # Raise for non-2xx responses not explicitly retried above    
             response.raise_for_status()
@@ -48,12 +71,15 @@ def get_json_with_retry(url, headers=None, params=None, query_type=None, municip
             status = getattr(e.response, 'status_code', None)
 
             # Only retry on configured status codes or network errors
-            if (status in RETRY_STATUS_CODES or status is None) and attempt < MAX_RETRIES:
+            if (status in RETRY_STATUS_CODES or status is None):
                 logging.warning(
                     f"{query_type} - Municipality {municipality_id} - request error {status or ''}: {e}. "
                     f"Attempt {attempt}/{MAX_RETRIES}"
                 )
-                time.sleep(DELAY)
+                status = getattr(e.response, 'status_code', None)
+                headers = getattr(e.response, 'headers', None)
+                wait_time = get_wait_time(status, headers)
+                time.sleep(wait_time)
                 continue
 
             # Log final failure if out of retries or unrecoverable error
@@ -61,7 +87,6 @@ def get_json_with_retry(url, headers=None, params=None, query_type=None, municip
             return None
     # Exhausted all retries without success
     return None
-
 
 def get_data_url(endpoint_url, municipality_id, api_key, query_type):
     """
@@ -87,7 +112,6 @@ def get_data_url(endpoint_url, municipality_id, api_key, query_type):
     
     # Return the URL where the actual JSON data resides
     return data['datos']
-
 
 def get_observed_raw(municipality_id, station_code, date, api_key):
     """

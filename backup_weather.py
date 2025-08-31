@@ -103,7 +103,7 @@ def purge_old_backups():
     Remove oldest backup archives, keeping only the most recent KEEP_LAST files.
     """
     # Find all ZIPs matching the backup naming pattern
-    archives = sorted(BACKUP_ROOT.glob('weather_backup_*.zip'))
+    archives = sorted(BACKUP_ROOT.glob('backup_data_and_logs_*.zip'))
 
     # Delete archives older than the most recent KEEP_LAST
     for old in archives[:-KEEP_LAST]:

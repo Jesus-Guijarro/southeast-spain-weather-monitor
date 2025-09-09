@@ -42,7 +42,7 @@ The PostgreSQL database `southeast_spain_weather` contains two main tables:
 #### **Forecast data**
 Hourly forecast for the municipality passed as a parameter: **postal_code**. Provides hourly information up to 48 hours.
 
-Queries are performed starting from 20:00 (CEST time zone) to obtain values for the next 24 hours of the following day.
+Queries are performed starting from 20:30 (CEST time zone) to obtain values for the next 24 hours of the following day.
 
 ```sh
 /api/prediccion/especifica/municipio/horaria/{postal_code}

@@ -10,29 +10,9 @@ RETRY_STATUS_CODES = {429, 500, 502, 503, 504}
 # Maximum number of retry attempts
 MAX_RETRIES = 5
 # Delay between retries in seconds
-DELAY = 5
+DELAY = 10
 
-def get_wait_time(response_status, response_headers, delay=DELAY):
-    """
-    Calculate how long to wait before retrying.
-    Handles 'Retry-After' header if status is 429.
-    """
-    wait_time = delay
-    if response_status == 429 and response_headers:
-        retry_after = response_headers.get("Retry-After")
-        if retry_after:
-            try:
-                wait_time = int(retry_after)
-            except ValueError:
-                try:
-                    retry_date = parsedate_to_datetime(retry_after)
-                    now = datetime.now(timezone.utc)
-                    wait_time = max((retry_date - now).total_seconds(), delay)
-                except Exception:
-                    wait_time = delay
-    return wait_time
-
-def get_json_with_retry(url, headers=None, params=None, query_type=None, municipality_id=None):
+def get_json_with_retry(url, headers=None, query_type=None, municipality_id=None):
     """
     Perform an HTTP GET with automatic retries on transient failures.
 
@@ -49,17 +29,16 @@ def get_json_with_retry(url, headers=None, params=None, query_type=None, municip
     # Try up to MAX_RETRIES times
     for attempt in range(1, MAX_RETRIES + 1):
         try:
-            response = requests.get(url, headers=headers, params=params, timeout=(5, 10)) # 5s connect, 10s read
+            response = requests.get(url, headers=headers)
             status = response.status_code
 
             # If we get a retryable status code, log and retry
             if status in RETRY_STATUS_CODES:
                 logging.warning(
-                    f"{query_type} - municipality {municipality_id} - status {status}. "
+                    f"{query_type} - Municipality {municipality_id} - Status {status}. "
                     f"Attempt {attempt}/{MAX_RETRIES}"
                 )
-                wait_time = get_wait_time(status, getattr(response, 'headers', None))
-                time.sleep(wait_time)
+                time.sleep(DELAY)
                 continue
 
             # Raise for non-2xx responses not explicitly retried above    
@@ -73,17 +52,14 @@ def get_json_with_retry(url, headers=None, params=None, query_type=None, municip
             # Only retry on configured status codes or network errors
             if (status in RETRY_STATUS_CODES or status is None):
                 logging.warning(
-                    f"{query_type} - Municipality {municipality_id} - request error {status or ''}: {e}. "
+                    f"{query_type} - Municipality {municipality_id} - Request Error {status or ''}: {e}. "
                     f"Attempt {attempt}/{MAX_RETRIES}"
                 )
-                status = getattr(e.response, 'status_code', None)
-                headers = getattr(e.response, 'headers', None)
-                wait_time = get_wait_time(status, headers)
-                time.sleep(wait_time)
+                time.sleep(DELAY)
                 continue
 
             # Log final failure if out of retries or unrecoverable error
-            logging.error(f"{query_type} - Municipality {municipality_id} - request error final: {e}")
+            logging.error(f"{query_type} - Municipality {municipality_id} - Request Error Final: {e}")
             return None
     # Exhausted all retries without success
     return None
@@ -96,13 +72,15 @@ def get_data_url(endpoint_url, municipality_id, api_key, query_type):
     which is a URL pointing to the real data payload.
     """
     # Standard headers and API key parameter for the initial metadata call
-    headers = {"cache-control": "no-cache", "accept": "application/json"}
-    params = {"api_key": api_key}
+
+    headers = {
+        "accept": "application/json",
+        "api_key": api_key
+    }
 
     # Fetch the metadata JSON that includes 'datos'
     data = get_json_with_retry(
-        endpoint_url, headers=headers, params=params,
-        query_type=query_type, municipality_id=municipality_id
+        endpoint_url, headers=headers, query_type=query_type, municipality_id=municipality_id
     )
 
     # Ensure the response contains the 'datos' field

@@ -11,8 +11,6 @@ from .extract import get_observed_raw, get_forecast_raw
 from .transform import transform_observed, transform_forecast
 from .load import load_observed_data, load_forecast_data
 
-DAYS = 7
-
 def read_db_config():
     """
     Reads database configuration parameters from config.ini file
@@ -76,7 +74,7 @@ def run_pipeline():
         load_dotenv()
         api_key = os.getenv('API_KEY_WEATHER')
 
-        # Target date for historical data: 6 days ago
+        # Target date for observed data: 6 days ago
         target_date = datetime.now() - timedelta(days=6)
 
         failed_municipalities = []  # Track municipalities where processing fails
@@ -116,7 +114,7 @@ def run_pipeline():
                 conn.commit()
                 loaded = 'FORECAST' if forecast_loaded else 'OBSERVED'
                 missing = 'OBSERVED' if forecast_loaded else 'FORECAST'
-                logging.warning(f"Municipality {municipality_id}: only {loaded} data loaded; {missing} data missing.")
+                logging.error(f"Municipality {municipality_id}: only {loaded} data loaded; {missing} data missing.")
                 failed_municipalities.append(municipality_id)
             else:
                 # Nothing was loaded

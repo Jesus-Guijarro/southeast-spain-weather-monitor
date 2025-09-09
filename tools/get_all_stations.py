@@ -11,14 +11,12 @@ def get_data_url(url):
 
     api_key = os.getenv('API_KEY_WEATHER')
 
-    querystring = {"api_key":api_key}
-
     headers = {
-        'cache-control': "no-cache",
-        'accept': "application/json"
-        }
-
-    response = requests.get(url, headers=headers, params=querystring)
+        "accept": "application/json",
+        "api_key": api_key
+    }
+    response = requests.get(url, headers=headers)
+    
     if response.status_code == 200:
         data = response.json()
         if 'datos' in data:
